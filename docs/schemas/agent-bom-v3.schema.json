@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentguard.local/schemas/agent-bom-v3.json",
+  "title": "AgentGuard Agent BOM 3.0",
+  "type": "object",
+  "required": [
+    "schema",
+    "scan",
+    "summary",
+    "agents",
+    "models",
+    "tools",
+    "skills",
+    "mcp_components",
+    "data_retrieval_assets",
+    "memory",
+    "packages",
+    "vulnerabilities",
+    "static_findings",
+    "relationships",
+    "versions",
+    "assets"
+  ],
+  "properties": {
+    "schema": {"const": "agentguard-agent-bom/3.0"},
+    "scan": {
+      "type": "object",
+      "required": ["scan_id", "repository", "remote", "commit", "branch"]
+    },
+    "summary": {
+      "type": "object",
+      "required": ["agents", "models", "tools", "skills", "mcp_components", "data_retrieval_assets", "memory_assets", "packages", "vulnerabilities", "static_findings", "assets", "relationships", "asset_types"]
+    },
+    "agents": {"type": "array", "items": {"type": "object", "required": ["agent_id", "agent_version_id", "name", "version", "framework", "source", "dependencies"]}},
+    "models": {"type": "array", "items": {"$ref": "#/$defs/model"}},
+    "tools": {"type": "array"},
+    "skills": {"type": "array"},
+    "mcp_components": {"type": "array"},
+    "data_retrieval_assets": {"type": "array"},
+    "memory": {"type": "array"},
+    "packages": {"type": "array", "items": {"$ref": "#/$defs/package"}},
+    "vulnerabilities": {"type": "array", "items": {"$ref": "#/$defs/vulnerability"}},
+    "static_findings": {"type": "array"},
+    "relationships": {"type": "array", "items": {"type": "object", "required": ["source_id", "relation", "target_id", "confidence", "derivation_method", "source_evidence"]}},
+    "versions": {"type": "array", "items": {"type": "object", "required": ["entity_id", "version_id", "version", "scheme", "source"]}},
+    "assets": {"type": "array"}
+  },
+  "$defs": {
+    "model": {
+      "type": "object",
+      "required": ["model_id", "logical_identity", "provider", "model_identifier", "model_revision", "deployment_name", "endpoint_service", "access_type", "framework", "framework_package", "framework_package_version", "configuration_source", "source_file", "source_line", "parameters", "repository", "repository_revision", "content_revision", "entity_version_id"],
+      "properties": {
+        "access_type": {"enum": ["remote_api", "local", "downloaded", "managed_service"]},
+        "parameters": {"type": "object"}
+      }
+    },
+    "package": {
+      "type": "object",
+      "required": ["package_id", "name", "normalized_name", "ecosystem", "version", "purl", "dependency_type", "manifest_origins", "lockfile_origins", "dependency_path", "licenses", "source_evidence", "requested_version", "resolved", "dependencies", "vulnerability_status"],
+      "properties": {
+        "ecosystem": {"enum": ["PyPI", "npm"]},
+        "dependency_type": {"enum": ["direct", "transitive"]},
+        "vulnerability_status": {"enum": ["affected", "not_affected", "unknown"]}
+      }
+    },
+    "vulnerability": {
+      "type": "object",
+      "required": ["vulnerability_id", "canonical_id", "aliases", "source", "severity", "affected_package_id", "affected_version", "affected_version_status", "reachability", "exploitability", "package_presence", "cvss", "cwe", "affected_ranges", "fixed_versions", "references", "published_at", "updated_at", "enrichment_timestamp", "summary", "details"],
+      "properties": {
+        "affected_version_status": {"enum": ["affected", "not_affected", "unknown"]},
+        "reachability": {"enum": ["reachable", "not_reachable", "unknown"]},
+        "exploitability": {"enum": ["exploitable", "not_exploitable", "unknown"]},
+        "package_presence": {"enum": ["present", "absent", "unknown"]}
+      }
+    }
+  }
+}

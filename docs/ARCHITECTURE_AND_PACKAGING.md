@@ -99,7 +99,7 @@ Use three related but distinct versions:
 
 1. **Core package version** — SemVer, e.g. `0.4.0`.
 2. **CLI package version** — normally released with the compatible Core version.
-3. **Scan contract version** — currently `1.1`; change only when the serialized result contract changes.
+3. **Scan contract version** — currently `1.2`; change only when the serialized result contract changes.
 
 A new rule can usually be a patch release. A new optional output format can usually be a minor release. Breaking Python APIs or finding/scan contracts require a major-version decision.
 

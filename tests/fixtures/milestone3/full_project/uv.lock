@@ -1,0 +1,29 @@
+version = 1
+
+[[package]]
+name = "langchain-openai"
+version = "0.3.1"
+dependencies = [{ name = "openai" }]
+
+[[package]]
+name = "openai"
+version = "1.55.0"
+dependencies = [{ name = "httpx" }]
+
+[[package]]
+name = "httpx"
+version = "0.27.2"
+
+[[package]]
+name = "transformers"
+version = "4.46.2"
+dependencies = [{ name = "huggingface-hub" }]
+
+[[package]]
+name = "huggingface-hub"
+version = "0.26.2"
+
+[[package]]
+name = "requests"
+version = "2.32.3"
+license = "Apache-2.0"

@@ -61,6 +61,9 @@ class Finding:
     rule_version: str = "1"
     confidence: str = "deterministic"
     schema_version: str = "1.1"
+    directly_affected_assets: list[str] = field(default_factory=list)
+    transitively_affected_assets: list[str] = field(default_factory=list)
+    attribution: dict[str, Any] = field(default_factory=dict)
 
     def finalize(self, repository_root: Path | None = None) -> Finding:
         """Create a stable, line-number-independent semantic fingerprint."""
@@ -181,14 +184,27 @@ class Relationship:
     evidence_file: str = ""
     evidence_line: int = 1
     attributes: dict[str, Any] = field(default_factory=dict)
+    relationship_type: str = "explicit/direct"
+    confidence: str = "exact"
+    derivation_method: str = "resolved-static-reference"
+    source_evidence: list[dict[str, Any]] = field(default_factory=list)
 
     def normalize_paths(self, repository_root: Path) -> None:
-        if not self.evidence_file:
-            return
-        try:
-            self.evidence_file = Path(self.evidence_file).resolve().relative_to(repository_root.resolve()).as_posix()
-        except (OSError, ValueError):
-            self.evidence_file = Path(self.evidence_file).as_posix()
+        if self.evidence_file:
+            try:
+                self.evidence_file = Path(self.evidence_file).resolve().relative_to(repository_root.resolve()).as_posix()
+            except (OSError, ValueError):
+                self.evidence_file = Path(self.evidence_file).as_posix()
+        if not self.source_evidence and self.evidence_file:
+            self.source_evidence = [{"file": self.evidence_file, "line": self.evidence_line}]
+        for evidence in self.source_evidence:
+            value = evidence.get("file")
+            if not value:
+                continue
+            try:
+                evidence["file"] = Path(value).resolve().relative_to(repository_root.resolve()).as_posix()
+            except (OSError, ValueError):
+                evidence["file"] = Path(value).as_posix()
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

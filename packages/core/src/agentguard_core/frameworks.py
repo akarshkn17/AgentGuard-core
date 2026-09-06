@@ -77,7 +77,26 @@ TOOL_DECORATORS = ["tool", "function_tool", "mcp.tool", "server.tool"]
 MCP_SERVER_CONSTRUCTORS = ["MCPServer", "FastMCP"]
 MCP_RESOURCE_DECORATORS = ["mcp.resource", "server.resource"]
 MCP_PROMPT_DECORATORS = ["mcp.prompt", "server.prompt"]
-MODEL_CONSTRUCTORS = ["ChatOpenAI", "OpenAI", "AsyncOpenAI", "ChatAnthropic", "Anthropic", "GenerativeModel", "ChatGoogleGenerativeAI", "AzureOpenAI", "ChatBedrock", "Bedrock"]
+MODEL_CONSTRUCTORS = [
+    "ChatOpenAI",
+    "OpenAI",
+    "AsyncOpenAI",
+    "ChatAnthropic",
+    "Anthropic",
+    "GenerativeModel",
+    "ChatGoogleGenerativeAI",
+    "AzureOpenAI",
+    "AzureChatOpenAI",
+    "ChatBedrock",
+    "Bedrock",
+    "BedrockRuntimeClient",
+    "ChatVertexAI",
+    "VertexAI",
+    "Gemini",
+    "HuggingFaceEndpoint",
+    "HuggingFacePipeline",
+    "TransformersPipeline",
+]
 VECTOR_CONSTRUCTORS = ["Chroma", "FAISS", "Pinecone", "Qdrant", "Weaviate", "Milvus", "PGVector"]
 MEMORY_CONSTRUCTORS = ["MemorySaver", "ConversationBufferMemory", "ConversationSummaryMemory", "RedisSaver", "PostgresSaver"]
 RETRIEVER_HINTS = ["as_retriever", "Retriever", "retriever"]

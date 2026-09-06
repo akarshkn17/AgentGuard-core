@@ -4,6 +4,7 @@ import json
 from agentguard_core import (
     ScanRequest,
     generate_agent_bom,
+    generate_agent_bom_v2,
     generate_cyclonedx,
     generate_provenance_graph,
     scan,
@@ -55,7 +56,8 @@ def test_exporters_are_self_contained():
     assert "Remediation" in detailed_html(result)
     assert "AgentGuard Scan Summary" in summary_html(result)
     assert generate_cyclonedx(result)["bomFormat"] == "CycloneDX"
-    assert generate_agent_bom(result)["schema"] == "agentguard-agent-bom/2.0"
+    assert generate_agent_bom(result)["schema"] == "agentguard-agent-bom/3.0"
+    assert generate_agent_bom_v2(result)["schema"] == "agentguard-agent-bom/2.0"
     assert generate_provenance_graph(result)["schema"] == "agentguard-provenance-graph/1.0"
     json.dumps(result.to_dict())
 
@@ -89,8 +91,16 @@ def test_agent_bom_and_graph_are_rich():
     agent = bom["agents"][0]
     assert agent["name"] == "support-agent"
     assert agent["version"]["value"] == "2.1.0"
-    assert agent["agent_id"] == "AGENT-402ceaa3621c3c2b"
-    assert agent["agent_version_id"] == "AGV-0B28632D025A3B8A3582"
+    assert agent["agent_id"].startswith("AGENT-")
+    assert agent["agent_version_id"].startswith("AGV-")
+    # A Git checkout uses its remote URL as repository identity, while an
+    # unpacked source archive falls back to the scan-root name. Both must be
+    # deterministic within the same repository context.
+    repeated_agent = generate_agent_bom(
+        scan(ROOT / "examples" / "multi_agent_demo")
+    )["agents"][0]
+    assert repeated_agent["agent_id"] == agent["agent_id"]
+    assert repeated_agent["agent_version_id"] == agent["agent_version_id"]
     relations = {(d["relation"], d["type"]) for d in agent["dependencies"]}
     assert ("USES_MODEL", "model") in relations
     assert ("USES_TOOL", "tool") in relations

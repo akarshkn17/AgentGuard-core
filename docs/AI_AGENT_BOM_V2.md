@@ -51,7 +51,7 @@ For code assets AgentGuard uses explicit evidence rather than inventing semantic
 4. Git commit;
 5. content revision digest (`rev-<sha>`).
 
-Models use their concrete model identifier as a `model-id` version when available.
+This document describes the compatibility v2 contract. Agent BOM v3 no longer treats a model identifier as an immutable model version. New scans expose an unknown model version unless an independent revision/version is statically observed; the identifier remains available as model identity.
 
 ## Inventory discovery in v0.4
 
@@ -86,3 +86,5 @@ The scanner now looks for:
 - relationships.
 
 This is intended to become the stable input for registry, UI, provenance, and future SaaS ingestion.
+
+Agent BOM v3 is now the default internal export. Consumers that require this v2 shape must request `agentguard bom . --kind agent-bom --schema-version 2.0`. See `AI_AGENT_BOM_V3.md` for the current contract.

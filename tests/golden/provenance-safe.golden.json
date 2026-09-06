@@ -1,0 +1,55 @@
+{
+  "schema": "agentguard-provenance-graph/1.0",
+  "summary": {
+    "attack_paths": 0,
+    "node_classes": {
+      "asset": 4,
+      "code": 6
+    },
+    "relationship_types": {
+      "DEFINES": 7,
+      "AGENT_USES_MODEL": 1,
+      "USES_MODEL": 1,
+      "USES_TOOL": 1,
+      "CALLS": 3,
+      "RETURNS_TO": 1,
+      "IMPLEMENTED_BY": 3
+    },
+    "relationship_evidence_types": {
+      "explicit/direct": 16,
+      "transitive/derived": 1
+    }
+  },
+  "nodes": [
+    "asset:agent:operations-agent",
+    "asset:model:gpt-test",
+    "asset:tool:administration_tool",
+    "code:external_call:agents.Agent",
+    "code:external_call:subprocess.run",
+    "code:function:app.administration_tool",
+    "code:function:helpers.fixed_status",
+    "code:module:app",
+    "code:module:helpers",
+    "repository:repository:<repository>"
+  ],
+  "edges": [
+    "asset:agent:operations-agent --AGENT_USES_MODEL[explicit/direct|exact|normalized-agent-model-relationship]--> asset:model:gpt-test",
+    "asset:agent:operations-agent --IMPLEMENTED_BY[explicit/direct|exact|constructor-call-ownership]--> code:external_call:agents.Agent",
+    "asset:agent:operations-agent --USES_MODEL[explicit/direct|exact|resolved-ast-reference]--> asset:model:gpt-test",
+    "asset:agent:operations-agent --USES_TOOL[explicit/direct|exact|resolved-ast-reference]--> asset:tool:administration_tool",
+    "asset:model:gpt-test --IMPLEMENTED_BY[explicit/direct|exact|constructor-call-ownership]--> code:external_call:agents.Agent",
+    "asset:tool:administration_tool --IMPLEMENTED_BY[explicit/direct|exact|qualified-name-ownership]--> code:function:app.administration_tool",
+    "code:function:app.administration_tool --CALLS[explicit/direct|exact|qualified-name]--> code:function:helpers.fixed_status",
+    "code:function:helpers.fixed_status --CALLS[explicit/direct|exact|python-call-site]--> code:external_call:subprocess.run",
+    "code:function:helpers.fixed_status --RETURNS_TO[transitive/derived|exact|abstract-data-flow:return]--> code:function:app.administration_tool",
+    "code:module:app --CALLS[explicit/direct|exact|python-call-site]--> code:external_call:agents.Agent",
+    "code:module:app --DEFINES[explicit/direct|exact|python-symbol-index]--> code:function:app.administration_tool",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|inventory-discovery]--> asset:agent:operations-agent",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|inventory-discovery]--> asset:model:gpt-test",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|inventory-discovery]--> asset:tool:administration_tool",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|python-symbol-index]--> code:function:helpers.fixed_status",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|python-symbol-index]--> code:module:app",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|python-symbol-index]--> code:module:helpers"
+  ],
+  "attack_paths": []
+}

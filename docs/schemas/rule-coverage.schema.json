@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentguard.local/schemas/rule-coverage.json",
+  "title": "AgentGuard Rule Coverage and Quality Manifest",
+  "type": "object",
+  "required": ["catalog_source", "total_rules", "quality_status", "rules"],
+  "properties": {
+    "total_rules": {"const": 181},
+    "quality_status": {
+      "type": "object",
+      "required": ["milestone", "status", "schema", "validated_rules", "implementation_statuses", "note"],
+      "properties": {
+        "milestone": {"const": 4},
+        "status": {"enum": ["in_progress", "validated"]},
+        "schema": {"const": "agentguard-rule-quality/1.0"}
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 181,
+      "maxItems": 181,
+      "items": {"$ref": "#/$defs/ruleQuality"}
+    }
+  },
+  "$defs": {
+    "stringArray": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "ruleQuality": {
+      "type": "object",
+      "required": [
+        "rule_id", "name", "engine", "analysis_type", "implementation_tier",
+        "implementation_status", "analysis_engine", "languages", "frameworks_tested",
+        "positive_fixtures", "negative_fixtures", "expected_evidence_shape",
+        "known_limitations", "deterministic_status", "validation_tests"
+      ],
+      "properties": {
+        "implementation_status": {
+          "enum": ["validated", "partially_validated", "implemented_unvalidated", "requires_dedicated_detector", "network_conditional"]
+        },
+        "analysis_engine": {"type": "string", "minLength": 1},
+        "languages": {"$ref": "#/$defs/stringArray"},
+        "frameworks_tested": {"$ref": "#/$defs/stringArray"},
+        "positive_fixtures": {"$ref": "#/$defs/stringArray"},
+        "negative_fixtures": {"$ref": "#/$defs/stringArray"},
+        "expected_evidence_shape": {"$ref": "#/$defs/stringArray", "minItems": 1},
+        "known_limitations": {"type": "string", "minLength": 1},
+        "deterministic_status": {"enum": ["offline_deterministic", "network_conditional", "not_established"]},
+        "validation_tests": {"$ref": "#/$defs/stringArray"}
+      }
+    }
+  }
+}

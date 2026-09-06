@@ -5,18 +5,35 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
-from rich.console import Console
-from rich.table import Table
-
-from agentguard_core import ENGINE_VERSION, ScanRequest, generate_agent_bom, generate_cyclonedx, generate_provenance_graph, scan as core_scan
-from agentguard_core.exporters import csv_findings, findings_json, junit_xml, markdown_summary, result_json, sarif
+from agentguard_core import (
+    ENGINE_VERSION,
+    RuleQualityHarness,
+    ScanRequest,
+    generate_agent_bom,
+    generate_agent_bom_v2,
+    generate_cyclonedx,
+    generate_provenance_graph,
+)
+from agentguard_core import scan as core_scan
+from agentguard_core.exporters import (
+    csv_findings,
+    findings_json,
+    junit_xml,
+    markdown_summary,
+    result_json,
+    sarif,
+)
 from agentguard_core.reporting import detailed_html, summary_html
 from agentguard_core.rules import RuleStore
 from agentguard_core.scanner import bundled_rules_dir
+from rich.console import Console
+from rich.table import Table
 
 app = typer.Typer(help="AgentGuard CLI — local/CI adapter for AgentGuard Core", no_args_is_help=True)
 rules_app = typer.Typer(help="Rule catalog commands")
 app.add_typer(rules_app, name="rules")
+quality_app = typer.Typer(help="Scanner-quality manifest and regression evidence")
+app.add_typer(quality_app, name="quality")
 console = Console()
 
 FORMATS = {"json", "findings-json", "sarif", "csv", "junit", "html", "html-summary", "markdown", "aibom", "agent-bom", "graph"}
@@ -35,7 +52,9 @@ def scan(
     no_inventory: Annotated[bool, typer.Option("--no-inventory", help="Skip AI/Agent inventory discovery")] = False,
     no_tree_sitter: Annotated[bool, typer.Option("--no-tree-sitter", help="Disable optional JS/TS tree-sitter analyzer")] = False,
     no_skill_analysis: Annotated[bool, typer.Option("--no-skill-analysis", help="Disable native skill-security analysis")] = False,
-    network_enrichment: Annotated[bool, typer.Option("--network-enrichment", help="Enable OSV/package-maintenance lookups for supply-chain rules")] = False,
+    network_enrichment: Annotated[bool, typer.Option("--vuln-enrichment", "--network-enrichment", help="Enable optional OSV vulnerability and package-maintenance lookups")] = False,
+    vulnerability_cache: Annotated[Path | None, typer.Option("--vuln-cache", help="OSV cache JSON path; defaults to <repository>/.agentguard/cache/osv.json")] = None,
+    vulnerability_cache_ttl_hours: Annotated[float, typer.Option("--vuln-cache-ttl-hours", min=0, help="Reuse cached OSV responses for this many hours")] = 24.0,
     verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Print descriptions, remediation and evidence")] = False,
     quiet: Annotated[bool, typer.Option("--quiet", "-q", help="Suppress table output; useful in CI")] = False,
 ):
@@ -55,6 +74,8 @@ def scan(
         rule_ids=set(rule or []),
         include_skill_analysis=not no_skill_analysis,
         allow_network_enrichment=network_enrichment,
+        vulnerability_cache_path=vulnerability_cache,
+        vulnerability_cache_ttl_seconds=int(vulnerability_cache_ttl_hours * 3600),
     ))
 
     if not quiet:
@@ -72,10 +93,9 @@ def scan(
         if not quiet:
             console.print(f"[red]Policy gate failed:[/red] finding at or above {fail_on.lower()} severity")
         raise typer.Exit(1)
-    if result.errors:
-        # Analysis errors are visible in the canonical result; don't silently pass infrastructure failures.
-        if not quiet:
-            console.print(f"[yellow]Scan completed with {len(result.errors)} analyzer error(s).[/yellow]")
+    # Analysis errors are visible in the canonical result; don't silently pass infrastructure failures.
+    if result.errors and not quiet:
+        console.print(f"[yellow]Scan completed with {len(result.errors)} analyzer error(s).[/yellow]")
 
 
 @app.command()
@@ -102,17 +122,31 @@ def bom(
     path: Annotated[Path, typer.Argument()] = Path("."),
     kind: Annotated[str, typer.Option("--kind", help="aibom|agent-bom")] = "aibom",
     output: Annotated[Path | None, typer.Option("--output", "-o")] = None,
+    schema_version: Annotated[str, typer.Option("--schema-version", help="Agent BOM schema: 3.0 (default) or 2.0 compatibility")] = "3.0",
+    vulnerability_enrichment: Annotated[bool, typer.Option("--vuln-enrichment", help="Enable optional OSV vulnerability enrichment")] = False,
+    vulnerability_cache: Annotated[Path | None, typer.Option("--vuln-cache")] = None,
 ):
     """Generate an AI BOM (CycloneDX 1.7) or AgentGuard Agent BOM."""
-    result = core_scan(ScanRequest(path, include_inventory=True, rule_ids={"__inventory_only__"}))
+    if kind not in {"aibom", "agent-bom"}:
+        raise typer.BadParameter("--kind must be aibom or agent-bom")
+    if kind == "agent-bom" and schema_version not in {"2.0", "3.0"}:
+        raise typer.BadParameter("--schema-version must be 3.0 or 2.0")
+    # Agent BOM v3 includes static findings; interoperability AI BOM and the
+    # explicit v2 compatibility path preserve their inventory-only behavior.
+    inventory_only = kind == "aibom" or schema_version == "2.0"
+    result = core_scan(ScanRequest(
+        path,
+        include_inventory=True,
+        rule_ids={"__inventory_only__"} if inventory_only else set(),
+        allow_network_enrichment=vulnerability_enrichment,
+        vulnerability_cache_path=vulnerability_cache,
+    ))
     if kind == "aibom":
         data = generate_cyclonedx(result)
         output = output or Path("agentguard-aibom.cdx.json")
     elif kind == "agent-bom":
-        data = generate_agent_bom(result)
+        data = generate_agent_bom(result) if schema_version == "3.0" else generate_agent_bom_v2(result)
         output = output or Path("agentguard-agent-bom.json")
-    else:
-        raise typer.BadParameter("--kind must be aibom or agent-bom")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(data, indent=2), encoding="utf-8")
     console.print(output)
@@ -122,9 +156,16 @@ def bom(
 def graph(
     path: Annotated[Path, typer.Argument()] = Path("."),
     output: Annotated[Path, typer.Option("--output", "-o")] = Path("agentguard-provenance.json"),
+    vulnerability_enrichment: Annotated[bool, typer.Option("--vuln-enrichment", help="Enable optional OSV vulnerability enrichment")] = False,
+    vulnerability_cache: Annotated[Path | None, typer.Option("--vuln-cache")] = None,
 ):
     """Generate the UI/architecture provenance graph JSON contract."""
-    result = core_scan(ScanRequest(path, include_inventory=True))
+    result = core_scan(ScanRequest(
+        path,
+        include_inventory=True,
+        allow_network_enrichment=vulnerability_enrichment,
+        vulnerability_cache_path=vulnerability_cache,
+    ))
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(generate_provenance_graph(result), indent=2), encoding="utf-8")
     console.print(output)
@@ -133,6 +174,53 @@ def graph(
 @app.command()
 def version():
     console.print(f"AgentGuard CLI 0.4.0 · Core {ENGINE_VERSION}")
+
+
+def _quality_harness(coverage: Path) -> RuleQualityHarness:
+    try:
+        rules = RuleStore(bundled_rules_dir()).load()
+        return RuleQualityHarness.load(coverage, rules)
+    except (OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
+        raise typer.BadParameter(f"Unable to load quality manifest: {exc}") from exc
+
+
+@quality_app.command("validate")
+def quality_validate(
+    coverage: Annotated[Path, typer.Option("--coverage", help="Rule coverage/quality JSON manifest")] = Path("RULE_COVERAGE.json"),
+):
+    """Validate all catalog/quality records and referenced fixture files."""
+    harness = _quality_harness(coverage)
+    issues = harness.validate()
+    if issues:
+        for issue in issues:
+            console.print(f"[red]{issue.code}[/red] {issue.rule_id}: {issue.message}")
+        raise typer.Exit(2)
+    report = harness.report()
+    console.print(
+        f"[green]Valid quality manifest:[/green] {report['total_rules']} rules, "
+        f"{report['validated_rules']} fully fixture-validated"
+    )
+
+
+@quality_app.command("report")
+def quality_report(
+    coverage: Annotated[Path, typer.Option("--coverage", help="Rule coverage/quality JSON manifest")] = Path("RULE_COVERAGE.json"),
+    output: Annotated[Path | None, typer.Option("--output", "-o", help="Optional JSON report path")] = None,
+):
+    """Report validated rules and explicit detector-quality gaps."""
+    report = _quality_harness(coverage).report()
+    table = Table(title=f"AgentGuard rule quality · {report['total_rules']} rules")
+    table.add_column("Implementation status")
+    table.add_column("Rules", justify="right")
+    for status, count in report["implementation_statuses"].items():
+        table.add_row(status, str(count))
+    console.print(table)
+    console.print(f"Fixture-validated: {report['validated_rules']} ({report['validated_percent']}%)")
+    console.print(f"Manifest issues: {report['validation_issue_count']}")
+    if output:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(report, indent=2), encoding="utf-8")
+        console.print(output)
 
 
 @rules_app.command("list")

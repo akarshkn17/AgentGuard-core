@@ -1,0 +1,111 @@
+{
+  "schema": "agentguard-provenance-graph/1.0",
+  "summary": {
+    "attack_paths": 1,
+    "node_classes": {
+      "asset": 4,
+      "code": 7,
+      "security": 5
+    },
+    "relationship_types": {
+      "DEFINES": 7,
+      "AGENT_USES_MODEL": 1,
+      "USES_MODEL": 1,
+      "USES_TOOL": 1,
+      "CALLS": 4,
+      "PASSES_DATA_TO": 1,
+      "RETURNS_TO": 1,
+      "IMPLEMENTED_BY": 3,
+      "HAS_FINDING": 3,
+      "HAS_EVIDENCE": 1,
+      "OBSERVED_IN": 4,
+      "EVIDENCE_FLOW": 3
+    },
+    "relationship_evidence_types": {
+      "explicit/direct": 24,
+      "transitive/derived": 6
+    }
+  },
+  "nodes": [
+    "asset:agent:operations-agent",
+    "asset:model:gpt-test",
+    "asset:tool:administration_tool",
+    "code:external_call:agents.Agent",
+    "code:external_call:model.invoke",
+    "code:external_call:os.system",
+    "code:function:app.administration_tool",
+    "code:function:helpers.execute_command",
+    "code:module:app",
+    "code:module:helpers",
+    "evidence:propagator:assigned to command",
+    "evidence:propagator:parameter helpers.execute_command.command",
+    "evidence:sink:shell_execution",
+    "evidence:source:llm_output",
+    "finding:Code Execution:LLM or user input reaches shell command execution",
+    "repository:repository:<repository>"
+  ],
+  "edges": [
+    "asset:agent:operations-agent --AGENT_USES_MODEL[explicit/direct|exact|normalized-agent-model-relationship]--> asset:model:gpt-test",
+    "asset:agent:operations-agent --HAS_FINDING[transitive/derived|high|upstream-asset-propagation]--> finding:Code Execution:LLM or user input reaches shell command execution",
+    "asset:agent:operations-agent --IMPLEMENTED_BY[explicit/direct|exact|constructor-call-ownership]--> code:external_call:agents.Agent",
+    "asset:agent:operations-agent --USES_MODEL[explicit/direct|exact|resolved-ast-reference]--> asset:model:gpt-test",
+    "asset:agent:operations-agent --USES_TOOL[explicit/direct|exact|resolved-ast-reference]--> asset:tool:administration_tool",
+    "asset:model:gpt-test --IMPLEMENTED_BY[explicit/direct|exact|constructor-call-ownership]--> code:external_call:agents.Agent",
+    "asset:tool:administration_tool --HAS_FINDING[explicit/direct|exact|reverse-call-ownership]--> finding:Code Execution:LLM or user input reaches shell command execution",
+    "asset:tool:administration_tool --IMPLEMENTED_BY[explicit/direct|exact|qualified-name-ownership]--> code:function:app.administration_tool",
+    "code:function:app.administration_tool --CALLS[explicit/direct|exact|python-call-site]--> code:external_call:model.invoke",
+    "code:function:app.administration_tool --CALLS[explicit/direct|exact|qualified-name]--> code:function:helpers.execute_command",
+    "code:function:app.administration_tool --PASSES_DATA_TO[transitive/derived|exact|abstract-data-flow:argument-to-parameter]--> code:function:helpers.execute_command",
+    "code:function:helpers.execute_command --CALLS[explicit/direct|exact|python-call-site]--> code:external_call:os.system",
+    "code:function:helpers.execute_command --HAS_FINDING[explicit/direct|exact|finding-sink-symbol]--> finding:Code Execution:LLM or user input reaches shell command execution",
+    "code:function:helpers.execute_command --RETURNS_TO[transitive/derived|exact|abstract-data-flow:return]--> code:function:app.administration_tool",
+    "code:module:app --CALLS[explicit/direct|exact|python-call-site]--> code:external_call:agents.Agent",
+    "code:module:app --DEFINES[explicit/direct|exact|python-symbol-index]--> code:function:app.administration_tool",
+    "evidence:propagator:assigned to command --EVIDENCE_FLOW[transitive/derived|deterministic|ordered-analyzer-evidence]--> evidence:propagator:parameter helpers.execute_command.command",
+    "evidence:propagator:assigned to command --OBSERVED_IN[explicit/direct|exact|source-range-containment]--> code:function:app.administration_tool",
+    "evidence:propagator:parameter helpers.execute_command.command --EVIDENCE_FLOW[transitive/derived|deterministic|ordered-analyzer-evidence]--> evidence:sink:shell_execution",
+    "evidence:propagator:parameter helpers.execute_command.command --OBSERVED_IN[explicit/direct|exact|source-range-containment]--> code:function:helpers.execute_command",
+    "evidence:sink:shell_execution --OBSERVED_IN[explicit/direct|exact|source-range-containment]--> code:function:helpers.execute_command",
+    "evidence:source:llm_output --EVIDENCE_FLOW[transitive/derived|deterministic|ordered-analyzer-evidence]--> evidence:propagator:assigned to command",
+    "evidence:source:llm_output --OBSERVED_IN[explicit/direct|exact|source-range-containment]--> code:function:app.administration_tool",
+    "finding:Code Execution:LLM or user input reaches shell command execution --HAS_EVIDENCE[explicit/direct|exact|finding-evidence-chain]--> evidence:source:llm_output",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|inventory-discovery]--> asset:agent:operations-agent",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|inventory-discovery]--> asset:model:gpt-test",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|inventory-discovery]--> asset:tool:administration_tool",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|python-symbol-index]--> code:function:helpers.execute_command",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|python-symbol-index]--> code:module:app",
+    "repository:repository:<repository> --DEFINES[explicit/direct|exact|python-symbol-index]--> code:module:helpers"
+  ],
+  "attack_paths": [
+    {
+      "rule_id": "AIR-EXEC-001",
+      "nodes": [
+        "asset:agent:operations-agent",
+        "asset:tool:administration_tool",
+        "code:function:app.administration_tool",
+        "code:function:helpers.execute_command",
+        "finding:Code Execution:LLM or user input reaches shell command execution",
+        "evidence:source:llm_output",
+        "evidence:propagator:assigned to command",
+        "evidence:propagator:parameter helpers.execute_command.command",
+        "evidence:sink:shell_execution"
+      ],
+      "relations": [
+        "USES_TOOL",
+        "IMPLEMENTED_BY",
+        "CALLS",
+        "HAS_FINDING",
+        "HAS_EVIDENCE",
+        "EVIDENCE_FLOW",
+        "EVIDENCE_FLOW",
+        "EVIDENCE_FLOW"
+      ],
+      "direct_asset_types": [
+        "tool"
+      ],
+      "transitive_asset_types": [
+        "agent"
+      ]
+    }
+  ]
+}

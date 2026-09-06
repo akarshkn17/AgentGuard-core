@@ -1,0 +1,374 @@
+{
+  "schema": "agentguard-agent-bom/3.0",
+  "summary": {
+    "agents": 1,
+    "models": 7,
+    "tools": 1,
+    "skills": 0,
+    "mcp_components": 0,
+    "data_retrieval_assets": 0,
+    "memory_assets": 0,
+    "packages": 8,
+    "vulnerabilities": 0,
+    "static_findings": 0,
+    "assets": 21,
+    "relationships": 18,
+    "asset_types": {
+      "tool": 1,
+      "model": 7,
+      "llm_endpoint": 2,
+      "agent": 1,
+      "provider": 2,
+      "package": 8
+    }
+  },
+  "models": [
+    {
+      "model_id": "MODEL-7ee52b9b6c13102a",
+      "provider": "anthropic",
+      "identifier": "claude-3-7-sonnet",
+      "revision": "",
+      "configuration_source": "api_call:literal",
+      "framework_package_version": ""
+    },
+    {
+      "model_id": "MODEL-2bc81691c36fb41f",
+      "provider": "aws-bedrock",
+      "identifier": "anthropic.claude-v2",
+      "revision": "",
+      "configuration_source": "api_call:literal",
+      "framework_package_version": ""
+    },
+    {
+      "model_id": "MODEL-59b0c6d0a0643e6f",
+      "provider": "azure-openai",
+      "identifier": "customer-chat",
+      "revision": "",
+      "configuration_source": "literal",
+      "framework_package_version": ""
+    },
+    {
+      "model_id": "MODEL-5c47da7e84a86731",
+      "provider": "google",
+      "identifier": "gemini-2.0-flash",
+      "revision": "",
+      "configuration_source": "literal",
+      "framework_package_version": ""
+    },
+    {
+      "model_id": "MODEL-46665678f3713707",
+      "provider": "huggingface",
+      "identifier": "acme/support-model",
+      "revision": "4f01c2a",
+      "configuration_source": "literal",
+      "framework_package_version": "4.46.2"
+    },
+    {
+      "model_id": "MODEL-742ef0e4ee5fd4d7",
+      "provider": "openai",
+      "identifier": "gpt-4.1-mini",
+      "revision": "",
+      "configuration_source": "api_call:literal",
+      "framework_package_version": ""
+    },
+    {
+      "model_id": "MODEL-84ee78a7ad0bea8f",
+      "provider": "openai",
+      "identifier": "gpt-4o-mini",
+      "revision": "",
+      "configuration_source": "environment_default",
+      "framework_package_version": "0.3.1"
+    }
+  ],
+  "packages": [
+    {
+      "package_id": "PKG-234BA092ED42215A6C7C",
+      "purl": "pkg:npm/accepts@1.3.8",
+      "dependency_type": "transitive",
+      "dependency_path": [
+        "PKG-EC69430FEF8C9A6BFA74",
+        "PKG-234BA092ED42215A6C7C"
+      ]
+    },
+    {
+      "package_id": "PKG-EC69430FEF8C9A6BFA74",
+      "purl": "pkg:npm/express@4.21.1",
+      "dependency_type": "direct",
+      "dependency_path": [
+        "PKG-EC69430FEF8C9A6BFA74"
+      ]
+    },
+    {
+      "package_id": "PKG-26E60A64DD750A5C5A8A",
+      "purl": "pkg:pypi/httpx@0.27.2",
+      "dependency_type": "transitive",
+      "dependency_path": [
+        "PKG-1A044D1CE34042A49940",
+        "PKG-9604D26D909BAD2E4867",
+        "PKG-26E60A64DD750A5C5A8A"
+      ]
+    },
+    {
+      "package_id": "PKG-BFA69E9405225F11B177",
+      "purl": "pkg:pypi/huggingface-hub@0.26.2",
+      "dependency_type": "transitive",
+      "dependency_path": [
+        "PKG-63C650F39DE57D67F362",
+        "PKG-BFA69E9405225F11B177"
+      ]
+    },
+    {
+      "package_id": "PKG-1A044D1CE34042A49940",
+      "purl": "pkg:pypi/langchain-openai@0.3.1",
+      "dependency_type": "direct",
+      "dependency_path": [
+        "PKG-1A044D1CE34042A49940"
+      ]
+    },
+    {
+      "package_id": "PKG-9604D26D909BAD2E4867",
+      "purl": "pkg:pypi/openai@1.55.0",
+      "dependency_type": "transitive",
+      "dependency_path": [
+        "PKG-1A044D1CE34042A49940",
+        "PKG-9604D26D909BAD2E4867"
+      ]
+    },
+    {
+      "package_id": "PKG-604E6F52D71273CD219B",
+      "purl": "pkg:pypi/requests@2.32.3",
+      "dependency_type": "direct",
+      "dependency_path": [
+        "PKG-604E6F52D71273CD219B"
+      ]
+    },
+    {
+      "package_id": "PKG-63C650F39DE57D67F362",
+      "purl": "pkg:pypi/transformers@4.46.2",
+      "dependency_type": "direct",
+      "dependency_path": [
+        "PKG-63C650F39DE57D67F362"
+      ]
+    }
+  ],
+  "relationships": [
+    [
+      "AGENT-bd51a650ee97818c",
+      "AGENT_USES_MODEL",
+      "MODEL-84ee78a7ad0bea8f"
+    ],
+    [
+      "AGENT-bd51a650ee97818c",
+      "USES_MODEL",
+      "MODEL-84ee78a7ad0bea8f"
+    ],
+    [
+      "AGENT-bd51a650ee97818c",
+      "USES_TOOL",
+      "TOOL-c1d5bf12323e0e9b"
+    ],
+    [
+      "MODEL-46665678f3713707",
+      "MODEL_IMPLEMENTED_WITH_PACKAGE",
+      "PKG-63C650F39DE57D67F362"
+    ],
+    [
+      "MODEL-59b0c6d0a0643e6f",
+      "MODEL_ACCESSED_VIA",
+      "LLM_ENDPOINT-58eec06f2f00178b"
+    ],
+    [
+      "MODEL-59b0c6d0a0643e6f",
+      "USES_LLM_ENDPOINT",
+      "LLM_ENDPOINT-58eec06f2f00178b"
+    ],
+    [
+      "MODEL-84ee78a7ad0bea8f",
+      "MODEL_ACCESSED_VIA",
+      "LLM_ENDPOINT-e89f3f57fd38583e"
+    ],
+    [
+      "MODEL-84ee78a7ad0bea8f",
+      "MODEL_IMPLEMENTED_WITH_PACKAGE",
+      "PKG-1A044D1CE34042A49940"
+    ],
+    [
+      "MODEL-84ee78a7ad0bea8f",
+      "USES_LLM_ENDPOINT",
+      "LLM_ENDPOINT-e89f3f57fd38583e"
+    ],
+    [
+      "PKG-1A044D1CE34042A49940",
+      "DEPENDS_ON",
+      "PKG-9604D26D909BAD2E4867"
+    ],
+    [
+      "PKG-63C650F39DE57D67F362",
+      "DEPENDS_ON",
+      "PKG-BFA69E9405225F11B177"
+    ],
+    [
+      "PKG-9604D26D909BAD2E4867",
+      "DEPENDS_ON",
+      "PKG-26E60A64DD750A5C5A8A"
+    ],
+    [
+      "PKG-EC69430FEF8C9A6BFA74",
+      "DEPENDS_ON",
+      "PKG-234BA092ED42215A6C7C"
+    ],
+    [
+      "SYM-00EB97798490869FEF7E",
+      "IMPORTS_PACKAGE",
+      "PKG-9604D26D909BAD2E4867"
+    ],
+    [
+      "SYM-7B257F8BC414F63E876B",
+      "IMPORTS_PACKAGE",
+      "PKG-1A044D1CE34042A49940"
+    ],
+    [
+      "SYM-7B257F8BC414F63E876B",
+      "IMPORTS_PACKAGE",
+      "PKG-63C650F39DE57D67F362"
+    ],
+    [
+      "TOOL-c1d5bf12323e0e9b",
+      "TOOL_USES_MODEL",
+      "MODEL-84ee78a7ad0bea8f"
+    ],
+    [
+      "TOOL-c1d5bf12323e0e9b",
+      "USES_MODEL",
+      "MODEL-84ee78a7ad0bea8f"
+    ]
+  ],
+  "versions": [
+    [
+      "AGENT-bd51a650ee97818c",
+      "AGV-A9B864A4B8A23D82ADFB",
+      "1.0.0",
+      "declared"
+    ],
+    [
+      "LLM_ENDPOINT-58eec06f2f00178b",
+      "AGV-237E9A9ADB388433A2D5",
+      "rev-e87959d9dc9b",
+      "content-digest"
+    ],
+    [
+      "LLM_ENDPOINT-e89f3f57fd38583e",
+      "AGV-174A6033276427F91E67",
+      "rev-0a8588be33f4",
+      "content-digest"
+    ],
+    [
+      "MODEL-2bc81691c36fb41f",
+      "AGV-6326289056A37756E523",
+      "unknown",
+      "unknown"
+    ],
+    [
+      "MODEL-46665678f3713707",
+      "AGV-FFEDDD7BF240776F53FE",
+      "4f01c2a",
+      "declared"
+    ],
+    [
+      "MODEL-59b0c6d0a0643e6f",
+      "AGV-EAD1E12CBF66D9E5719C",
+      "unknown",
+      "unknown"
+    ],
+    [
+      "MODEL-5c47da7e84a86731",
+      "AGV-F678B94238911D8E53B8",
+      "unknown",
+      "unknown"
+    ],
+    [
+      "MODEL-742ef0e4ee5fd4d7",
+      "AGV-D350C617F87B3FCED94F",
+      "unknown",
+      "unknown"
+    ],
+    [
+      "MODEL-7ee52b9b6c13102a",
+      "AGV-722D50E7FA985041B007",
+      "unknown",
+      "unknown"
+    ],
+    [
+      "MODEL-84ee78a7ad0bea8f",
+      "AGV-C94F7EC059EEC32C14E1",
+      "unknown",
+      "unknown"
+    ],
+    [
+      "PKG-1A044D1CE34042A49940",
+      "AGV-8BEDE1549A328EBAEEDB",
+      "0.3.1",
+      "resolved-package"
+    ],
+    [
+      "PKG-234BA092ED42215A6C7C",
+      "AGV-23C6DA2316205CD9D7BE",
+      "1.3.8",
+      "resolved-package"
+    ],
+    [
+      "PKG-26E60A64DD750A5C5A8A",
+      "AGV-AA211FFACA0728761120",
+      "0.27.2",
+      "resolved-package"
+    ],
+    [
+      "PKG-604E6F52D71273CD219B",
+      "AGV-D645DB54FE0B085C4066",
+      "2.32.3",
+      "resolved-package"
+    ],
+    [
+      "PKG-63C650F39DE57D67F362",
+      "AGV-82D6DC2FC5E57214F168",
+      "4.46.2",
+      "resolved-package"
+    ],
+    [
+      "PKG-9604D26D909BAD2E4867",
+      "AGV-9A57995078630D9F96C6",
+      "1.55.0",
+      "resolved-package"
+    ],
+    [
+      "PKG-BFA69E9405225F11B177",
+      "AGV-1A6A07F62C5DE3ABCDD7",
+      "0.26.2",
+      "resolved-package"
+    ],
+    [
+      "PKG-EC69430FEF8C9A6BFA74",
+      "AGV-3464B945A06A7D6F9C0B",
+      "4.21.1",
+      "resolved-package"
+    ],
+    [
+      "PROVIDER-15402e87b51bf585",
+      "AGV-ED0A56A7EAB941BB80D2",
+      "rev-decc93bcdb6e",
+      "content-digest"
+    ],
+    [
+      "PROVIDER-fd720e941ab2732a",
+      "AGV-2713374792E5E309E1A6",
+      "rev-6d6433976818",
+      "content-digest"
+    ],
+    [
+      "TOOL-c1d5bf12323e0e9b",
+      "AGV-B9BC3E8DD0B2D9BF0BE0",
+      "1.0.0",
+      "declared"
+    ]
+  ]
+}

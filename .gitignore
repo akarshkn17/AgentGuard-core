@@ -7,3 +7,5 @@ build/
 dist/
 agentguard-results/
 _smoke-results/
+m3-results/
+/agentguard-provenance.json

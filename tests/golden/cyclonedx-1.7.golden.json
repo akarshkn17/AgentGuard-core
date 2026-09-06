@@ -1,0 +1,259 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.7",
+  "components": [
+    {
+      "bom-ref": "AGENT-bd51a650ee97818c",
+      "type": "application",
+      "name": "support-agent",
+      "version": "1.0.0",
+      "purl": ""
+    },
+    {
+      "bom-ref": "LLM_ENDPOINT-58eec06f2f00178b",
+      "type": "application",
+      "name": "https://customer.openai.azure.com",
+      "version": "rev-e87959d9dc9b",
+      "purl": ""
+    },
+    {
+      "bom-ref": "LLM_ENDPOINT-e89f3f57fd38583e",
+      "type": "application",
+      "name": "https://models.example.test/v1",
+      "version": "rev-0a8588be33f4",
+      "purl": ""
+    },
+    {
+      "bom-ref": "MODEL-2bc81691c36fb41f",
+      "type": "machine-learning-model",
+      "name": "anthropic.claude-v2",
+      "version": "unknown",
+      "purl": ""
+    },
+    {
+      "bom-ref": "MODEL-46665678f3713707",
+      "type": "machine-learning-model",
+      "name": "acme/support-model",
+      "version": "4f01c2a",
+      "purl": ""
+    },
+    {
+      "bom-ref": "MODEL-59b0c6d0a0643e6f",
+      "type": "machine-learning-model",
+      "name": "customer-chat",
+      "version": "unknown",
+      "purl": ""
+    },
+    {
+      "bom-ref": "MODEL-5c47da7e84a86731",
+      "type": "machine-learning-model",
+      "name": "gemini-2.0-flash",
+      "version": "unknown",
+      "purl": ""
+    },
+    {
+      "bom-ref": "MODEL-742ef0e4ee5fd4d7",
+      "type": "machine-learning-model",
+      "name": "gpt-4.1-mini",
+      "version": "unknown",
+      "purl": ""
+    },
+    {
+      "bom-ref": "MODEL-7ee52b9b6c13102a",
+      "type": "machine-learning-model",
+      "name": "claude-3-7-sonnet",
+      "version": "unknown",
+      "purl": ""
+    },
+    {
+      "bom-ref": "MODEL-84ee78a7ad0bea8f",
+      "type": "machine-learning-model",
+      "name": "gpt-4o-mini",
+      "version": "unknown",
+      "purl": ""
+    },
+    {
+      "bom-ref": "PKG-1A044D1CE34042A49940",
+      "type": "library",
+      "name": "langchain-openai",
+      "version": "0.3.1",
+      "purl": "pkg:pypi/langchain-openai@0.3.1"
+    },
+    {
+      "bom-ref": "PKG-234BA092ED42215A6C7C",
+      "type": "library",
+      "name": "accepts",
+      "version": "1.3.8",
+      "purl": "pkg:npm/accepts@1.3.8"
+    },
+    {
+      "bom-ref": "PKG-26E60A64DD750A5C5A8A",
+      "type": "library",
+      "name": "httpx",
+      "version": "0.27.2",
+      "purl": "pkg:pypi/httpx@0.27.2"
+    },
+    {
+      "bom-ref": "PKG-604E6F52D71273CD219B",
+      "type": "library",
+      "name": "requests",
+      "version": "2.32.3",
+      "purl": "pkg:pypi/requests@2.32.3"
+    },
+    {
+      "bom-ref": "PKG-63C650F39DE57D67F362",
+      "type": "library",
+      "name": "transformers",
+      "version": "4.46.2",
+      "purl": "pkg:pypi/transformers@4.46.2"
+    },
+    {
+      "bom-ref": "PKG-9604D26D909BAD2E4867",
+      "type": "library",
+      "name": "openai",
+      "version": "1.55.0",
+      "purl": "pkg:pypi/openai@1.55.0"
+    },
+    {
+      "bom-ref": "PKG-BFA69E9405225F11B177",
+      "type": "library",
+      "name": "huggingface-hub",
+      "version": "0.26.2",
+      "purl": "pkg:pypi/huggingface-hub@0.26.2"
+    },
+    {
+      "bom-ref": "PKG-EC69430FEF8C9A6BFA74",
+      "type": "library",
+      "name": "express",
+      "version": "4.21.1",
+      "purl": "pkg:npm/express@4.21.1"
+    },
+    {
+      "bom-ref": "PROVIDER-15402e87b51bf585",
+      "type": "application",
+      "name": "Anthropic",
+      "version": "rev-decc93bcdb6e",
+      "purl": ""
+    },
+    {
+      "bom-ref": "PROVIDER-fd720e941ab2732a",
+      "type": "application",
+      "name": "OpenAI",
+      "version": "rev-6d6433976818",
+      "purl": ""
+    },
+    {
+      "bom-ref": "TOOL-c1d5bf12323e0e9b",
+      "type": "library",
+      "name": "classify",
+      "version": "1.0.0",
+      "purl": ""
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "AGENT-bd51a650ee97818c",
+      "dependsOn": [
+        "MODEL-84ee78a7ad0bea8f",
+        "TOOL-c1d5bf12323e0e9b"
+      ]
+    },
+    {
+      "ref": "LLM_ENDPOINT-58eec06f2f00178b",
+      "dependsOn": []
+    },
+    {
+      "ref": "LLM_ENDPOINT-e89f3f57fd38583e",
+      "dependsOn": []
+    },
+    {
+      "ref": "MODEL-2bc81691c36fb41f",
+      "dependsOn": []
+    },
+    {
+      "ref": "MODEL-46665678f3713707",
+      "dependsOn": [
+        "PKG-63C650F39DE57D67F362"
+      ]
+    },
+    {
+      "ref": "MODEL-59b0c6d0a0643e6f",
+      "dependsOn": [
+        "LLM_ENDPOINT-58eec06f2f00178b"
+      ]
+    },
+    {
+      "ref": "MODEL-5c47da7e84a86731",
+      "dependsOn": []
+    },
+    {
+      "ref": "MODEL-742ef0e4ee5fd4d7",
+      "dependsOn": []
+    },
+    {
+      "ref": "MODEL-7ee52b9b6c13102a",
+      "dependsOn": []
+    },
+    {
+      "ref": "MODEL-84ee78a7ad0bea8f",
+      "dependsOn": [
+        "LLM_ENDPOINT-e89f3f57fd38583e",
+        "PKG-1A044D1CE34042A49940"
+      ]
+    },
+    {
+      "ref": "PKG-1A044D1CE34042A49940",
+      "dependsOn": [
+        "PKG-9604D26D909BAD2E4867"
+      ]
+    },
+    {
+      "ref": "PKG-234BA092ED42215A6C7C",
+      "dependsOn": []
+    },
+    {
+      "ref": "PKG-26E60A64DD750A5C5A8A",
+      "dependsOn": []
+    },
+    {
+      "ref": "PKG-604E6F52D71273CD219B",
+      "dependsOn": []
+    },
+    {
+      "ref": "PKG-63C650F39DE57D67F362",
+      "dependsOn": [
+        "PKG-BFA69E9405225F11B177"
+      ]
+    },
+    {
+      "ref": "PKG-9604D26D909BAD2E4867",
+      "dependsOn": [
+        "PKG-26E60A64DD750A5C5A8A"
+      ]
+    },
+    {
+      "ref": "PKG-BFA69E9405225F11B177",
+      "dependsOn": []
+    },
+    {
+      "ref": "PKG-EC69430FEF8C9A6BFA74",
+      "dependsOn": [
+        "PKG-234BA092ED42215A6C7C"
+      ]
+    },
+    {
+      "ref": "PROVIDER-15402e87b51bf585",
+      "dependsOn": []
+    },
+    {
+      "ref": "PROVIDER-fd720e941ab2732a",
+      "dependsOn": []
+    },
+    {
+      "ref": "TOOL-c1d5bf12323e0e9b",
+      "dependsOn": [
+        "MODEL-84ee78a7ad0bea8f"
+      ]
+    }
+  ]
+}

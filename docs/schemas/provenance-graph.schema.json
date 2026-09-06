@@ -3,35 +3,108 @@
   "$id": "https://agentguard.local/schemas/provenance-graph-1.0.json",
   "title": "AgentGuard Provenance Graph",
   "type": "object",
-  "required": ["schema", "scan", "summary", "nodes", "edges", "attack_paths"],
+  "required": ["schema", "scan", "summary", "nodes", "edges", "attack_paths", "ui_hints"],
   "properties": {
     "schema": {"const": "agentguard-provenance-graph/1.0"},
-    "scan": {"type": "object"},
-    "summary": {"type": "object"},
-    "nodes": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["id", "kind", "subtype", "label", "source", "risk", "attributes"],
-        "properties": {
-          "id": {"type": "string"},
-          "kind": {"enum": ["repository", "asset", "finding", "evidence"]},
-          "subtype": {"type": "string"},
-          "label": {"type": "string"},
-          "source": {"type": "object"},
-          "risk": {"type": "object"},
-          "attributes": {"type": "object"}
-        }
+    "scan": {
+      "type": "object",
+      "required": ["scan_id", "repository", "git_commit", "git_branch"],
+      "properties": {
+        "scan_id": {"type": "string"},
+        "repository": {"type": "string"},
+        "repository_node_id": {"type": "string", "pattern": "^REPO-"},
+        "git_commit": {"type": "string"},
+        "git_branch": {"type": "string"}
       }
     },
-    "edges": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["id", "source", "target", "relation", "directed", "evidence", "finding_ids", "attributes"]
+    "summary": {
+      "type": "object",
+      "required": ["nodes", "edges", "attack_paths", "asset_types", "relationship_types"],
+      "properties": {
+        "nodes": {"type": "integer", "minimum": 1},
+        "edges": {"type": "integer", "minimum": 0},
+        "attack_paths": {"type": "integer", "minimum": 0},
+        "asset_types": {"type": "object"},
+        "node_classes": {"type": "object"},
+        "relationship_types": {"type": "object"},
+        "relationship_evidence_types": {"type": "object"}
       }
     },
-    "attack_paths": {"type": "array", "items": {"type": "object"}},
+    "nodes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/node"}},
+    "edges": {"type": "array", "items": {"$ref": "#/$defs/edge"}},
+    "attack_paths": {"type": "array", "items": {"$ref": "#/$defs/attackPath"}},
     "ui_hints": {"type": "object"}
+  },
+  "$defs": {
+    "sourceEvidence": {
+      "type": "object",
+      "properties": {
+        "file": {"type": "string"},
+        "line": {"type": "integer", "minimum": 1},
+        "column": {"type": "integer", "minimum": 0},
+        "symbol": {"type": "string"},
+        "detail": {"type": "string"},
+        "edge_id": {"type": "string"}
+      },
+      "anyOf": [
+        {"required": ["file", "line"]},
+        {"required": ["edge_id"]},
+        {"required": ["detail"]}
+      ]
+    },
+    "node": {
+      "type": "object",
+      "required": ["id", "kind", "subtype", "label", "source", "risk", "attributes"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["repository", "asset", "code", "finding", "evidence"]},
+        "node_class": {"enum": ["asset", "code", "security", "supply_chain"]},
+        "subtype": {"type": "string", "minLength": 1},
+        "label": {"type": "string"},
+        "source": {"type": "object"},
+        "risk": {"type": "object"},
+        "attributes": {"type": "object"}
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": ["id", "source", "target", "relation", "directed", "evidence", "finding_ids", "attributes"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^EDGE-"},
+        "source": {"type": "string", "minLength": 1},
+        "target": {"type": "string", "minLength": 1},
+        "relation": {"type": "string", "minLength": 1},
+        "directed": {"const": true},
+        "relationship_type": {"enum": ["explicit/direct", "inferred", "transitive/derived"]},
+        "confidence": {"enum": ["deterministic", "exact", "high", "medium", "low", "unresolved"]},
+        "derivation_method": {"type": "string", "minLength": 1},
+        "source_evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceEvidence"}},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/sourceEvidence"}},
+        "finding_ids": {"type": "array", "items": {"type": "string"}},
+        "attributes": {"type": "object"}
+      }
+    },
+    "attackPath": {
+      "type": "object",
+      "required": ["path_id", "finding_id", "rule_id", "severity", "title", "entry_node_id", "impact_node_id", "asset_node_id", "node_ids", "edge_ids", "explanation", "remediation"],
+      "properties": {
+        "path_id": {"type": "string", "pattern": "^PATH-"},
+        "finding_id": {"type": "string"},
+        "rule_id": {"type": "string"},
+        "severity": {"type": "string"},
+        "title": {"type": "string"},
+        "entry_node_id": {"type": "string"},
+        "impact_node_id": {"type": "string"},
+        "asset_node_id": {"type": "string"},
+        "directly_affected_assets": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "transitively_affected_assets": {"type": "array", "items": {"type": "string"}},
+        "node_ids": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+        "edge_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "evidence_node_ids": {"type": "array", "items": {"type": "string"}},
+        "attribution": {"type": "object"},
+        "explanation": {"type": "string"},
+        "remediation": {"type": "array", "items": {"type": "string"}}
+      }
+    }
   }
 }

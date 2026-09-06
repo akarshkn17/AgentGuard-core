@@ -1,6 +1,6 @@
 # AgentGuard v0.4.0 Build Validation
 
-Validated in the build environment on September 6, 2026.
+Validated in the build environment through September 7, 2026.
 
 ## Milestone 1 code intelligence
 
@@ -19,6 +19,74 @@ Validated analysis behavior includes:
 - parse failures surfaced once through `ScanResult.errors`.
 
 Durable vulnerable, safe and edge fixtures are under `tests/fixtures/code_intelligence/`.
+
+## Milestone 2 evidence-backed provenance
+
+Core now builds explicit asset, code, security and supply-chain nodes from inventory plus the shared code-intelligence session. Generated relationships contain source evidence, confidence, derivation method and an `explicit/direct`, `inferred`, or `transitive/derived` classification.
+
+Validated provenance behavior includes:
+
+- evidence/symbol/ownership/call-graph finding attribution without nearest-line ownership guessing;
+- separate `directly_affected_assets` and `transitively_affected_assets`;
+- cross-file tool ownership and upstream agent impact;
+- inferred call edges retaining medium confidence and `unique-suffix` derivation;
+- modules, functions and relevant external-call code nodes;
+- ordered source/propagator/sink evidence nodes;
+- attack paths whose node pairs are connected by the returned edge IDs;
+- vulnerable and safe golden semantic projections;
+- Draft 2020-12 validation for newly generated graphs and compatibility with the earlier graph 1.0 sample.
+
+Durable fixtures are under `tests/fixtures/provenance/`. See `docs/PROVENANCE_MILESTONE_2.md`.
+
+## Milestone 3 Agent BOM and supply-chain inventory
+
+Core now emits `agentguard-agent-bom/3.0` by default while retaining `generate_agent_bom_v2()` and CLI `--schema-version 2.0` as an explicit compatibility path. `ScanResult 1.2` is extended additively with normalized model, package, and vulnerability collections.
+
+Validated behavior includes:
+
+- LangChain/LangGraph, OpenAI, Azure OpenAI, Anthropic, Bedrock, Google Vertex/Gemini, and Hugging Face model patterns;
+- model identifier, revision, deployment, endpoint, framework package version, repository revision, and content revision kept independent;
+- resolvable environment defaults and static model parameters with configuration provenance;
+- requirements, PEP 621/Poetry, Poetry/uv/Pipenv lock, package.json, npm/Yarn/pnpm lock discovery;
+- exact lockfile versions preferred over loose constraints, PyPI/npm PURLs, direct/transitive status, licenses, source evidence, dependency paths, and `DEPENDS_ON` edges;
+- provider-neutral vulnerability records, batched OSV PURL queries, timestamped atomic cache, and an offline default;
+- separate package-presence, affected-version, reachability, and exploitability status without unsupported exploitability claims;
+- connected package/model/vulnerability provenance paths over emitted relationships;
+- Agent BOM v3 Draft 2020-12 schema validation;
+- CycloneDX 1.7 packages, ML models, dependency graph, and vulnerability `affects` references validated by the official CycloneDX Python validator.
+
+Durable fixtures are under `tests/fixtures/milestone3/`; focused tests are in `tests/test_milestone3.py`. See `docs/AI_AGENT_BOM_V3.md`.
+
+## Milestone 4 scanner-quality harness
+
+Every rule in `RULE_COVERAGE.json` now tracks implementation status, analysis engine, languages, tested frameworks, positive fixtures, false-positive-oriented negative fixtures, expected evidence shape, known limitations, deterministic status, and named regression tests.
+
+Validated behavior includes:
+
+- Draft 2020-12 schema validation for exactly 181 rule-quality records;
+- catalog engine/analysis parity and unique/missing record detection;
+- fixture/test path and named test-anchor validation;
+- rejection of unsupported `validated` claims;
+- explicit quality-gap reporting instead of treating analyzer routing as proof;
+- false-positive-oriented safe skill fixtures alongside positive fixtures;
+- repeat-scan finding fingerprint, entity ID, and version ID stability;
+- Agent BOM v3 and CycloneDX semantic golden snapshots;
+- official CycloneDX 1.7 strict validation;
+- connected attack-path regression and visible analysis-error behavior;
+- a complete-offline performance benchmark that does not disable normal analysis.
+
+Quality status at this gate:
+
+```text
+validated                         8
+partially_validated               1
+implemented_unvalidated         135
+requires_dedicated_detector      35
+network_conditional               2
+manifest validation issues        0
+```
+
+See `docs/MILESTONE_4_SCANNER_QUALITY.md`.
 
 ## Catalog validation
 
@@ -59,7 +127,7 @@ All catalog rules are present; the tier field prevents catalog presence from bei
 ## Source tests
 
 ```text
-18 passed in 10.11s
+40 passed in 51.88s
 ```
 
 Coverage exercised:
@@ -68,7 +136,7 @@ Coverage exercised:
 - source→sink/interprocedural finding enrichment;
 - internal `agentguard-skill` findings without external SkillSpector;
 - JSON/SARIF/CSV/JUnit/HTML exporters;
-- CycloneDX AI BOM and Agent BOM v2;
+- CycloneDX 1.7 AI BOM, Agent BOM v3, and explicit Agent BOM v2 compatibility;
 - stable entity identity vs separate version identity;
 - agent-card version discovery and framework-version separation;
 - provenance graph nodes, relationships, findings, evidence and attack paths.
@@ -78,6 +146,20 @@ Coverage exercised:
 - safe allowlist, numeric conversion and clean container-entry cases;
 - partial/fake sanitizer and bounded-recursion edge cases;
 - representative pre/post-refactor finding-ID parity.
+- evidence-backed direct/transitive finding attribution;
+- explicit, inferred and derived relationship provenance;
+- connected cross-file attack paths and ordered evidence chains;
+- provenance golden snapshots and JSON Schema compatibility.
+- multi-provider model detection and identifier/revision/configuration-source separation;
+- Python/npm manifests and lockfile resolution with direct/transitive dependency paths;
+- optional OSV batch/cache normalization with offline and unresolved-version negative tests;
+- known-vulnerability provenance whose ordered node pairs are connected by returned edge IDs;
+- Agent BOM v3 and provenance JSON Schema validation;
+- official CycloneDX 1.7 strict validation, including package PURL/model/dependency/vulnerability semantics.
+- all 181 per-rule quality records and rejection of unproven validated claims;
+- false-positive-oriented native skill regressions;
+- deterministic Agent BOM/CycloneDX snapshots and identity IDs;
+- complete-offline performance and explicit analyzer-error status.
 
 ## Built wheels
 
@@ -86,7 +168,7 @@ dist/agentguard_core-0.4.0-py3-none-any.whl
 dist/agentguard_cli-0.4.0-py3-none-any.whl
 ```
 
-Core wheel inspection confirms bundled catalog/runtime assets:
+Core wheel inspection confirms bundled catalog/runtime assets and Milestone 3 modules:
 
 - `agentguard_core/rules/builtin/native_catalog.yaml`
 - `agentguard_core/rules/builtin/skill_catalog.yaml`
@@ -94,39 +176,84 @@ Core wheel inspection confirms bundled catalog/runtime assets:
 - `agentguard_core/skill_analyzer.py`
 - `agentguard_core/provenance.py`
 - `agentguard_core/bom.py`
+- `agentguard_core/bom_models.py`
+- `agentguard_core/model_inventory.py`
+- `agentguard_core/package_inventory.py`
+- `agentguard_core/vulnerabilities.py`
+- `agentguard_core/quality.py`
 
-## Installed-wheel smoke test
+## Fresh-wheel smoke test
 
-The installed v0.4 wheel pair scanned `examples/multi_agent_demo`:
+Both wheels were rebuilt from the Milestone 4 source and installed over the editable packages with dependencies held constant. The installed CLI validated the catalog and quality manifest; the Core wheel exposed `RuleQualityHarness`:
 
 ```text
 AgentGuard CLI 0.4.0 · Core 0.4.0
 Valid: 181 rules
+Valid quality manifest: 181 rules, 8 fully fixture-validated
+RuleQualityHarness
+```
+
+The editable development packages were restored after the wheel smoke test.
+
+## Representative Milestone 2 graph
+
+The complete catalog scan of `examples/multi_agent_demo` produced:
+
+```text
 status: completed
 findings: 10
 inventory assets: 11
-relationships: 5
+inventory relationships: 5
 analyzer errors: 0
-Agent BOM schema: agentguard-agent-bom/2.0
-agents: 1
-provenance nodes: 37
-provenance edges: 41
+provenance nodes: 44
+provenance edges: 83
 attack paths: 10
+node classes: asset 8, supply_chain 4, code 7, security 25
+edge natures: explicit/direct 70, transitive/derived 13
+findings with direct attribution: 10
+findings with transitive attribution: 8
 ```
 
-Resolved agent example:
+This section remains the representative Milestone 2 graph snapshot. Milestone 3 extends graph 1.0 additively and makes Agent BOM v3 the default; Agent BOM v2 remains an explicit compatibility export.
+
+## Representative Milestone 3 inventory
+
+The complete catalog scan of `tests/fixtures/milestone3/full_project` produced:
 
 ```text
-name: support-agent
-entity_id: AGENT-402ceaa3621c3c2b
-version_id: AGV-0B28632D025A3B8A3582
-agent version: 2.1.0
-agent version source: agent_manifest
-framework: langgraph
-framework version: ==0.6.4
+status: completed
+findings: 3
+inventory assets: 21
+inventory relationships: 18
+models: 7
+model providers: anthropic, aws-bedrock, azure-openai, google, huggingface, openai
+packages: 8 (4 direct, 4 transitive)
+vulnerabilities: 0 (offline default)
+analyzer errors: 0
+provenance nodes: 44
+provenance edges: 76
+attack paths: 3
 ```
 
-This validates that logical asset identity, asset version identity and framework package version are not conflated.
+The deterministic provider fixture adds one affected package advisory and verifies a connected agent → model → package → vulnerability path while leaving reachability and exploitability `unknown`.
+
+## Representative Milestone 4 benchmark
+
+Three complete offline/default scans of `tests/fixtures/milestone3/full_project` produced:
+
+```text
+minimum: 0.713876 seconds
+median:  0.739980 seconds
+maximum: 0.748094 seconds
+budget: 30 seconds
+files: 5
+findings: 3
+inventory assets: 21
+analysis errors: 0
+status: completed
+```
+
+The performance result is an environment-specific regression baseline, not a universal customer throughput claim.
 
 ## Sample artifacts
 

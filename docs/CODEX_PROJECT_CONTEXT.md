@@ -84,6 +84,34 @@ The previous name-only sanitizer clearing behavior was removed. Sanitizer result
 
 The validated suite now contains 18 tests: the original 6 plus 12 code-intelligence tests with durable vulnerable, safe and edge fixtures. Representative finding IDs remained identical to the pre-refactor v0.4.0 wheel. See `docs/CODE_INTELLIGENCE_MILESTONE_1.md`.
 
+## Milestone 2 evidence-backed provenance (September 6, 2026)
+
+Milestone 2 reuses the Milestone 1 `CodeIntelligenceSession` to construct explicit asset, code, security and supply-chain graph nodes. Relationships now carry a relationship nature (`explicit/direct`, `inferred`, or `transitive/derived`), confidence, derivation method and source evidence.
+
+Code findings are attributed through ordered finding evidence, containing symbols, explicit implementation ownership, reverse call edges and upstream inventory relationships. The most specific owners are stored in `directly_affected_assets`; upstream agents/orchestrators are stored separately in `transitively_affected_assets`. Exact declared-file ownership handles non-code assets where available, with repository ownership as the final explicit fallback. Nearest-line proximity is no longer the primary ownership mechanism.
+
+Attack paths are connected traversals over emitted graph edges and retain the full source/propagator/sink evidence order. Durable vulnerable, safe and inferred cross-file fixtures, golden semantic graph projections and Draft 2020-12 schema validation are in `tests/fixtures/provenance/`, `tests/golden/` and `tests/test_provenance.py`.
+
+At the Milestone 2 gate, public identifiers remained `ScanResult 1.2`, provenance graph `1.0`, Agent BOM `2.0`, and CycloneDX 1.7. See `docs/PROVENANCE_MILESTONE_2.md`.
+
+## Milestone 3 Agent BOM, model, package, and vulnerability foundation (September 6, 2026)
+
+Milestone 3 adds first-class `ModelEntity`, `PackageEntity`, and `VulnerabilityRecord` collections to the additive `ScanResult 1.2` contract. Model discovery normalizes LangChain/LangGraph wrappers, OpenAI/Azure OpenAI, Anthropic, Bedrock, Google Vertex/Gemini, and Hugging Face patterns. Model identifier, provider revision, deployment, endpoint, framework package version, repository revision, and artifact content revision are independent concepts. A model name is no longer treated as immutable version evidence.
+
+Offline package inventory covers Python requirements/PEP 621/Poetry plus Poetry, uv, and Pipenv locks, and npm manifests plus npm, Yarn, and pnpm locks. Exact lock versions override loose manifest constraints; package PURLs, direct/transitive status, origins, license declarations, dependency paths, source evidence, and `DEPENDS_ON` edges are preserved.
+
+`VulnerabilityProvider` is provider-neutral. The first implementation, `OSVVulnerabilityProvider`, batches resolved PURLs only. `CachedVulnerabilityProvider` supplies a timestamped atomic JSON cache. Vulnerability enrichment is opt-in through `--vuln-enrichment`; default scans remain offline. Package presence, affected-version status, code reachability, and exploitability are separate. OSV matches do not claim reachability or exploitability.
+
+`generate_agent_bom()` now emits `agentguard-agent-bom/3.0`; `generate_agent_bom_v2()` and CLI `--schema-version 2.0` are the explicit compatibility path. CycloneDX remains 1.7 and now emits OSS PURLs, ML model components, dependency references, and normalized vulnerability objects with `affects`. Supply-chain nodes and connected known-vulnerability paths extend provenance graph 1.0 additively. See `docs/AI_AGENT_BOM_V3.md`.
+
+## Milestone 4 scanner-quality harness (September 7, 2026)
+
+Milestone 4 adds `RuleQualityHarness`, `agentguard quality validate/report`, a Draft 2020-12 rule-quality schema, deterministic manifest/snapshot update scripts, two-sided skill false-positive coverage, identity/BOM/CycloneDX/attack-path regressions, explicit analyzer-error tests, and a complete-offline performance benchmark.
+
+Every `RULE_COVERAGE.json` rule now records implementation status, actual analysis engine, languages, frameworks tested, positive fixtures, false-positive-oriented negative fixtures, expected evidence shape, known limitations, deterministic status, and named validation tests. The harness checks parity with the bundled 181-rule catalog and rejects unsupported validated claims or missing evidence paths.
+
+The validated baseline is deliberately conservative: 8 rules meet the strict positive+negative fixture bar, 1 is partially validated, 135 have executable routes without dedicated two-sided tests, 35 require dedicated semantic/control-flow detectors, and 2 are network-conditional. These quality statuses do not alter the protected rule catalog or implementation-tier counts. See `docs/MILESTONE_4_SCANNER_QUALITY.md`.
+
 ## Finding enrichment
 
 Detection and metadata enrichment are separated. An analyzer can emit a rule ID/evidence, after which the rule catalog enriches it with description, remediation, category, source/sink descriptions, detection logic, references, mappings and CWE metadata.
@@ -119,7 +147,7 @@ The normalized AI inventory taxonomy includes at least:
 - safety/guardrails
 - operations/dependencies/capabilities
 
-Agent BOM v2 is AgentGuard-specific and should explicitly group agents, agent versions, dependencies, assets, and relationships. CycloneDX AI BOM remains useful for interoperability.
+Agent BOM v3 is AgentGuard-specific and groups agents, normalized models/packages/vulnerabilities, static findings, versions, assets, and relationships. Agent BOM v2 remains available only as an explicit compatibility export. CycloneDX AI BOM remains the interoperability representation.
 
 ## Provenance graph
 
@@ -129,15 +157,15 @@ The scanner must return a structured graph contract; the UI should not infer gra
 
 Graph output includes:
 
-- typed asset nodes
-- typed relationship edges
+- typed asset, code, security and supply-chain nodes
+- typed relationship edges with explicit/direct, inferred or transitive/derived nature
 - evidence attached to edges (file/line/symbol/resolution when known)
-- finding nodes linked to affected assets
+- finding nodes with separate direct and transitive affected assets
 - evidence nodes for source/propagation/sink flows
-- precomputed `attack_paths[]`
-- risk summaries and version identity on assets
+- precomputed, graph-connected `attack_paths[]`
+- separate direct/transitive risk summaries and version identity on assets
 
-Typical relationships include `DEFINES`, `USES_MODEL`, `USES_TOOL`, `USES_SKILL`, `USES_MEMORY`, `USES_RETRIEVER`, `USES_MCP_SERVER`, `USES_GUARDRAIL`, `CONTAINS_NODE`, `EXPOSES_TOOL`, `EXPOSES_RESOURCE`, `EXPOSES_PROMPT`, `HAS_CAPABILITY`, `HAS_FINDING`, and `HAS_EVIDENCE`.
+Typical relationships include `DEFINES`, `IMPLEMENTED_BY`, `CALLS`, `PASSES_DATA_TO`, `RETURNS_TO`, `USES_MODEL`, `USES_TOOL`, `USES_SKILL`, `USES_MEMORY`, `USES_RETRIEVER`, `USES_MCP_SERVER`, `USES_GUARDRAIL`, `CONTAINS_NODE`, `EXPOSES_TOOL`, `EXPOSES_RESOURCE`, `EXPOSES_PROMPT`, `HAS_CAPABILITY`, `HAS_FINDING`, and `HAS_EVIDENCE`.
 
 The UI should be able to select an attack path and simply highlight ordered node/edge IDs returned by Core.
 
@@ -154,7 +182,7 @@ External projects are design/reference inputs unless explicitly integrated. Avoi
 
 ## Current validation snapshot
 
-At the Milestone 1 validation gate the source suite reported 18 passing tests. Catalog validation still reported 181 valid rules. A representative multi-agent fixture retained its finding IDs and produced findings, AI assets/relationships, Agent BOM/AI BOM, and a provenance graph with finding-linked attack paths. See `BUILD_VALIDATION.md` for the exact recorded run.
+At the Milestone 4 validation gate the source suite reports 40 passing tests. Catalog validation still reports 181 valid rules, and the quality manifest validates with zero issues. In addition to the Milestone 1–3 gates, the suite now checks all per-rule quality records, false-positive behavior, stable fingerprints/entity/version IDs, Agent BOM and CycloneDX semantic snapshots, connected attack paths, visible analysis errors, and measured complete-offline performance. See `BUILD_VALIDATION.md` for the exact recorded run.
 
 ## User workflow constraints
 
