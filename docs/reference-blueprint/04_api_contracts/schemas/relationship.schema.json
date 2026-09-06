@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentguard.example/schemas/relationship.schema.json",
+  "title": "AgentGuard Relationship",
+  "type": "object",
+  "required": [
+    "source_id",
+    "target_id",
+    "relationship_type"
+  ],
+  "properties": {
+    "edge_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "relationship_type": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "attributes": {
+      "type": "object"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

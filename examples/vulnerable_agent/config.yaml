@@ -1,0 +1,3 @@
+debug: true
+tls_verify: false
+api_key: "DEMO_NOT_A_REAL_SECRET_12345"

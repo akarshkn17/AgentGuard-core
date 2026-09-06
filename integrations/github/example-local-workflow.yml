@@ -1,0 +1,52 @@
+name: AgentGuard Local Package Scan
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+env:
+  AGENTGUARD_RESULTS: agentguard-results
+
+jobs:
+  agentguard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      # Prototype mode before packages are published.
+      # Copy packages/core and packages/cli into this repository, or point these
+      # paths at your checked-out AgentGuard distribution repository.
+      - name: Install AgentGuard from local packages
+        run: |
+          python -m pip install ./packages/core
+          python -m pip install ./packages/cli
+
+      - name: Scan
+        run: |
+          agentguard scan . \
+            --output-dir "$AGENTGUARD_RESULTS" \
+            --format json --format sarif --format csv --format junit \
+            --format html --format html-summary --format aibom --format agent-bom --format graph \
+            --fail-on high
+
+      - name: Upload AgentGuard reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentguard-reports
+          path: ${{ env.AGENTGUARD_RESULTS }}
+
+      - name: Upload SARIF to GitHub code scanning
+        if: always() && hashFiles('agentguard-results/agentguard.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: agentguard-results/agentguard.sarif

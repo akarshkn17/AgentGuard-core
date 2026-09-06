@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentguard.example/schemas/graph.schema.json",
+  "title": "AgentGuard GraphSnapshot",
+  "type": "object",
+  "required": [
+    "scan_id",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "scan_id": {
+      "type": "string"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "relationship.schema.json"
+      }
+    },
+    "derived": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

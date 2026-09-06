@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentguard.example/schemas/inventory.schema.json",
+  "title": "AgentGuard Inventory Entity",
+  "type": "object",
+  "required": [
+    "entity_id",
+    "entity_type",
+    "name",
+    "source_evidence"
+  ],
+  "properties": {
+    "entity_id": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "framework": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "framework_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attributes": {
+      "type": "object"
+    },
+    "source_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

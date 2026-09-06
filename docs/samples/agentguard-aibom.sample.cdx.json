@@ -1,0 +1,765 @@
+{
+  "$schema": "https://cyclonedx.org/schema/bom-1.7.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.7",
+  "serialNumber": "urn:uuid:83a4b38a-6209-472a-b9a5-7ff4d54525b0",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-09-04T12:10:31.068040+00:00",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "AgentGuard Core",
+          "version": "0.4.0"
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "agentguard:scan:id",
+        "value": "83a4b38a-6209-472a-b9a5-7ff4d54525b0"
+      },
+      {
+        "name": "agentguard:repository",
+        "value": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo"
+      },
+      {
+        "name": "agentguard:git:commit",
+        "value": ""
+      },
+      {
+        "name": "agentguard:git:branch",
+        "value": ""
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "TOOL-36600f572e380b11",
+      "name": "lookup_customer",
+      "version": "1.4.2",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "TOOL-36600f572e380b11"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-1B728572CEEECFB7E5E2"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "1.4.2"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "project_manifest"
+        },
+        {
+          "name": "agentguard:framework:version",
+          "value": "==0.3.27"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==0.3.27"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "241108f45b0164046bb141c07213eb31f1a6bbf26e4fff31b169b526f0f86736"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "tool"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "tooling"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "code_analysis"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "app.py"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "8"
+        },
+        {
+          "name": "agentguard:framework:name",
+          "value": "langchain"
+        }
+      ],
+      "group": "langchain"
+    },
+    {
+      "type": "library",
+      "bom-ref": "TOOL-9972f365ee161300",
+      "name": "run_shell",
+      "version": "1.4.2",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "TOOL-9972f365ee161300"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-2E31D150C6897ED6DCA2"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "1.4.2"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "project_manifest"
+        },
+        {
+          "name": "agentguard:framework:version",
+          "value": "==0.3.27"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==0.3.27"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "ba4f04b7cb036f91135828acaf2192b14ad91837cb5e4cca9ab5d1b6cb061657"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "tool"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "tooling"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "code_analysis"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "app.py"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "12"
+        },
+        {
+          "name": "agentguard:framework:name",
+          "value": "langchain"
+        },
+        {
+          "name": "agentguard:relationship",
+          "value": "HAS_CAPABILITY:CAPABILITY-2f3deb384fe85932"
+        }
+      ],
+      "group": "langchain"
+    },
+    {
+      "type": "machine-learning-model",
+      "bom-ref": "MODEL-d83bb665e203f289",
+      "name": "gpt-4o-2024-11-20",
+      "version": "gpt-4o-2024-11-20",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "MODEL-d83bb665e203f289"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-B03795478936714F60D6"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "gpt-4o-2024-11-20"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "model-id"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "model_identifier"
+        },
+        {
+          "name": "agentguard:framework:version",
+          "value": "==0.3.27"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==0.3.27"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "81c5f09fae7435f9b860a9a3bf30e3c14280a237a61516a6c154886060ddeb8c"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "model"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "model_runtime"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "code_analysis"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "app.py"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "15"
+        },
+        {
+          "name": "agentguard:framework:name",
+          "value": "langchain"
+        }
+      ],
+      "group": "langchain"
+    },
+    {
+      "type": "application",
+      "bom-ref": "AGENT-402ceaa3621c3c2b",
+      "name": "support-agent",
+      "version": "2.1.0",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "AGENT-402ceaa3621c3c2b"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-0B28632D025A3B8A3582"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "2.1.0"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "agent_manifest"
+        },
+        {
+          "name": "agentguard:framework:version",
+          "value": "==0.6.4"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==0.6.4"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "cb69f90325bdba8cb73f8576decbd78e2bbad94976a96692c68d03be8aded5a7"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "agent"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "agentic"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "code_analysis"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "app.py"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "16"
+        },
+        {
+          "name": "agentguard:framework:name",
+          "value": "langgraph"
+        },
+        {
+          "name": "agentguard:relationship",
+          "value": "USES_TOOL:TOOL-36600f572e380b11"
+        },
+        {
+          "name": "agentguard:relationship",
+          "value": "USES_TOOL:TOOL-9972f365ee161300"
+        },
+        {
+          "name": "agentguard:relationship",
+          "value": "USES_MODEL:MODEL-d83bb665e203f289"
+        },
+        {
+          "name": "agentguard:relationship",
+          "value": "USES_SKILL:SKILL-1c905af191a08e5e"
+        }
+      ],
+      "group": "langgraph"
+    },
+    {
+      "type": "application",
+      "bom-ref": "MCP_SERVER-6f5be171a25f8770",
+      "name": "support-mcp",
+      "version": "3.0.0",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "MCP_SERVER-6f5be171a25f8770"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-BC4985A0C03769ED82E0"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "3.0.0"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "constructor"
+        },
+        {
+          "name": "agentguard:framework:version",
+          "value": "==1.13.1"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==1.13.1"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "79c9623d5c3b2ecd3faac589fdb99a0ad8bc8df7419cc7df7612f9a3f0b62521"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "mcp_server"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "mcp"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "code_analysis"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "app.py"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "17"
+        },
+        {
+          "name": "agentguard:framework:name",
+          "value": "mcp"
+        }
+      ],
+      "group": "mcp"
+    },
+    {
+      "type": "library",
+      "bom-ref": "CAPABILITY-2f3deb384fe85932",
+      "name": "process.execute",
+      "version": "rev-890e1c78f236",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "CAPABILITY-2f3deb384fe85932"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-EF1B9FDDEC807FEFF80F"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "rev-890e1c78f236"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "content-digest"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "content_hash"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "890e1c78f2363dfd9e6c693aaba7085e891febb2a844a58de1e1a3cd306f6097"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "capability"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "capability"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "derived"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "app.py"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "13"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "SKILL-1c905af191a08e5e",
+      "name": "customer_lookup",
+      "version": "1.2.0",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "SKILL-1c905af191a08e5e"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-2A8741CF185DEA3FA560"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "1.2.0"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "constructor"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "461b158068c5b74b1fe745594441108e961fa3e3f7e9e8e145a48f96c504be87"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "skill"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "tooling"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "config_file"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "skills/customer_lookup/SKILL.md"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "DEPENDENCY-80fbff84acdebdde",
+      "name": "langgraph",
+      "version": "==0.6.4",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "DEPENDENCY-80fbff84acdebdde"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-9BDD76C2513AC17D5233"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "==0.6.4"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "constructor"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==0.6.4"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "7a05217c790ca5fae3152917ef21af7dde32a1c84719c6f0af75ea52628084ba"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "dependency"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "dependency"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "dependency_manifest"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "pyproject.toml"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "DEPENDENCY-797d6f745ef4333e",
+      "name": "langchain",
+      "version": "==0.3.27",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "DEPENDENCY-797d6f745ef4333e"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-03D444494F07FE7251A8"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "==0.3.27"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "constructor"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==0.3.27"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "534e7653da27c8ce66bb163ae6c1798bd1542dfceddf2d733b297ca9df8b251c"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "dependency"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "dependency"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "dependency_manifest"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "pyproject.toml"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "DEPENDENCY-67ff10e468a19957",
+      "name": "langchain-openai",
+      "version": "==0.3.33",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "DEPENDENCY-67ff10e468a19957"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-7BAFD378FB65885AB328"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "==0.3.33"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "constructor"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==0.3.33"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "4601b8784196b84243e1a2391326dccce183555c42f2cdbe9dccd0b55bd76cf4"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "dependency"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "dependency"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "dependency_manifest"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "pyproject.toml"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "DEPENDENCY-aa4f22fb155e5f81",
+      "name": "mcp",
+      "version": "==1.13.1",
+      "properties": [
+        {
+          "name": "agentguard:identity:entity_id",
+          "value": "DEPENDENCY-aa4f22fb155e5f81"
+        },
+        {
+          "name": "agentguard:identity:version_id",
+          "value": "AGV-419CF57AE7DDC9911030"
+        },
+        {
+          "name": "agentguard:version:value",
+          "value": "==1.13.1"
+        },
+        {
+          "name": "agentguard:version:scheme",
+          "value": "declared"
+        },
+        {
+          "name": "agentguard:version:source",
+          "value": "constructor"
+        },
+        {
+          "name": "agentguard:package:version",
+          "value": "==1.13.1"
+        },
+        {
+          "name": "agentguard:content:sha256",
+          "value": "a81c470ad1a32d32f71ca94044e40ebacc7f0e9151596988a8a3dcfc5e157482"
+        },
+        {
+          "name": "agentguard:entity:type",
+          "value": "dependency"
+        },
+        {
+          "name": "agentguard:entity:category",
+          "value": "dependency"
+        },
+        {
+          "name": "agentguard:detection:source",
+          "value": "dependency_manifest"
+        },
+        {
+          "name": "agentguard:source:file",
+          "value": "pyproject.toml"
+        },
+        {
+          "name": "agentguard:source:line",
+          "value": "1"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "TOOL-36600f572e380b11",
+      "dependsOn": []
+    },
+    {
+      "ref": "TOOL-9972f365ee161300",
+      "dependsOn": [
+        "CAPABILITY-2f3deb384fe85932"
+      ]
+    },
+    {
+      "ref": "MODEL-d83bb665e203f289",
+      "dependsOn": []
+    },
+    {
+      "ref": "AGENT-402ceaa3621c3c2b",
+      "dependsOn": [
+        "MODEL-d83bb665e203f289",
+        "SKILL-1c905af191a08e5e",
+        "TOOL-36600f572e380b11",
+        "TOOL-9972f365ee161300"
+      ]
+    },
+    {
+      "ref": "MCP_SERVER-6f5be171a25f8770",
+      "dependsOn": []
+    },
+    {
+      "ref": "CAPABILITY-2f3deb384fe85932",
+      "dependsOn": []
+    },
+    {
+      "ref": "SKILL-1c905af191a08e5e",
+      "dependsOn": []
+    },
+    {
+      "ref": "DEPENDENCY-80fbff84acdebdde",
+      "dependsOn": []
+    },
+    {
+      "ref": "DEPENDENCY-797d6f745ef4333e",
+      "dependsOn": []
+    },
+    {
+      "ref": "DEPENDENCY-67ff10e468a19957",
+      "dependsOn": []
+    },
+    {
+      "ref": "DEPENDENCY-aa4f22fb155e5f81",
+      "dependsOn": []
+    }
+  ]
+}

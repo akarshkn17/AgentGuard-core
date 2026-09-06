@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentguard.example/schemas/finding.schema.json",
+  "title": "AgentGuard Finding",
+  "type": "object",
+  "required": [
+    "fingerprint",
+    "engine_id",
+    "rule_id",
+    "title",
+    "severity",
+    "analysis_type",
+    "location"
+  ],
+  "properties": {
+    "fingerprint": {
+      "type": "string",
+      "minLength": 8
+    },
+    "engine_id": {
+      "type": "string"
+    },
+    "engine_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rule_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "Critical",
+        "High",
+        "Medium",
+        "Low",
+        "Info"
+      ]
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "analysis_type": {
+      "type": "string"
+    },
+    "location": {
+      "type": "object",
+      "required": [
+        "file"
+      ],
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "line": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "column": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "symbol": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "line": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "source": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "sink": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "remediation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "asset_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

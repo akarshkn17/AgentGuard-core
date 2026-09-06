@@ -1,0 +1,2540 @@
+- id: NVS-AR1
+  name: Refusal Suppression
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AR1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Refusal Suppression
+  description: Refusal Suppression. Executed by NVIDIA SkillSpector rule AR1
+  remediation: &id001
+  - Remove instructions that suppress refusal, warnings, or safety policies.
+  - Keep agent safety boundaries authoritative over skill instructions.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AR1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AR2
+  name: Disclaimer Suppression
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AR2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Disclaimer Suppression
+  description: Disclaimer Suppression. Executed by NVIDIA SkillSpector rule AR2
+  remediation: *id001
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AR2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AR3
+  name: Safety Policy Nullification
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AR3
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Safety Policy Nullification
+  description: Safety Policy Nullification. Executed by NVIDIA SkillSpector rule AR3
+  remediation: *id001
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AR3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST1
+  name: exec() Call
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST1
+  category: NVIDIA SkillSpector
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: exec() Call
+  description: exec() Call. Executed by NVIDIA SkillSpector rule AST1
+  remediation: &id002
+  - Replace dynamic or reflective execution with explicit, allowlisted operations.
+  - Never execute attacker-controlled strings; prefer structured parsers and fixed call targets.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST2
+  name: eval() Call
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: eval() Call
+  description: eval() Call. Executed by NVIDIA SkillSpector rule AST2
+  remediation: *id002
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST3
+  name: Dynamic Import
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST3
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Dynamic Import
+  description: Dynamic Import. Executed by NVIDIA SkillSpector rule AST3
+  remediation: *id002
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST4
+  name: subprocess Call
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST4
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: subprocess Call
+  description: subprocess Call. Executed by NVIDIA SkillSpector rule AST4
+  remediation: *id002
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST5
+  name: os.system or Exec-Family Call
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST5
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: os.system or Exec-Family Call
+  description: os.system or Exec-Family Call. Executed by NVIDIA SkillSpector rule AST5
+  remediation: *id002
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST5.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST6
+  name: compile() Call
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST6
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: compile() Call
+  description: compile() Call. Executed by NVIDIA SkillSpector rule AST6
+  remediation: *id002
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST6.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST7
+  name: Dynamic getattr()
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST7
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Dynamic getattr()
+  description: Dynamic getattr(). Executed by NVIDIA SkillSpector rule AST7
+  remediation: *id002
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST7.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST8
+  name: Dangerous Execution Chain
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST8
+  category: NVIDIA SkillSpector
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Dangerous Execution Chain
+  description: Dangerous Execution Chain. Executed by NVIDIA SkillSpector rule AST8
+  remediation: *id002
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST8.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-AST9
+  name: Reflective getattr() Sink
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: AST9
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Reflective getattr() Sink
+  description: Reflective getattr() Sink. Executed by NVIDIA SkillSpector rule AST9
+  remediation: *id002
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule AST9.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-E1
+  name: External Transmission
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: E1
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: External Transmission
+  description: External Transmission. Executed by NVIDIA SkillSpector rule E1
+  remediation: &id003
+  - Minimize data access and outbound transmission.
+  - Use explicit destination allowlists and prevent secrets/context from reaching network sinks.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule E1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - NET_06 (Per-Agent Egress Allowlist)
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - DATA_03 (DLP at Prompt Assembly Time)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-E2
+  name: Environment Variable Harvesting
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: E2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Environment Variable Harvesting
+  description: Environment Variable Harvesting. Executed by NVIDIA SkillSpector rule E2
+  remediation: *id003
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule E2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - DATA_03 (DLP at Prompt Assembly Time)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-E3
+  name: File System Enumeration
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: E3
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: File System Enumeration
+  description: File System Enumeration. Executed by NVIDIA SkillSpector rule E3
+  remediation: *id003
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule E3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-E4
+  name: Context Leakage
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: E4
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Context Leakage
+  description: Context Leakage. Executed by NVIDIA SkillSpector rule E4
+  remediation: *id003
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule E4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - DATA_03 (DLP at Prompt Assembly Time)
+    - DATA_02 (PII Handling, Redaction, Pseudonymisation)
+    - MON_02 (Prompt/Response Logging - Privacy-Safe Restricted Sink)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-EA1
+  name: Unrestricted Tool Access
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: EA1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unrestricted Tool Access
+  description: Unrestricted Tool Access. Executed by NVIDIA SkillSpector rule EA1
+  remediation: &id004
+  - Constrain the skill to least privilege and its documented purpose.
+  - Add human approval, quotas, and allowlisted capabilities for high-impact actions.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule EA1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - REG_02 (Agent Manifest Schema Validation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-EA2
+  name: Autonomous Decision Making
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: EA2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Autonomous Decision Making
+  description: Autonomous Decision Making. Executed by NVIDIA SkillSpector rule EA2
+  remediation: *id004
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule EA2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+    - BIZ_02 (High-Risk Action Catalog)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-EA3
+  name: Scope Creep
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: EA3
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Scope Creep
+  description: Scope Creep. Executed by NVIDIA SkillSpector rule EA3
+  remediation: *id004
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule EA3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_07 (Runtime Drift Detection Against Registry)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - REG_02 (Agent Manifest Schema Validation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-EA4
+  name: Unbounded Resource Access
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: EA4
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unbounded Resource Access
+  description: Unbounded Resource Access. Executed by NVIDIA SkillSpector rule EA4
+  remediation: *id004
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule EA4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - BIZ_06 (Cost and Abuse Budgeting)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - SEC_16 (Recursive Loop & Runaway Prevention)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-LP1
+  name: Underdeclared Capability
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: LP1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Underdeclared Capability
+  description: Underdeclared Capability. Executed by NVIDIA SkillSpector rule LP1
+  remediation: &id005
+  - Declare the minimum required capabilities explicitly.
+  - Reject wildcard permissions and reconcile declared permissions with observed behavior.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule LP1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - SEC_21 (Policy-as-Code for AI Controls)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-LP2
+  name: Wildcard Permission
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: LP2
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Wildcard Permission
+  description: Wildcard Permission. Executed by NVIDIA SkillSpector rule LP2
+  remediation: *id005
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule LP2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-LP3
+  name: Missing Permission Declaration
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: LP3
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Missing Permission Declaration
+  description: Missing Permission Declaration. Executed by NVIDIA SkillSpector rule LP3
+  remediation: *id005
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule LP3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - SEC_21 (Policy-as-Code for AI Controls)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-LP4
+  name: Overdeclared Permission
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: LP4
+  category: NVIDIA SkillSpector
+  severity: low
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Overdeclared Permission
+  description: Overdeclared Permission. Executed by NVIDIA SkillSpector rule LP4
+  remediation: *id005
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule LP4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-MP1
+  name: Persistent Context Injection
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: MP1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Persistent Context Injection
+  description: Persistent Context Injection. Executed by NVIDIA SkillSpector rule MP1
+  remediation: &id006
+  - Treat persistent memory as untrusted input.
+  - Scope memory per user/session and validate content before persistence or reuse.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule MP1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - DATA_05 (Memory Write Scanning (Poisoning Defense))
+    - MEM_03 (Memory Write Validation and Provenance)
+    - MEM_07 (Memory Anomaly Detection)
+    - IR_07 (Known-Good Rollback for Prompts, Policies, Memory and Vector Indexes)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-MP2
+  name: Context Window Stuffing
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: MP2
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Context Window Stuffing
+  description: Context Window Stuffing. Executed by NVIDIA SkillSpector rule MP2
+  remediation: *id006
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule MP2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_07 (Token Budget Monitoring - Prompt Stuffing Defense)
+    - BIZ_06 (Cost and Abuse Budgeting)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-MP3
+  name: Memory Manipulation
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: MP3
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Memory Manipulation
+  description: Memory Manipulation. Executed by NVIDIA SkillSpector rule MP3
+  remediation: *id006
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule MP3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - DATA_05 (Memory Write Scanning (Poisoning Defense))
+    - MEM_03 (Memory Write Validation and Provenance)
+    - MEM_07 (Memory Anomaly Detection)
+    - IR_07 (Known-Good Rollback for Prompts, Policies, Memory and Vector Indexes)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-OH1
+  name: Unvalidated Output Injection
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: OH1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unvalidated Output Injection
+  description: Unvalidated Output Injection. Executed by NVIDIA SkillSpector rule OH1
+  remediation: &id007
+  - Validate and constrain model/tool output before crossing a trust boundary.
+  - Use typed schemas, encoding, size limits, and allowlists before execution or rendering.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule OH1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_05 (Output Content Scanning)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-OH2
+  name: Cross-Context Output
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: OH2
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Cross-Context Output
+  description: Cross-Context Output. Executed by NVIDIA SkillSpector rule OH2
+  remediation: *id007
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule OH2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_05 (Output Content Scanning)
+    - DATA_01 (Runtime Data Classification Enforcement)
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-OH3
+  name: Unbounded Output
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: OH3
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unbounded Output
+  description: Unbounded Output. Executed by NVIDIA SkillSpector rule OH3
+  remediation: *id007
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule OH3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_05 (Output Content Scanning)
+    - BIZ_06 (Cost and Abuse Budgeting)
+    - MON_08 (Behavioral Analytics & Anomaly Detection)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-P1
+  name: Instruction Override
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: P1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Instruction Override
+  description: Instruction Override. Executed by NVIDIA SkillSpector rule P1
+  remediation: &id008
+  - Remove prompt-injection, hidden-instruction, or system-prompt extraction behavior.
+  - Keep skill instructions scoped to the documented task and preserve higher-priority policies.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule P1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-P2
+  name: Hidden Instructions
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: P2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Hidden Instructions
+  description: Hidden Instructions. Executed by NVIDIA SkillSpector rule P2
+  remediation: *id008
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule P2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-P3
+  name: Exfiltration Commands
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: P3
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Exfiltration Commands
+  description: Exfiltration Commands. Executed by NVIDIA SkillSpector rule P3
+  remediation: *id008
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule P3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-P4
+  name: Behavior Manipulation
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: P4
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Behavior Manipulation
+  description: Behavior Manipulation. Executed by NVIDIA SkillSpector rule P4
+  remediation: *id008
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule P4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-P5
+  name: Harmful Content
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: P5
+  category: NVIDIA SkillSpector
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Harmful Content
+  description: Harmful Content. Executed by NVIDIA SkillSpector rule P5
+  remediation: *id008
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule P5.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+    - BIZ_07 (Legal/Compliance Review for External Communications)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-P6
+  name: Direct System Prompt Leakage
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: P6
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Direct System Prompt Leakage
+  description: Direct System Prompt Leakage. Executed by NVIDIA SkillSpector rule P6
+  remediation: *id008
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule P6.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - ENC_06 (System Prompt Integrity Protection)
+    - SEC_05 (Output Content Scanning)
+    - DATA_03 (DLP at Prompt Assembly Time)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-P7
+  name: Indirect System Prompt Extraction
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: P7
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Indirect System Prompt Extraction
+  description: Indirect System Prompt Extraction. Executed by NVIDIA SkillSpector rule P7
+  remediation: *id008
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule P7.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - ENC_06 (System Prompt Integrity Protection)
+    - SEC_05 (Output Content Scanning)
+    - DATA_03 (DLP at Prompt Assembly Time)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-P8
+  name: Tool-Based Prompt Exfiltration
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: P8
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Tool-Based Prompt Exfiltration
+  description: Tool-Based Prompt Exfiltration. Executed by NVIDIA SkillSpector rule P8
+  remediation: *id008
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule P8.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-PE1
+  name: Excessive Permissions
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: PE1
+  category: NVIDIA SkillSpector
+  severity: low
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Excessive Permissions
+  description: Excessive Permissions. Executed by NVIDIA SkillSpector rule PE1
+  remediation: &id009
+  - Remove unnecessary privileged access.
+  - Use least privilege, avoid root/sudo, and never read credential stores unless explicitly required and authorized.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule PE1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-PE2
+  name: Sudo or Root Execution
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: PE2
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Sudo or Root Execution
+  description: Sudo or Root Execution. Executed by NVIDIA SkillSpector rule PE2
+  remediation: *id009
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule PE2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-PE3
+  name: Credential Access
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: PE3
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Credential Access
+  description: Credential Access. Executed by NVIDIA SkillSpector rule PE3
+  remediation: *id009
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule PE3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - DATA_03 (DLP at Prompt Assembly Time)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-RA1
+  name: Self-Modification
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: RA1
+  category: NVIDIA SkillSpector
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Self-Modification
+  description: Self-Modification. Executed by NVIDIA SkillSpector rule RA1
+  remediation: &id010
+  - Prevent self-modification and unauthorized persistence.
+  - Keep skill installation/runtime directories immutable and require approved lifecycle mechanisms.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule RA1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_07 (Runtime Drift Detection Against Registry)
+    - IR_07 (Known-Good Rollback for Prompts, Policies, Memory and Vector Indexes)
+    - SEC_21 (Policy-as-Code for AI Controls)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-RA2
+  name: Session Persistence
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: RA2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Session Persistence
+  description: Session Persistence. Executed by NVIDIA SkillSpector rule RA2
+  remediation: *id010
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule RA2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - MEM_04 (Memory TTL and Retention Enforcement)
+    - IR_03 (Agent Decommissioning & Expiry Controls)
+    - REG_06 (Agent Expiry and Recertification)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-SC1
+  name: Unpinned Dependencies
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: SC1
+  category: NVIDIA SkillSpector
+  severity: low
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unpinned Dependencies
+  description: Unpinned Dependencies. Executed by NVIDIA SkillSpector rule SC1
+  remediation: &id011
+  - Pin and verify dependencies and downloaded artifacts.
+  - Use trusted registries, integrity verification, and avoid download-and-execute patterns.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule SC1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-SC2
+  name: External Script Fetching
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: SC2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: External Script Fetching
+  description: External Script Fetching. Executed by NVIDIA SkillSpector rule SC2
+  remediation: *id011
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule SC2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-SC3
+  name: Obfuscated Code
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: SC3
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Obfuscated Code
+  description: Obfuscated Code. Executed by NVIDIA SkillSpector rule SC3
+  remediation: *id011
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule SC3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-SC4
+  name: Known Vulnerable Dependencies
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: SC4
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Known Vulnerable Dependencies
+  description: Known Vulnerable Dependencies. Executed by NVIDIA SkillSpector rule SC4
+  remediation: *id011
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule SC4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-SC5
+  name: Abandoned Dependencies
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: SC5
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Abandoned Dependencies
+  description: Abandoned Dependencies. Executed by NVIDIA SkillSpector rule SC5
+  remediation: *id011
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule SC5.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-SC6
+  name: Typosquatting
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: SC6
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Typosquatting
+  description: Typosquatting. Executed by NVIDIA SkillSpector rule SC6
+  remediation: *id011
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule SC6.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TM1
+  name: Tool Parameter Abuse
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TM1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Tool Parameter Abuse
+  description: Tool Parameter Abuse. Executed by NVIDIA SkillSpector rule TM1
+  remediation: &id012
+  - Use typed tool parameters and safe defaults.
+  - Validate tool inputs, disallow unsafe flags, and enforce authorization per call.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TM1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - MCP_03 (MCP Schema and Argument Validation)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TM2
+  name: Tool Chaining Abuse
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TM2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Tool Chaining Abuse
+  description: Tool Chaining Abuse. Executed by NVIDIA SkillSpector rule TM2
+  remediation: *id012
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TM2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_17 (Toxic Tool Combination Detection)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TM3
+  name: Unsafe Tool Defaults
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TM3
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unsafe Tool Defaults
+  description: Unsafe Tool Defaults. Executed by NVIDIA SkillSpector rule TM3
+  remediation: *id012
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TM3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - MCP_03 (MCP Schema and Argument Validation)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TP1
+  name: Tool Metadata Hidden Instructions
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TP1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Tool Metadata Hidden Instructions
+  description: Tool Metadata Hidden Instructions. Executed by NVIDIA SkillSpector rule TP1
+  remediation: &id013
+  - Keep MCP/tool metadata free of hidden or deceptive instructions.
+  - Validate descriptions and parameter metadata and ensure declared behavior matches implementation.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TP1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_05 (Output Content Scanning)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+    - MCP_05 (MCP Output Scanning and Boundary Tagging)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TP2
+  name: Tool Metadata Unicode Deception
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TP2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Tool Metadata Unicode Deception
+  description: Tool Metadata Unicode Deception. Executed by NVIDIA SkillSpector rule TP2
+  remediation: *id013
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TP2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - MCP_05 (MCP Output Scanning and Boundary Tagging)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TP3
+  name: Parameter Description Injection
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TP3
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Parameter Description Injection
+  description: Parameter Description Injection. Executed by NVIDIA SkillSpector rule TP3
+  remediation: *id013
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TP3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - MCP_05 (MCP Output Scanning and Boundary Tagging)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TP4
+  name: Description-Behavior Mismatch
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TP4
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Description-Behavior Mismatch
+  description: Description-Behavior Mismatch. Executed by NVIDIA SkillSpector rule TP4
+  remediation: *id013
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TP4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_07 (Runtime Drift Detection Against Registry)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TR1
+  name: Overly Broad Trigger
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TR1
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Overly Broad Trigger
+  description: Overly Broad Trigger. Executed by NVIDIA SkillSpector rule TR1
+  remediation: &id014
+  - Use specific, non-conflicting triggers.
+  - Avoid broad/common trigger words and namespace commands to prevent shadowing.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TR1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+    - SEC_21 (Policy-as-Code for AI Controls)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TR2
+  name: Shadow Command Trigger
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TR2
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Shadow Command Trigger
+  description: Shadow Command Trigger. Executed by NVIDIA SkillSpector rule TR2
+  remediation: *id014
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TR2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+    - SEC_21 (Policy-as-Code for AI Controls)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TR3
+  name: Keyword Baiting Trigger
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TR3
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Keyword Baiting Trigger
+  description: Keyword Baiting Trigger. Executed by NVIDIA SkillSpector rule TR3
+  remediation: *id014
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TR3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+    - SEC_21 (Policy-as-Code for AI Controls)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TT1
+  name: Direct Taint Flow
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TT1
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Direct Taint Flow
+  description: Direct Taint Flow. Executed by NVIDIA SkillSpector rule TT1
+  remediation: &id015
+  - Break untrusted source-to-sensitive-sink flows.
+  - Validate/sanitize data at trust boundaries and keep secrets away from execution/network sinks.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TT1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TT2
+  name: Variable-Mediated Taint Flow
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TT2
+  category: NVIDIA SkillSpector
+  severity: medium
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Variable-Mediated Taint Flow
+  description: Variable-Mediated Taint Flow. Executed by NVIDIA SkillSpector rule TT2
+  remediation: *id015
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TT2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TT3
+  name: Credential Exfiltration Chain
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TT3
+  category: NVIDIA SkillSpector
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Credential Exfiltration Chain
+  description: Credential Exfiltration Chain. Executed by NVIDIA SkillSpector rule TT3
+  remediation: *id015
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TT3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TT4
+  name: File Read to Network Exfiltration
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TT4
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: File Read to Network Exfiltration
+  description: File Read to Network Exfiltration. Executed by NVIDIA SkillSpector rule TT4
+  remediation: *id015
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TT4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - NET_06 (Per-Agent Egress Allowlist)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-TT5
+  name: External Input to Code Execution
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: TT5
+  category: NVIDIA SkillSpector
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: External Input to Code Execution
+  description: External Input to Code Execution. Executed by NVIDIA SkillSpector rule TT5
+  remediation: *id015
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule TT5.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-YR1
+  name: Malware Signature Match
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: YR1
+  category: NVIDIA SkillSpector
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Malware Signature Match
+  description: Malware Signature Match. Executed by NVIDIA SkillSpector rule YR1
+  remediation: &id016
+  - Quarantine the matched artifact and verify its provenance.
+  - Remove malware/webshell/miner/exploit content and re-scan from a trusted source.
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule YR1.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-YR2
+  name: Webshell Signature Match
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: YR2
+  category: NVIDIA SkillSpector
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Webshell Signature Match
+  description: Webshell Signature Match. Executed by NVIDIA SkillSpector rule YR2
+  remediation: *id016
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule YR2.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-YR3
+  name: Cryptominer Signature Match
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: YR3
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Cryptominer Signature Match
+  description: Cryptominer Signature Match. Executed by NVIDIA SkillSpector rule YR3
+  remediation: *id016
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule YR3.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml
+- id: NVS-YR4
+  name: Hack Tool or Exploit Match
+  engine: agentguard-skill
+  origin: NVIDIA SkillSpector (Apache-2.0 compatible behavior reference)
+  origin_rule_id: YR4
+  category: NVIDIA SkillSpector
+  severity: high
+  targets:
+  - skill
+  - plugin
+  - mcp_server
+  - mcp_tool
+  analysis:
+    type: skill_static
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Hack Tool or Exploit Match
+  description: Hack Tool or Exploit Match. Executed by NVIDIA SkillSpector rule YR4
+  remediation: *id016
+  source_description: ''
+  sink_description: ''
+  detection_logic: Executed by NVIDIA SkillSpector rule YR4.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+  cwe: []
+  rule_version: '1'
+  implementation: native-skill
+  legacy_engine: skillspector
+  source_file: rules/integrations/skillspector.yaml

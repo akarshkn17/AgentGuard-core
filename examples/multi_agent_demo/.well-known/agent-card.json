@@ -1,0 +1,10 @@
+{
+  "name": "support-agent",
+  "version": "2.1.0",
+  "description": "Customer support agent",
+  "url": "https://agents.example.test/support",
+  "capabilities": {"streaming": true},
+  "skills": [
+    {"id": "customer_lookup", "name": "customer_lookup", "version": "1.2.0"}
+  ]
+}

@@ -1,0 +1,2116 @@
+{
+  "schema": "agentguard-provenance-graph/1.0",
+  "scan": {
+    "scan_id": "83a4b38a-6209-472a-b9a5-7ff4d54525b0",
+    "repository": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo",
+    "git_commit": "",
+    "git_branch": ""
+  },
+  "summary": {
+    "nodes": 37,
+    "edges": 41,
+    "attack_paths": 10,
+    "asset_types": {
+      "tool": 2,
+      "model": 1,
+      "agent": 1,
+      "mcp_server": 1,
+      "capability": 1,
+      "skill": 1,
+      "dependency": 4
+    },
+    "relationship_types": {
+      "DEFINES": 11,
+      "USES_TOOL": 2,
+      "USES_MODEL": 1,
+      "HAS_CAPABILITY": 1,
+      "USES_SKILL": 1,
+      "HAS_FINDING": 10,
+      "EVIDENCE_FLOW": 5,
+      "HAS_EVIDENCE": 10
+    }
+  },
+  "nodes": [
+    {
+      "id": "REPO-F8A654DA554BE280B2C7",
+      "kind": "repository",
+      "subtype": "repository",
+      "label": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo",
+      "version": {
+        "value": "workspace",
+        "scheme": "workspace",
+        "source": "git"
+      },
+      "source": {},
+      "risk": {
+        "finding_count": 10
+      },
+      "attributes": {
+        "branch": "",
+        "remote": ""
+      }
+    },
+    {
+      "id": "TOOL-36600f572e380b11",
+      "kind": "asset",
+      "subtype": "tool",
+      "category": "tooling",
+      "label": "lookup_customer",
+      "qualified_name": "app.lookup_customer",
+      "framework": {
+        "name": "langchain",
+        "version": "==0.3.27"
+      },
+      "version": {
+        "id": "AGV-1B728572CEEECFB7E5E2",
+        "value": "1.4.2",
+        "scheme": "declared",
+        "source": "project_manifest",
+        "evidence": {
+          "project_version": "1.4.2"
+        }
+      },
+      "package": {
+        "name": "langchain",
+        "version": "==0.3.27"
+      },
+      "content_digest": "sha256:241108f45b0164046bb141c07213eb31f1a6bbf26e4fff31b169b526f0f86736",
+      "source": {
+        "file": "app.py",
+        "line": 8
+      },
+      "risk": {
+        "finding_count": 2,
+        "max_severity": "High",
+        "finding_ids": [
+          "AGF-0BC167135168B759E2812497",
+          "AGF-B55217A8EB201B74309BDE85"
+        ]
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "decorator": "langchain_core.tools.tool"
+      }
+    },
+    {
+      "id": "TOOL-9972f365ee161300",
+      "kind": "asset",
+      "subtype": "tool",
+      "category": "tooling",
+      "label": "run_shell",
+      "qualified_name": "app.run_shell",
+      "framework": {
+        "name": "langchain",
+        "version": "==0.3.27"
+      },
+      "version": {
+        "id": "AGV-2E31D150C6897ED6DCA2",
+        "value": "1.4.2",
+        "scheme": "declared",
+        "source": "project_manifest",
+        "evidence": {
+          "project_version": "1.4.2"
+        }
+      },
+      "package": {
+        "name": "langchain",
+        "version": "==0.3.27"
+      },
+      "content_digest": "sha256:ba4f04b7cb036f91135828acaf2192b14ad91837cb5e4cca9ab5d1b6cb061657",
+      "source": {
+        "file": "app.py",
+        "line": 12
+      },
+      "risk": {
+        "finding_count": 0,
+        "max_severity": "None"
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "decorator": "langchain_core.tools.tool",
+        "capabilities": [
+          "process.execute"
+        ]
+      }
+    },
+    {
+      "id": "MODEL-d83bb665e203f289",
+      "kind": "asset",
+      "subtype": "model",
+      "category": "model_runtime",
+      "label": "gpt-4o-2024-11-20",
+      "qualified_name": "app.llm",
+      "framework": {
+        "name": "langchain",
+        "version": "==0.3.27"
+      },
+      "version": {
+        "id": "AGV-B03795478936714F60D6",
+        "value": "gpt-4o-2024-11-20",
+        "scheme": "model-id",
+        "source": "model_identifier",
+        "evidence": {
+          "model_id": "gpt-4o-2024-11-20"
+        }
+      },
+      "package": {
+        "name": "langchain",
+        "version": "==0.3.27"
+      },
+      "content_digest": "sha256:81c5f09fae7435f9b860a9a3bf30e3c14280a237a61516a6c154886060ddeb8c",
+      "source": {
+        "file": "app.py",
+        "line": 15
+      },
+      "risk": {
+        "finding_count": 0,
+        "max_severity": "None"
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "constructor": "langchain_openai.ChatOpenAI",
+        "model": "gpt-4o-2024-11-20"
+      }
+    },
+    {
+      "id": "AGENT-402ceaa3621c3c2b",
+      "kind": "asset",
+      "subtype": "agent",
+      "category": "agentic",
+      "label": "support-agent",
+      "qualified_name": "app.agent",
+      "framework": {
+        "name": "langgraph",
+        "version": "==0.6.4"
+      },
+      "version": {
+        "id": "AGV-0B28632D025A3B8A3582",
+        "value": "2.1.0",
+        "scheme": "declared",
+        "source": "agent_manifest",
+        "evidence": {
+          "manifest": ".well-known/agent-card.json",
+          "declared_version": "2.1.0"
+        }
+      },
+      "package": {
+        "name": "langgraph",
+        "version": "==0.6.4"
+      },
+      "content_digest": "sha256:cb69f90325bdba8cb73f8576decbd78e2bbad94976a96692c68d03be8aded5a7",
+      "source": {
+        "file": "app.py",
+        "line": 16
+      },
+      "risk": {
+        "finding_count": 0,
+        "max_severity": "None"
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "constructor": "langgraph.prebuilt.create_react_agent",
+        "description": "Customer support agent",
+        "url": "https://agents.example.test/support",
+        "capabilities": {
+          "streaming": true
+        },
+        "skills": [
+          {
+            "id": "customer_lookup",
+            "name": "customer_lookup",
+            "version": "1.2.0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "MCP_SERVER-6f5be171a25f8770",
+      "kind": "asset",
+      "subtype": "mcp_server",
+      "category": "mcp",
+      "label": "support-mcp",
+      "qualified_name": "app.mcp",
+      "framework": {
+        "name": "mcp",
+        "version": "==1.13.1"
+      },
+      "version": {
+        "id": "AGV-BC4985A0C03769ED82E0",
+        "value": "3.0.0",
+        "scheme": "declared",
+        "source": "constructor",
+        "evidence": {
+          "declared_version": "3.0.0"
+        }
+      },
+      "package": {
+        "name": "mcp",
+        "version": "==1.13.1"
+      },
+      "content_digest": "sha256:79c9623d5c3b2ecd3faac589fdb99a0ad8bc8df7419cc7df7612f9a3f0b62521",
+      "source": {
+        "file": "app.py",
+        "line": 17
+      },
+      "risk": {
+        "finding_count": 0,
+        "max_severity": "None"
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "constructor": "mcp.server.fastmcp.FastMCP",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "id": "CAPABILITY-2f3deb384fe85932",
+      "kind": "asset",
+      "subtype": "capability",
+      "category": "capability",
+      "label": "process.execute",
+      "qualified_name": "capability.process.execute",
+      "framework": {
+        "name": "",
+        "version": ""
+      },
+      "version": {
+        "id": "AGV-EF1B9FDDEC807FEFF80F",
+        "value": "rev-890e1c78f236",
+        "scheme": "content-digest",
+        "source": "content_hash",
+        "evidence": {
+          "sha256": "890e1c78f2363dfd9e6c693aaba7085e891febb2a844a58de1e1a3cd306f6097"
+        }
+      },
+      "package": {
+        "name": "",
+        "version": ""
+      },
+      "content_digest": "sha256:890e1c78f2363dfd9e6c693aaba7085e891febb2a844a58de1e1a3cd306f6097",
+      "source": {
+        "file": "app.py",
+        "line": 13
+      },
+      "risk": {
+        "finding_count": 7,
+        "max_severity": "Critical",
+        "finding_ids": [
+          "AGF-E08A030B34D6F8E95CFA578E",
+          "AGF-0F809C2872CFBF027017063B",
+          "AGF-6EAE471CB485452E50939DCF",
+          "AGF-5B2266F01D69FB1D1756A678",
+          "AGF-F59FBBDAF0424258CEAF870A",
+          "AGF-D16F4E44456648436C0FA86E",
+          "AGF-745EFF8B50F44E56730F20F7"
+        ]
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "virtual": true
+      }
+    },
+    {
+      "id": "SKILL-1c905af191a08e5e",
+      "kind": "asset",
+      "subtype": "skill",
+      "category": "tooling",
+      "label": "customer_lookup",
+      "qualified_name": "skill.skills/customer_lookup/SKILL.md",
+      "framework": {
+        "name": "",
+        "version": ""
+      },
+      "version": {
+        "id": "AGV-2A8741CF185DEA3FA560",
+        "value": "1.2.0",
+        "scheme": "declared",
+        "source": "constructor",
+        "evidence": {
+          "declared_version": "1.2.0"
+        }
+      },
+      "package": {
+        "name": "",
+        "version": ""
+      },
+      "content_digest": "sha256:461b158068c5b74b1fe745594441108e961fa3e3f7e9e8e145a48f96c504be87",
+      "source": {
+        "file": "skills/customer_lookup/SKILL.md",
+        "line": 1
+      },
+      "risk": {
+        "finding_count": 1,
+        "max_severity": "Low",
+        "finding_ids": [
+          "AGF-CB7A85CA5A530C9A8FD3981B"
+        ]
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "format": ".md"
+      }
+    },
+    {
+      "id": "DEPENDENCY-80fbff84acdebdde",
+      "kind": "asset",
+      "subtype": "dependency",
+      "category": "dependency",
+      "label": "langgraph",
+      "qualified_name": "dependency.langgraph",
+      "framework": {
+        "name": "",
+        "version": ""
+      },
+      "version": {
+        "id": "AGV-9BDD76C2513AC17D5233",
+        "value": "==0.6.4",
+        "scheme": "declared",
+        "source": "constructor",
+        "evidence": {
+          "declared_version": "==0.6.4"
+        }
+      },
+      "package": {
+        "name": "langgraph",
+        "version": "==0.6.4"
+      },
+      "content_digest": "sha256:7a05217c790ca5fae3152917ef21af7dde32a1c84719c6f0af75ea52628084ba",
+      "source": {
+        "file": "pyproject.toml",
+        "line": 1
+      },
+      "risk": {
+        "finding_count": 0,
+        "max_severity": "None"
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "package": "langgraph",
+        "declared_version": "==0.6.4"
+      }
+    },
+    {
+      "id": "DEPENDENCY-797d6f745ef4333e",
+      "kind": "asset",
+      "subtype": "dependency",
+      "category": "dependency",
+      "label": "langchain",
+      "qualified_name": "dependency.langchain",
+      "framework": {
+        "name": "",
+        "version": ""
+      },
+      "version": {
+        "id": "AGV-03D444494F07FE7251A8",
+        "value": "==0.3.27",
+        "scheme": "declared",
+        "source": "constructor",
+        "evidence": {
+          "declared_version": "==0.3.27"
+        }
+      },
+      "package": {
+        "name": "langchain",
+        "version": "==0.3.27"
+      },
+      "content_digest": "sha256:534e7653da27c8ce66bb163ae6c1798bd1542dfceddf2d733b297ca9df8b251c",
+      "source": {
+        "file": "pyproject.toml",
+        "line": 1
+      },
+      "risk": {
+        "finding_count": 0,
+        "max_severity": "None"
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "package": "langchain",
+        "declared_version": "==0.3.27"
+      }
+    },
+    {
+      "id": "DEPENDENCY-67ff10e468a19957",
+      "kind": "asset",
+      "subtype": "dependency",
+      "category": "dependency",
+      "label": "langchain-openai",
+      "qualified_name": "dependency.langchain-openai",
+      "framework": {
+        "name": "",
+        "version": ""
+      },
+      "version": {
+        "id": "AGV-7BAFD378FB65885AB328",
+        "value": "==0.3.33",
+        "scheme": "declared",
+        "source": "constructor",
+        "evidence": {
+          "declared_version": "==0.3.33"
+        }
+      },
+      "package": {
+        "name": "langchain-openai",
+        "version": "==0.3.33"
+      },
+      "content_digest": "sha256:4601b8784196b84243e1a2391326dccce183555c42f2cdbe9dccd0b55bd76cf4",
+      "source": {
+        "file": "pyproject.toml",
+        "line": 1
+      },
+      "risk": {
+        "finding_count": 0,
+        "max_severity": "None"
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "package": "langchain-openai",
+        "declared_version": "==0.3.33"
+      }
+    },
+    {
+      "id": "DEPENDENCY-aa4f22fb155e5f81",
+      "kind": "asset",
+      "subtype": "dependency",
+      "category": "dependency",
+      "label": "mcp",
+      "qualified_name": "dependency.mcp",
+      "framework": {
+        "name": "",
+        "version": ""
+      },
+      "version": {
+        "id": "AGV-419CF57AE7DDC9911030",
+        "value": "==1.13.1",
+        "scheme": "declared",
+        "source": "constructor",
+        "evidence": {
+          "declared_version": "==1.13.1"
+        }
+      },
+      "package": {
+        "name": "mcp",
+        "version": "==1.13.1"
+      },
+      "content_digest": "sha256:a81c470ad1a32d32f71ca94044e40ebacc7f0e9151596988a8a3dcfc5e157482",
+      "source": {
+        "file": "pyproject.toml",
+        "line": 1
+      },
+      "risk": {
+        "finding_count": 0,
+        "max_severity": "None"
+      },
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "package": "mcp",
+        "declared_version": "==1.13.1"
+      }
+    },
+    {
+      "id": "AGF-E08A030B34D6F8E95CFA578E",
+      "kind": "finding",
+      "subtype": "custom",
+      "label": "Example organization admin command rule",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 13
+      },
+      "risk": {
+        "severity": "Critical",
+        "rule_id": "CUSTOM-AI-001",
+        "analysis_type": "taint"
+      },
+      "attributes": {
+        "description": "LLM output reaches a custom privileged command API.",
+        "remediation": [
+          "Use a fixed operation enum and deterministic authorization before execution."
+        ],
+        "fingerprint": "e08a030b34d6f8e95cfa578e",
+        "mappings": {
+          "security_controls": [
+            "SEC_06 (Structured Output Schema + Tool Name Auth)",
+            "IAM_04 (User Identity Propagation - AgentAuthContext)",
+            "SEC_18 (Human-in-the-Loop for High-Risk Actions)",
+            "MON_04 (Tool Invocation Monitoring + Auto-Response)",
+            "IR_01 (Multi-Level Kill-Switch Model)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "exact",
+          "engine": "project-python",
+          "rule_engine": "agentguard"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-FAAF26E46421380123E3",
+      "kind": "evidence",
+      "subtype": "source",
+      "label": "external tool/endpoint parameter command",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 12,
+        "symbol": "command"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "def run_shell(command: str):",
+        "finding_id": "AGF-E08A030B34D6F8E95CFA578E"
+      }
+    },
+    {
+      "id": "EVIDENCE-3F8A83C58CDF8E5F796F",
+      "kind": "evidence",
+      "subtype": "sink",
+      "label": "shell_execution",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 13,
+        "symbol": "subprocess.run"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+        "finding_id": "AGF-E08A030B34D6F8E95CFA578E"
+      }
+    },
+    {
+      "id": "AGF-0F809C2872CFBF027017063B",
+      "kind": "finding",
+      "subtype": "Output Validation",
+      "label": "LLM-generated command executed",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 13
+      },
+      "risk": {
+        "severity": "Critical",
+        "rule_id": "AIR-OUT-003",
+        "analysis_type": "taint"
+      },
+      "attributes": {
+        "description": "LLM-generated command executed. Direct model-output-to-command-sink taint rule",
+        "remediation": [
+          "No free-form command execution; structured allowlisted actions"
+        ],
+        "fingerprint": "0f809c2872cfbf027017063b",
+        "mappings": {
+          "security_controls": [
+            "SEC_06 (Structured Output Schema + Tool Name Auth)",
+            "SEC_18 (Human-in-the-Loop for High-Risk Actions)",
+            "SEC_05 (Output Content Scanning)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "exact",
+          "engine": "project-python",
+          "rule_engine": "agentguard"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-E86959B158043D782D8D",
+      "kind": "evidence",
+      "subtype": "source",
+      "label": "external tool/endpoint parameter command",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 12,
+        "symbol": "command"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "def run_shell(command: str):",
+        "finding_id": "AGF-0F809C2872CFBF027017063B"
+      }
+    },
+    {
+      "id": "EVIDENCE-D5C3CA1B44DE964A0A8D",
+      "kind": "evidence",
+      "subtype": "sink",
+      "label": "shell_execution",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 13,
+        "symbol": "subprocess.run"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+        "finding_id": "AGF-0F809C2872CFBF027017063B"
+      }
+    },
+    {
+      "id": "AGF-6EAE471CB485452E50939DCF",
+      "kind": "finding",
+      "subtype": "MCP",
+      "label": "MCP tool exposes arbitrary command execution primitive",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 13
+      },
+      "risk": {
+        "severity": "Critical",
+        "rule_id": "AIR-MCP-010",
+        "analysis_type": "taint"
+      },
+      "attributes": {
+        "description": "MCP tool exposes arbitrary command execution primitive. Flag MCP tools whose user/model-controlled schema is directly mapped to process execution",
+        "remediation": [
+          "Narrow task-specific tool schema and command allowlist"
+        ],
+        "fingerprint": "6eae471cb485452e50939dcf",
+        "mappings": {
+          "security_controls": [
+            "MCP_01 (Approved MCP Server Registry)",
+            "SEC_22 (Formal MCP Server Security Review)",
+            "MCP_03 (MCP Schema and Argument Validation)",
+            "SEC_18 (Human-in-the-Loop for High-Risk Actions)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "exact",
+          "engine": "project-python",
+          "rule_engine": "agentguard"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-E4E784E78482914CC05F",
+      "kind": "evidence",
+      "subtype": "source",
+      "label": "external tool/endpoint parameter command",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 12,
+        "symbol": "command"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "def run_shell(command: str):",
+        "finding_id": "AGF-6EAE471CB485452E50939DCF"
+      }
+    },
+    {
+      "id": "EVIDENCE-C05BF19A822642165E63",
+      "kind": "evidence",
+      "subtype": "sink",
+      "label": "shell_execution",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 13,
+        "symbol": "subprocess.run"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+        "finding_id": "AGF-6EAE471CB485452E50939DCF"
+      }
+    },
+    {
+      "id": "AGF-5B2266F01D69FB1D1756A678",
+      "kind": "finding",
+      "subtype": "Code Execution",
+      "label": "User or model-controlled interpreter selection",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 13
+      },
+      "risk": {
+        "severity": "Critical",
+        "rule_id": "AIR-EXEC-009",
+        "analysis_type": "taint"
+      },
+      "attributes": {
+        "description": "User or model-controlled interpreter selection. Flag tainted executable/program argument at process-creation sink",
+        "remediation": [
+          "Fixed executable allowlist"
+        ],
+        "fingerprint": "5b2266f01d69fb1d1756a678",
+        "mappings": {
+          "security_controls": [
+            "SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)",
+            "MON_04 (Tool Invocation Monitoring + Auto-Response)",
+            "SEC_06 (Structured Output Schema + Tool Name Auth)",
+            "SEC_18 (Human-in-the-Loop for High-Risk Actions)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "exact",
+          "engine": "project-python",
+          "rule_engine": "agentguard"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-23160659DC2986A83912",
+      "kind": "evidence",
+      "subtype": "source",
+      "label": "external tool/endpoint parameter command",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 12,
+        "symbol": "command"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "def run_shell(command: str):",
+        "finding_id": "AGF-5B2266F01D69FB1D1756A678"
+      }
+    },
+    {
+      "id": "EVIDENCE-A4A23500680FCCA023CD",
+      "kind": "evidence",
+      "subtype": "sink",
+      "label": "shell_execution",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 13,
+        "symbol": "subprocess.run"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+        "finding_id": "AGF-5B2266F01D69FB1D1756A678"
+      }
+    },
+    {
+      "id": "AGF-F59FBBDAF0424258CEAF870A",
+      "kind": "finding",
+      "subtype": "Code Execution",
+      "label": "LLM or user input reaches shell command execution",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 13
+      },
+      "risk": {
+        "severity": "Critical",
+        "rule_id": "AIR-EXEC-001",
+        "analysis_type": "taint"
+      },
+      "attributes": {
+        "description": "LLM or user input reaches shell command execution. Source-to-sink taint rule; treat string formatting into shell commands as exploitable",
+        "remediation": [
+          "Argument arrays",
+          "allowlisted commands",
+          "no shell interpolation"
+        ],
+        "fingerprint": "f59fbbdaf0424258ceaf870a",
+        "mappings": {
+          "security_controls": [
+            "SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)",
+            "MON_04 (Tool Invocation Monitoring + Auto-Response)",
+            "SEC_06 (Structured Output Schema + Tool Name Auth)",
+            "SEC_18 (Human-in-the-Loop for High-Risk Actions)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "exact",
+          "engine": "project-python",
+          "rule_engine": "agentguard"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-664EF0127206D9BB7B37",
+      "kind": "evidence",
+      "subtype": "source",
+      "label": "external tool/endpoint parameter command",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 12,
+        "symbol": "command"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "def run_shell(command: str):",
+        "finding_id": "AGF-F59FBBDAF0424258CEAF870A"
+      }
+    },
+    {
+      "id": "EVIDENCE-80E9B5E02C564DD866FA",
+      "kind": "evidence",
+      "subtype": "sink",
+      "label": "shell_execution",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 13,
+        "symbol": "subprocess.run"
+      },
+      "risk": {
+        "severity": "Critical"
+      },
+      "attributes": {
+        "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+        "finding_id": "AGF-F59FBBDAF0424258CEAF870A"
+      }
+    },
+    {
+      "id": "AGF-0BC167135168B759E2812497",
+      "kind": "finding",
+      "subtype": "NVIDIA SkillSpector",
+      "label": "Tool Chaining Abuse",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 1
+      },
+      "risk": {
+        "severity": "High",
+        "rule_id": "NVS-TM2",
+        "analysis_type": "skill_static"
+      },
+      "attributes": {
+        "description": "Tool Chaining Abuse. Executed by NVIDIA SkillSpector rule TM2",
+        "remediation": [
+          "Use typed tool parameters and safe defaults.",
+          "Validate tool inputs, disallow unsafe flags, and enforce authorization per call."
+        ],
+        "fingerprint": "0bc167135168b759e2812497",
+        "mappings": {
+          "security_controls": [
+            "SEC_17 (Toxic Tool Combination Detection)",
+            "MON_04 (Tool Invocation Monitoring + Auto-Response)",
+            "SEC_18 (Human-in-the-Loop for High-Risk Actions)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "deterministic",
+          "engine": "agentguard-skill",
+          "origin": "SkillSpector-compatible static analysis",
+          "rule_engine": "agentguard-skill"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-985223014FA661969CE7",
+      "kind": "evidence",
+      "subtype": "skill-static",
+      "label": "tool chaining without visible policy boundary",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 1,
+        "symbol": ""
+      },
+      "risk": {
+        "severity": "High"
+      },
+      "attributes": {
+        "detail": "from langchain_core.tools import tool",
+        "finding_id": "AGF-0BC167135168B759E2812497"
+      }
+    },
+    {
+      "id": "AGF-D16F4E44456648436C0FA86E",
+      "kind": "finding",
+      "subtype": "NVIDIA SkillSpector",
+      "label": "Tool Parameter Abuse",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 13
+      },
+      "risk": {
+        "severity": "High",
+        "rule_id": "NVS-TM1",
+        "analysis_type": "skill_static"
+      },
+      "attributes": {
+        "description": "Tool Parameter Abuse. Executed by NVIDIA SkillSpector rule TM1",
+        "remediation": [
+          "Use typed tool parameters and safe defaults.",
+          "Validate tool inputs, disallow unsafe flags, and enforce authorization per call."
+        ],
+        "fingerprint": "d16f4e44456648436c0fa86e",
+        "mappings": {
+          "security_controls": [
+            "SEC_06 (Structured Output Schema + Tool Name Auth)",
+            "MCP_03 (MCP Schema and Argument Validation)",
+            "MON_04 (Tool Invocation Monitoring + Auto-Response)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "deterministic",
+          "engine": "agentguard-skill",
+          "origin": "SkillSpector-compatible static analysis",
+          "rule_engine": "agentguard-skill"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-F0CF9E51E4CBB0F3CB18",
+      "kind": "evidence",
+      "subtype": "skill-static",
+      "label": "static skill pattern",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 13,
+        "symbol": ""
+      },
+      "risk": {
+        "severity": "High"
+      },
+      "attributes": {
+        "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+        "finding_id": "AGF-D16F4E44456648436C0FA86E"
+      }
+    },
+    {
+      "id": "AGF-745EFF8B50F44E56730F20F7",
+      "kind": "finding",
+      "subtype": "NVIDIA SkillSpector",
+      "label": "subprocess Call",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 13
+      },
+      "risk": {
+        "severity": "High",
+        "rule_id": "NVS-AST4",
+        "analysis_type": "skill_static"
+      },
+      "attributes": {
+        "description": "subprocess Call. Executed by NVIDIA SkillSpector rule AST4",
+        "remediation": [
+          "Replace dynamic or reflective execution with explicit, allowlisted operations.",
+          "Never execute attacker-controlled strings; prefer structured parsers and fixed call targets."
+        ],
+        "fingerprint": "745eff8b50f44e56730f20f7",
+        "mappings": {
+          "security_controls": [
+            "SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)",
+            "SEC_06 (Structured Output Schema + Tool Name Auth)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "deterministic",
+          "engine": "agentguard-skill",
+          "origin": "SkillSpector-compatible static analysis",
+          "rule_engine": "agentguard-skill"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-503288D658130358200B",
+      "kind": "evidence",
+      "subtype": "ast",
+      "label": "subprocess.run",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 13,
+        "symbol": ""
+      },
+      "risk": {
+        "severity": "High"
+      },
+      "attributes": {
+        "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+        "finding_id": "AGF-745EFF8B50F44E56730F20F7"
+      }
+    },
+    {
+      "id": "AGF-B55217A8EB201B74309BDE85",
+      "kind": "finding",
+      "subtype": "NVIDIA SkillSpector",
+      "label": "Cross-Context Output",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "app.py",
+        "line": 1
+      },
+      "risk": {
+        "severity": "Medium",
+        "rule_id": "NVS-OH2",
+        "analysis_type": "skill_static"
+      },
+      "attributes": {
+        "description": "Cross-Context Output. Executed by NVIDIA SkillSpector rule OH2",
+        "remediation": [
+          "Validate and constrain model/tool output before crossing a trust boundary.",
+          "Use typed schemas, encoding, size limits, and allowlists before execution or rendering."
+        ],
+        "fingerprint": "b55217a8eb201b74309bde85",
+        "mappings": {
+          "security_controls": [
+            "SEC_05 (Output Content Scanning)",
+            "DATA_01 (Runtime Data Classification Enforcement)",
+            "SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "deterministic",
+          "engine": "agentguard-skill",
+          "origin": "SkillSpector-compatible static analysis",
+          "rule_engine": "agentguard-skill"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-163E1BC96FDD27CBE1C6",
+      "kind": "evidence",
+      "subtype": "skill-static",
+      "label": "cross-context output flow",
+      "version": {},
+      "source": {
+        "file": "app.py",
+        "line": 1,
+        "symbol": ""
+      },
+      "risk": {
+        "severity": "Medium"
+      },
+      "attributes": {
+        "detail": "from langchain_core.tools import tool",
+        "finding_id": "AGF-B55217A8EB201B74309BDE85"
+      }
+    },
+    {
+      "id": "AGF-CB7A85CA5A530C9A8FD3981B",
+      "kind": "finding",
+      "subtype": "NVIDIA SkillSpector",
+      "label": "Overdeclared Permission",
+      "version": {
+        "value": "1",
+        "scheme": "rule-version",
+        "source": "rule_catalog"
+      },
+      "source": {
+        "file": "skills/customer_lookup/SKILL.md",
+        "line": 1
+      },
+      "risk": {
+        "severity": "Low",
+        "rule_id": "NVS-LP4",
+        "analysis_type": "skill_static"
+      },
+      "attributes": {
+        "description": "Overdeclared Permission. Executed by NVIDIA SkillSpector rule LP4",
+        "remediation": [
+          "Declare the minimum required capabilities explicitly.",
+          "Reject wildcard permissions and reconcile declared permissions with observed behavior."
+        ],
+        "fingerprint": "cb7a85ca5a530c9a8fd3981b",
+        "mappings": {
+          "security_controls": [
+            "REG_02 (Agent Manifest Schema Validation)",
+            "SEC_15 (Agent Registry Compliance Gate)",
+            "SEC_21 (Policy-as-Code for AI Controls)",
+            "IAM_03 (Least-Privilege Resource-Scoped IAM)"
+          ]
+        },
+        "cwe": [],
+        "engine_metadata": {
+          "resolution": "deterministic",
+          "engine": "agentguard-skill",
+          "origin": "SkillSpector-compatible static analysis",
+          "rule_engine": "agentguard-skill"
+        }
+      }
+    },
+    {
+      "id": "EVIDENCE-61DAB55694BB2EFAEC86",
+      "kind": "evidence",
+      "subtype": "permission",
+      "label": "declared capability not observed",
+      "version": {},
+      "source": {
+        "file": "skills/customer_lookup/SKILL.md",
+        "line": 1,
+        "symbol": ""
+      },
+      "risk": {
+        "severity": "Low"
+      },
+      "attributes": {
+        "detail": "---",
+        "finding_id": "AGF-CB7A85CA5A530C9A8FD3981B"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "EDGE-5596E04299F3B9862462",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "TOOL-36600f572e380b11",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 8
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-F8444DDD64A2B98338F5",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "TOOL-9972f365ee161300",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 12
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-FE3DC22A166CEE6F1B9D",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "MODEL-d83bb665e203f289",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 15
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-0FDA31E27472228A7268",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "AGENT-402ceaa3621c3c2b",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 16
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-3CEE58378D773369B56B",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "MCP_SERVER-6f5be171a25f8770",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 17
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-E85EFF776C7938FEAB19",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "CAPABILITY-2f3deb384fe85932",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-6070766A9BDE2AE14846",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "SKILL-1c905af191a08e5e",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "skills/customer_lookup/SKILL.md",
+          "line": 1
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-9987A5A4A58BD520FCE3",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "DEPENDENCY-80fbff84acdebdde",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "pyproject.toml",
+          "line": 1
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-255BE715FB5A85B0CC20",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "DEPENDENCY-797d6f745ef4333e",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "pyproject.toml",
+          "line": 1
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-5363BD0AA9DA899507C7",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "DEPENDENCY-67ff10e468a19957",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "pyproject.toml",
+          "line": 1
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-7A85570F5678EA5F0051",
+      "source": "REPO-F8A654DA554BE280B2C7",
+      "target": "DEPENDENCY-aa4f22fb155e5f81",
+      "relation": "DEFINES",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "pyproject.toml",
+          "line": 1
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-7D23873BA2303D481A53",
+      "source": "AGENT-402ceaa3621c3c2b",
+      "target": "TOOL-36600f572e380b11",
+      "relation": "USES_TOOL",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 16
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact",
+        "keyword": "tools"
+      }
+    },
+    {
+      "id": "EDGE-B40EB514FDA88D070753",
+      "source": "AGENT-402ceaa3621c3c2b",
+      "target": "TOOL-9972f365ee161300",
+      "relation": "USES_TOOL",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 16
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact",
+        "keyword": "tools"
+      }
+    },
+    {
+      "id": "EDGE-C901670E304DEE9DE86E",
+      "source": "AGENT-402ceaa3621c3c2b",
+      "target": "MODEL-d83bb665e203f289",
+      "relation": "USES_MODEL",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 16
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact",
+        "keyword": "model"
+      }
+    },
+    {
+      "id": "EDGE-6ED53024A8D4BE546505",
+      "source": "TOOL-9972f365ee161300",
+      "target": "CAPABILITY-2f3deb384fe85932",
+      "relation": "HAS_CAPABILITY",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact",
+        "call": "subprocess.run"
+      }
+    },
+    {
+      "id": "EDGE-FAC6422C799EB7EC323A",
+      "source": "AGENT-402ceaa3621c3c2b",
+      "target": "SKILL-1c905af191a08e5e",
+      "relation": "USES_SKILL",
+      "directed": true,
+      "evidence": [
+        {
+          "file": ".well-known/agent-card.json",
+          "line": 1
+        }
+      ],
+      "finding_ids": [],
+      "attributes": {
+        "resolution": "exact"
+      }
+    },
+    {
+      "id": "EDGE-C6CD075AB3FC5CFA4B49",
+      "source": "CAPABILITY-2f3deb384fe85932",
+      "target": "AGF-E08A030B34D6F8E95CFA578E",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [
+        "AGF-E08A030B34D6F8E95CFA578E"
+      ],
+      "attributes": {
+        "rule_id": "CUSTOM-AI-001"
+      }
+    },
+    {
+      "id": "EDGE-EA3BD8ACDE1D6BBC4DDC",
+      "source": "EVIDENCE-FAAF26E46421380123E3",
+      "target": "EVIDENCE-3F8A83C58CDF8E5F796F",
+      "relation": "EVIDENCE_FLOW",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-E08A030B34D6F8E95CFA578E"
+      ],
+      "attributes": {
+        "sequence": 1
+      }
+    },
+    {
+      "id": "EDGE-5DA0E01D6B02A4365996",
+      "source": "AGF-E08A030B34D6F8E95CFA578E",
+      "target": "EVIDENCE-FAAF26E46421380123E3",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-E08A030B34D6F8E95CFA578E"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-118E90DACDEB997A2320",
+      "source": "CAPABILITY-2f3deb384fe85932",
+      "target": "AGF-0F809C2872CFBF027017063B",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [
+        "AGF-0F809C2872CFBF027017063B"
+      ],
+      "attributes": {
+        "rule_id": "AIR-OUT-003"
+      }
+    },
+    {
+      "id": "EDGE-ED1ADE6E6763C00CBB69",
+      "source": "EVIDENCE-E86959B158043D782D8D",
+      "target": "EVIDENCE-D5C3CA1B44DE964A0A8D",
+      "relation": "EVIDENCE_FLOW",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-0F809C2872CFBF027017063B"
+      ],
+      "attributes": {
+        "sequence": 1
+      }
+    },
+    {
+      "id": "EDGE-8CBAFC97A8176C79702A",
+      "source": "AGF-0F809C2872CFBF027017063B",
+      "target": "EVIDENCE-E86959B158043D782D8D",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-0F809C2872CFBF027017063B"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-25BD584278C484CEDAE4",
+      "source": "CAPABILITY-2f3deb384fe85932",
+      "target": "AGF-6EAE471CB485452E50939DCF",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [
+        "AGF-6EAE471CB485452E50939DCF"
+      ],
+      "attributes": {
+        "rule_id": "AIR-MCP-010"
+      }
+    },
+    {
+      "id": "EDGE-FF259C4AC9D81B9A5BB1",
+      "source": "EVIDENCE-E4E784E78482914CC05F",
+      "target": "EVIDENCE-C05BF19A822642165E63",
+      "relation": "EVIDENCE_FLOW",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-6EAE471CB485452E50939DCF"
+      ],
+      "attributes": {
+        "sequence": 1
+      }
+    },
+    {
+      "id": "EDGE-9E52C2015A92A15EE694",
+      "source": "AGF-6EAE471CB485452E50939DCF",
+      "target": "EVIDENCE-E4E784E78482914CC05F",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-6EAE471CB485452E50939DCF"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-10DC94C54C0B65FAAC7E",
+      "source": "CAPABILITY-2f3deb384fe85932",
+      "target": "AGF-5B2266F01D69FB1D1756A678",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [
+        "AGF-5B2266F01D69FB1D1756A678"
+      ],
+      "attributes": {
+        "rule_id": "AIR-EXEC-009"
+      }
+    },
+    {
+      "id": "EDGE-77E776B593CFD3CF0BBE",
+      "source": "EVIDENCE-23160659DC2986A83912",
+      "target": "EVIDENCE-A4A23500680FCCA023CD",
+      "relation": "EVIDENCE_FLOW",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-5B2266F01D69FB1D1756A678"
+      ],
+      "attributes": {
+        "sequence": 1
+      }
+    },
+    {
+      "id": "EDGE-960853254F46ED138F12",
+      "source": "AGF-5B2266F01D69FB1D1756A678",
+      "target": "EVIDENCE-23160659DC2986A83912",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-5B2266F01D69FB1D1756A678"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-EF2D86C39FA287EEAE91",
+      "source": "CAPABILITY-2f3deb384fe85932",
+      "target": "AGF-F59FBBDAF0424258CEAF870A",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [
+        "AGF-F59FBBDAF0424258CEAF870A"
+      ],
+      "attributes": {
+        "rule_id": "AIR-EXEC-001"
+      }
+    },
+    {
+      "id": "EDGE-8E460B8EF652A2B9843B",
+      "source": "EVIDENCE-664EF0127206D9BB7B37",
+      "target": "EVIDENCE-80E9B5E02C564DD866FA",
+      "relation": "EVIDENCE_FLOW",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-F59FBBDAF0424258CEAF870A"
+      ],
+      "attributes": {
+        "sequence": 1
+      }
+    },
+    {
+      "id": "EDGE-7036FDC462A856632C35",
+      "source": "AGF-F59FBBDAF0424258CEAF870A",
+      "target": "EVIDENCE-664EF0127206D9BB7B37",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-F59FBBDAF0424258CEAF870A"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-86B09D570FA0D40131B0",
+      "source": "TOOL-36600f572e380b11",
+      "target": "AGF-0BC167135168B759E2812497",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 1
+        }
+      ],
+      "finding_ids": [
+        "AGF-0BC167135168B759E2812497"
+      ],
+      "attributes": {
+        "rule_id": "NVS-TM2"
+      }
+    },
+    {
+      "id": "EDGE-5836ED696BB37BC07821",
+      "source": "AGF-0BC167135168B759E2812497",
+      "target": "EVIDENCE-985223014FA661969CE7",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-0BC167135168B759E2812497"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-DBD91B12577458A0C74A",
+      "source": "CAPABILITY-2f3deb384fe85932",
+      "target": "AGF-D16F4E44456648436C0FA86E",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [
+        "AGF-D16F4E44456648436C0FA86E"
+      ],
+      "attributes": {
+        "rule_id": "NVS-TM1"
+      }
+    },
+    {
+      "id": "EDGE-AF785B069CB560B217E2",
+      "source": "AGF-D16F4E44456648436C0FA86E",
+      "target": "EVIDENCE-F0CF9E51E4CBB0F3CB18",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-D16F4E44456648436C0FA86E"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-97BBFAE7C40A7BF78EAA",
+      "source": "CAPABILITY-2f3deb384fe85932",
+      "target": "AGF-745EFF8B50F44E56730F20F7",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 13
+        }
+      ],
+      "finding_ids": [
+        "AGF-745EFF8B50F44E56730F20F7"
+      ],
+      "attributes": {
+        "rule_id": "NVS-AST4"
+      }
+    },
+    {
+      "id": "EDGE-9D4A5B7FF6800F795455",
+      "source": "AGF-745EFF8B50F44E56730F20F7",
+      "target": "EVIDENCE-503288D658130358200B",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-745EFF8B50F44E56730F20F7"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-C5AD9E0CDF24650C3111",
+      "source": "TOOL-36600f572e380b11",
+      "target": "AGF-B55217A8EB201B74309BDE85",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "app.py",
+          "line": 1
+        }
+      ],
+      "finding_ids": [
+        "AGF-B55217A8EB201B74309BDE85"
+      ],
+      "attributes": {
+        "rule_id": "NVS-OH2"
+      }
+    },
+    {
+      "id": "EDGE-6E61672B8918D8A68563",
+      "source": "AGF-B55217A8EB201B74309BDE85",
+      "target": "EVIDENCE-163E1BC96FDD27CBE1C6",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-B55217A8EB201B74309BDE85"
+      ],
+      "attributes": {}
+    },
+    {
+      "id": "EDGE-44053849341590B76811",
+      "source": "SKILL-1c905af191a08e5e",
+      "target": "AGF-CB7A85CA5A530C9A8FD3981B",
+      "relation": "HAS_FINDING",
+      "directed": true,
+      "evidence": [
+        {
+          "file": "skills/customer_lookup/SKILL.md",
+          "line": 1
+        }
+      ],
+      "finding_ids": [
+        "AGF-CB7A85CA5A530C9A8FD3981B"
+      ],
+      "attributes": {
+        "rule_id": "NVS-LP4"
+      }
+    },
+    {
+      "id": "EDGE-A7738035E8AFB7F440DA",
+      "source": "AGF-CB7A85CA5A530C9A8FD3981B",
+      "target": "EVIDENCE-61DAB55694BB2EFAEC86",
+      "relation": "HAS_EVIDENCE",
+      "directed": true,
+      "evidence": [],
+      "finding_ids": [
+        "AGF-CB7A85CA5A530C9A8FD3981B"
+      ],
+      "attributes": {}
+    }
+  ],
+  "attack_paths": [
+    {
+      "path_id": "PATH-DA70EE48264C0EC178C7",
+      "finding_id": "AGF-E08A030B34D6F8E95CFA578E",
+      "rule_id": "CUSTOM-AI-001",
+      "severity": "Critical",
+      "title": "Example organization admin command rule",
+      "entry_node_id": "EVIDENCE-FAAF26E46421380123E3",
+      "impact_node_id": "EVIDENCE-3F8A83C58CDF8E5F796F",
+      "asset_node_id": "CAPABILITY-2f3deb384fe85932",
+      "node_ids": [
+        "CAPABILITY-2f3deb384fe85932",
+        "AGF-E08A030B34D6F8E95CFA578E",
+        "EVIDENCE-FAAF26E46421380123E3",
+        "EVIDENCE-3F8A83C58CDF8E5F796F"
+      ],
+      "edge_ids": [
+        "EDGE-EA3BD8ACDE1D6BBC4DDC",
+        "EDGE-5DA0E01D6B02A4365996"
+      ],
+      "explanation": "LLM output reaches a custom privileged command API.",
+      "remediation": [
+        "Use a fixed operation enum and deterministic authorization before execution."
+      ]
+    },
+    {
+      "path_id": "PATH-A51621046B2B67DFE038",
+      "finding_id": "AGF-0F809C2872CFBF027017063B",
+      "rule_id": "AIR-OUT-003",
+      "severity": "Critical",
+      "title": "LLM-generated command executed",
+      "entry_node_id": "EVIDENCE-E86959B158043D782D8D",
+      "impact_node_id": "EVIDENCE-D5C3CA1B44DE964A0A8D",
+      "asset_node_id": "CAPABILITY-2f3deb384fe85932",
+      "node_ids": [
+        "CAPABILITY-2f3deb384fe85932",
+        "AGF-0F809C2872CFBF027017063B",
+        "EVIDENCE-E86959B158043D782D8D",
+        "EVIDENCE-D5C3CA1B44DE964A0A8D"
+      ],
+      "edge_ids": [
+        "EDGE-ED1ADE6E6763C00CBB69",
+        "EDGE-8CBAFC97A8176C79702A"
+      ],
+      "explanation": "LLM-generated command executed. Direct model-output-to-command-sink taint rule",
+      "remediation": [
+        "No free-form command execution; structured allowlisted actions"
+      ]
+    },
+    {
+      "path_id": "PATH-55CAB765BD190DC7F150",
+      "finding_id": "AGF-6EAE471CB485452E50939DCF",
+      "rule_id": "AIR-MCP-010",
+      "severity": "Critical",
+      "title": "MCP tool exposes arbitrary command execution primitive",
+      "entry_node_id": "EVIDENCE-E4E784E78482914CC05F",
+      "impact_node_id": "EVIDENCE-C05BF19A822642165E63",
+      "asset_node_id": "CAPABILITY-2f3deb384fe85932",
+      "node_ids": [
+        "CAPABILITY-2f3deb384fe85932",
+        "AGF-6EAE471CB485452E50939DCF",
+        "EVIDENCE-E4E784E78482914CC05F",
+        "EVIDENCE-C05BF19A822642165E63"
+      ],
+      "edge_ids": [
+        "EDGE-FF259C4AC9D81B9A5BB1",
+        "EDGE-9E52C2015A92A15EE694"
+      ],
+      "explanation": "MCP tool exposes arbitrary command execution primitive. Flag MCP tools whose user/model-controlled schema is directly mapped to process execution",
+      "remediation": [
+        "Narrow task-specific tool schema and command allowlist"
+      ]
+    },
+    {
+      "path_id": "PATH-1FD262D03DABA3D01BBD",
+      "finding_id": "AGF-5B2266F01D69FB1D1756A678",
+      "rule_id": "AIR-EXEC-009",
+      "severity": "Critical",
+      "title": "User or model-controlled interpreter selection",
+      "entry_node_id": "EVIDENCE-23160659DC2986A83912",
+      "impact_node_id": "EVIDENCE-A4A23500680FCCA023CD",
+      "asset_node_id": "CAPABILITY-2f3deb384fe85932",
+      "node_ids": [
+        "CAPABILITY-2f3deb384fe85932",
+        "AGF-5B2266F01D69FB1D1756A678",
+        "EVIDENCE-23160659DC2986A83912",
+        "EVIDENCE-A4A23500680FCCA023CD"
+      ],
+      "edge_ids": [
+        "EDGE-77E776B593CFD3CF0BBE",
+        "EDGE-960853254F46ED138F12"
+      ],
+      "explanation": "User or model-controlled interpreter selection. Flag tainted executable/program argument at process-creation sink",
+      "remediation": [
+        "Fixed executable allowlist"
+      ]
+    },
+    {
+      "path_id": "PATH-F48897DF42CC88B2DD40",
+      "finding_id": "AGF-F59FBBDAF0424258CEAF870A",
+      "rule_id": "AIR-EXEC-001",
+      "severity": "Critical",
+      "title": "LLM or user input reaches shell command execution",
+      "entry_node_id": "EVIDENCE-664EF0127206D9BB7B37",
+      "impact_node_id": "EVIDENCE-80E9B5E02C564DD866FA",
+      "asset_node_id": "CAPABILITY-2f3deb384fe85932",
+      "node_ids": [
+        "CAPABILITY-2f3deb384fe85932",
+        "AGF-F59FBBDAF0424258CEAF870A",
+        "EVIDENCE-664EF0127206D9BB7B37",
+        "EVIDENCE-80E9B5E02C564DD866FA"
+      ],
+      "edge_ids": [
+        "EDGE-8E460B8EF652A2B9843B",
+        "EDGE-7036FDC462A856632C35"
+      ],
+      "explanation": "LLM or user input reaches shell command execution. Source-to-sink taint rule; treat string formatting into shell commands as exploitable",
+      "remediation": [
+        "Argument arrays",
+        "allowlisted commands",
+        "no shell interpolation"
+      ]
+    },
+    {
+      "path_id": "PATH-D6AFDCBBF842446CC32B",
+      "finding_id": "AGF-0BC167135168B759E2812497",
+      "rule_id": "NVS-TM2",
+      "severity": "High",
+      "title": "Tool Chaining Abuse",
+      "entry_node_id": "EVIDENCE-985223014FA661969CE7",
+      "impact_node_id": "EVIDENCE-985223014FA661969CE7",
+      "asset_node_id": "TOOL-36600f572e380b11",
+      "node_ids": [
+        "TOOL-36600f572e380b11",
+        "AGF-0BC167135168B759E2812497",
+        "EVIDENCE-985223014FA661969CE7"
+      ],
+      "edge_ids": [
+        "EDGE-5836ED696BB37BC07821"
+      ],
+      "explanation": "Tool Chaining Abuse. Executed by NVIDIA SkillSpector rule TM2",
+      "remediation": [
+        "Use typed tool parameters and safe defaults.",
+        "Validate tool inputs, disallow unsafe flags, and enforce authorization per call."
+      ]
+    },
+    {
+      "path_id": "PATH-9B21687DDC5A04CB14CB",
+      "finding_id": "AGF-D16F4E44456648436C0FA86E",
+      "rule_id": "NVS-TM1",
+      "severity": "High",
+      "title": "Tool Parameter Abuse",
+      "entry_node_id": "EVIDENCE-F0CF9E51E4CBB0F3CB18",
+      "impact_node_id": "EVIDENCE-F0CF9E51E4CBB0F3CB18",
+      "asset_node_id": "CAPABILITY-2f3deb384fe85932",
+      "node_ids": [
+        "CAPABILITY-2f3deb384fe85932",
+        "AGF-D16F4E44456648436C0FA86E",
+        "EVIDENCE-F0CF9E51E4CBB0F3CB18"
+      ],
+      "edge_ids": [
+        "EDGE-AF785B069CB560B217E2"
+      ],
+      "explanation": "Tool Parameter Abuse. Executed by NVIDIA SkillSpector rule TM1",
+      "remediation": [
+        "Use typed tool parameters and safe defaults.",
+        "Validate tool inputs, disallow unsafe flags, and enforce authorization per call."
+      ]
+    },
+    {
+      "path_id": "PATH-E179AE904372E5FCE2A0",
+      "finding_id": "AGF-745EFF8B50F44E56730F20F7",
+      "rule_id": "NVS-AST4",
+      "severity": "High",
+      "title": "subprocess Call",
+      "entry_node_id": "EVIDENCE-503288D658130358200B",
+      "impact_node_id": "EVIDENCE-503288D658130358200B",
+      "asset_node_id": "CAPABILITY-2f3deb384fe85932",
+      "node_ids": [
+        "CAPABILITY-2f3deb384fe85932",
+        "AGF-745EFF8B50F44E56730F20F7",
+        "EVIDENCE-503288D658130358200B"
+      ],
+      "edge_ids": [
+        "EDGE-9D4A5B7FF6800F795455"
+      ],
+      "explanation": "subprocess Call. Executed by NVIDIA SkillSpector rule AST4",
+      "remediation": [
+        "Replace dynamic or reflective execution with explicit, allowlisted operations.",
+        "Never execute attacker-controlled strings; prefer structured parsers and fixed call targets."
+      ]
+    },
+    {
+      "path_id": "PATH-A9D2A48E497709D31D3F",
+      "finding_id": "AGF-B55217A8EB201B74309BDE85",
+      "rule_id": "NVS-OH2",
+      "severity": "Medium",
+      "title": "Cross-Context Output",
+      "entry_node_id": "EVIDENCE-163E1BC96FDD27CBE1C6",
+      "impact_node_id": "EVIDENCE-163E1BC96FDD27CBE1C6",
+      "asset_node_id": "TOOL-36600f572e380b11",
+      "node_ids": [
+        "TOOL-36600f572e380b11",
+        "AGF-B55217A8EB201B74309BDE85",
+        "EVIDENCE-163E1BC96FDD27CBE1C6"
+      ],
+      "edge_ids": [
+        "EDGE-6E61672B8918D8A68563"
+      ],
+      "explanation": "Cross-Context Output. Executed by NVIDIA SkillSpector rule OH2",
+      "remediation": [
+        "Validate and constrain model/tool output before crossing a trust boundary.",
+        "Use typed schemas, encoding, size limits, and allowlists before execution or rendering."
+      ]
+    },
+    {
+      "path_id": "PATH-A0411019BA845584BE4F",
+      "finding_id": "AGF-CB7A85CA5A530C9A8FD3981B",
+      "rule_id": "NVS-LP4",
+      "severity": "Low",
+      "title": "Overdeclared Permission",
+      "entry_node_id": "EVIDENCE-61DAB55694BB2EFAEC86",
+      "impact_node_id": "EVIDENCE-61DAB55694BB2EFAEC86",
+      "asset_node_id": "SKILL-1c905af191a08e5e",
+      "node_ids": [
+        "SKILL-1c905af191a08e5e",
+        "AGF-CB7A85CA5A530C9A8FD3981B",
+        "EVIDENCE-61DAB55694BB2EFAEC86"
+      ],
+      "edge_ids": [
+        "EDGE-A7738035E8AFB7F440DA"
+      ],
+      "explanation": "Overdeclared Permission. Executed by NVIDIA SkillSpector rule LP4",
+      "remediation": [
+        "Declare the minimum required capabilities explicitly.",
+        "Reject wildcard permissions and reconcile declared permissions with observed behavior."
+      ]
+    }
+  ],
+  "ui_hints": {
+    "default_node_label": "label",
+    "group_by": "category",
+    "severity_field": "risk.max_severity",
+    "edge_label": "relation",
+    "expand_evidence_on_demand": true
+  }
+}

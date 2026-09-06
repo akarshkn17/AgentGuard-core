@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EngineResult",
+  "type": "object",
+  "required": [
+    "engine",
+    "findings"
+  ],
+  "properties": {
+    "engine": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "finding.schema.json"
+      }
+    },
+    "inventory": {
+      "type": "array",
+      "items": {
+        "$ref": "inventory.schema.json"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "relationship.schema.json"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

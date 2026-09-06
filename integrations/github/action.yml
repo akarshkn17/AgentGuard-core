@@ -1,0 +1,43 @@
+name: AgentGuard Scan
+description: Run AgentGuard Core through the published no-auth CLI adapter
+inputs:
+  path:
+    description: Repository path to scan
+    required: false
+    default: .
+  version:
+    description: Published agentguard-cli package version
+    required: false
+    default: "0.4.0"
+  fail-on:
+    description: Severity threshold that fails the job
+    required: false
+    default: high
+  output-dir:
+    description: Directory for report artifacts
+    required: false
+    default: agentguard-results
+  extra-args:
+    description: Additional trusted CLI arguments controlled by the workflow owner
+    required: false
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+        cache: pip
+    - name: Install AgentGuard CLI
+      shell: bash
+      run: python -m pip install "agentguard-cli==${{ inputs.version }}"
+    - name: Run AgentGuard
+      shell: bash
+      run: >-
+        agentguard scan "${{ inputs.path }}"
+        --output-dir "${{ inputs.output-dir }}"
+        --format json --format sarif --format html --format html-summary
+        --format aibom --format agent-bom --format graph
+        --fail-on "${{ inputs.fail-on }}"
+        ${{ inputs.extra-args }}

@@ -1,0 +1,9 @@
+[project]
+name = "demo-agent-platform"
+version = "1.4.2"
+dependencies = [
+  "langgraph==0.6.4",
+  "langchain==0.3.27",
+  "langchain-openai==0.3.33",
+  "mcp==1.13.1"
+]

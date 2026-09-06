@@ -1,0 +1,44 @@
+name: AgentGuard Security Scan
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  agentguard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install published AgentGuard CLI
+        run: python -m pip install "agentguard-cli==0.4.0"
+
+      - name: Run AgentGuard
+        run: |
+          agentguard scan . \
+            --output-dir agentguard-results \
+            --format json --format sarif --format html --format html-summary \
+            --format aibom --format agent-bom --format graph \
+            --fail-on high
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentguard-reports
+          path: agentguard-results/
+
+      - name: Publish SARIF
+        if: always() && hashFiles('agentguard-results/agentguard.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: agentguard-results/agentguard.sarif

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentguard-core"
+version = "0.4.0"
+description = "Persistence-free static security scanner core for AI agents, tools, MCP, skills and AI inventory"
+requires-python = ">=3.11"
+license = {text = "Apache-2.0"}
+authors = [{name = "AgentGuard Project"}]
+dependencies = ["pydantic>=2.8,<3", "PyYAML>=6.0,<7"]
+
+[project.optional-dependencies]
+treesitter = ["tree-sitter-language-pack>=1.6,<2"]
+dev = ["pytest>=8,<10", "ruff>=0.6"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+agentguard_core = ["rules/builtin/*.yaml", "rules/catalog_manifest.json"]

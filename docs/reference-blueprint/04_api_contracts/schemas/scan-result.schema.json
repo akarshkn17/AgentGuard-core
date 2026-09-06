@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentguard.example/schemas/scan-result.schema.json",
+  "title": "AgentGuard ScanResult",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "scan",
+    "engines",
+    "findings",
+    "inventory",
+    "relationships"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string"
+    },
+    "scan": {
+      "type": "object",
+      "required": [
+        "scan_id",
+        "state"
+      ],
+      "properties": {
+        "scan_id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "partial",
+            "failed"
+          ]
+        },
+        "repository": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "completed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "engines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "engine_id"
+        ],
+        "properties": {
+          "engine_id": {
+            "type": "string"
+          },
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "finding.schema.json"
+      }
+    },
+    "inventory": {
+      "type": "array",
+      "items": {
+        "$ref": "inventory.schema.json"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "relationship.schema.json"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

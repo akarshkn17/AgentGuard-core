@@ -1,0 +1,160 @@
+openapi: 3.1.0
+info:
+  title: AgentGuard Platform API
+  version: 1.0.0-draft
+servers:
+  - url: https://api.agentguard.example/api/v1
+security:
+  - oauth2: [agentguard.read]
+paths:
+  /projects:
+    get:
+      summary: List projects visible to the caller
+      responses:
+        '200':
+          description: Project list
+    post:
+      summary: Create project
+      security: [{oauth2: [agentguard.write]}]
+      responses:
+        '201': {description: Created}
+  /projects/{project_id}/scans:
+    post:
+      summary: Create asynchronous scan job
+      security: [{oauth2: [agentguard.scan]}]
+      parameters:
+        - in: path
+          name: project_id
+          required: true
+          schema: {type: string, format: uuid}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanCreateRequest'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Scan'}
+  /projects/{project_id}/scan-results:
+    post:
+      summary: Upload normalized offline/CI result
+      security: [{oauth2: [agentguard.ingest]}]
+      parameters:
+        - in: path
+          name: project_id
+          required: true
+          schema: {type: string, format: uuid}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/scan-result.schema.json'
+      responses:
+        '202': {description: Accepted for ingestion}
+  /scans/{scan_id}:
+    get:
+      summary: Get scan
+      parameters:
+        - in: path
+          name: scan_id
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200':
+          description: Scan
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Scan'}
+  /findings:
+    get:
+      summary: List findings
+      parameters:
+        - in: query
+          name: project_id
+          schema: {type: string, format: uuid}
+        - in: query
+          name: severity
+          schema: {type: string}
+        - in: query
+          name: status
+          schema: {type: string}
+      responses:
+        '200': {description: Finding list}
+  /findings/{finding_id}:
+    get:
+      summary: Get finding detail
+      parameters:
+        - in: path
+          name: finding_id
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: Finding}
+    patch:
+      summary: Update lifecycle fields
+      security: [{oauth2: [agentguard.triage]}]
+      responses:
+        '200': {description: Updated}
+  /scans/{scan_id}/aibom:
+    get:
+      summary: Export AI-BOM for a scan snapshot
+      parameters:
+        - in: path
+          name: scan_id
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: CycloneDX AI/ML-BOM}
+  /scans/{scan_id}/graph:
+    get:
+      summary: Get normalized graph snapshot
+      parameters:
+        - in: path
+          name: scan_id
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: Graph snapshot}
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
+          tokenUrl: https://login.microsoftonline.com/common/oauth2/v2.0/token
+          scopes:
+            agentguard.read: Read AgentGuard data
+            agentguard.write: Manage AgentGuard configuration
+            agentguard.scan: Create scans
+            agentguard.ingest: Upload scan results
+            agentguard.triage: Modify finding lifecycle
+  schemas:
+    ScanCreateRequest:
+      type: object
+      required: [source]
+      properties:
+        source:
+          type: object
+          required: [type, ref]
+          properties:
+            type: {type: string, enum: [git, artifact]}
+            ref: {type: string}
+            commit: {type: [string, 'null']}
+        profile: {type: string, default: default}
+        engines:
+          type: array
+          items: {type: string}
+    Scan:
+      type: object
+      required: [id, state]
+      properties:
+        id: {type: string, format: uuid}
+        state: {type: string, enum: [queued, running, completed, partial, failed, cancelled]}
+        created_at: {type: string, format: date-time}
+        completed_at: {type: [string, 'null'], format: date-time}

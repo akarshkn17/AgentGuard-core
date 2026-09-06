@@ -1,0 +1,4500 @@
+- id: CUSTOM-AI-001
+  name: Example organization admin command rule
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: CUSTOM-AI-001
+  category: custom
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks:
+  - shell_execution
+  barriers:
+  - command_allowlist
+  - authorization_check
+  match: {}
+  message: LLM output reaches a custom privileged command API.
+  description: LLM output reaches a custom privileged command API.
+  remediation:
+  - Use a fixed operation enum and deterministic authorization before execution.
+  source_description: ''
+  sink_description: ''
+  detection_logic: ''
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/custom/example.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/custom/example.yaml
+- id: AIR-AGENT-001
+  name: Unbounded recursion or iteration in agent loop
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-001
+  category: Agent Orchestration
+  severity: high
+  targets:
+  - agent
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unbounded recursion or iteration in agent loop
+  description: Unbounded recursion or iteration in agent loop. Flag agent loops lacking max iterations/recursion limit or
+    set to extremely high/unlimited
+  remediation:
+  - Hard step/recursion limit
+  source_description: N/A
+  sink_description: while agent continues, recursion_limit absent/excessive
+  detection_logic: Flag agent loops lacking max iterations/recursion limit or set to extremely high/unlimited.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - SEC_16 (Recursive Loop & Runaway Prevention)
+    - BIZ_06 (Cost and Abuse Budgeting)
+    - MON_08 (Behavioral Analytics & Anomaly Detection)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-002
+  name: Unbounded retry of LLM/tool calls
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-002
+  category: Agent Orchestration
+  severity: high
+  targets:
+  - agent
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unbounded retry of LLM/tool calls
+  description: Unbounded retry of LLM/tool calls. Flag retry decorators/loops with no max attempts around model/tool/network
+    calls
+  remediation:
+  - Max retry count + timeout + budget
+  source_description: N/A
+  sink_description: retry loops/backoff handlers
+  detection_logic: Flag retry decorators/loops with no max attempts around model/tool/network calls.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - SEC_16 (Recursive Loop & Runaway Prevention)
+    - BIZ_06 (Cost and Abuse Budgeting)
+    - MON_08 (Behavioral Analytics & Anomaly Detection)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-003
+  name: No timeout on external tool or model call
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-003
+  category: Agent Orchestration
+  severity: medium
+  targets:
+  - agent
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks:
+  - shell_execution
+  barriers: []
+  match: {}
+  message: No timeout on external tool or model call
+  description: No timeout on external tool or model call. Flag external calls in agent/tool code with absent timeout where
+    API supports one; confidence-based
+  remediation:
+  - Finite timeout
+  source_description: N/A
+  sink_description: HTTP/model/subprocess/tool call
+  detection_logic: Flag external calls in agent/tool code with absent timeout where API supports one; confidence-based.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - SEC_16 (Recursive Loop & Runaway Prevention)
+    - BIZ_06 (Cost and Abuse Budgeting)
+    - MON_08 (Behavioral Analytics & Anomaly Detection)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-004
+  name: No token/context budget before model invocation
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-004
+  category: Agent Orchestration
+  severity: high
+  targets:
+  - agent
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: No token/context budget before model invocation
+  description: No token/context budget before model invocation. Flag unbounded collection/history/document concatenation into
+    prompts with no length/token cap
+  remediation:
+  - Maximum input size/token budget/truncation
+  source_description: Documents/history/retrieval context
+  sink_description: LLM invocation
+  detection_logic: Flag unbounded collection/history/document concatenation into prompts with no length/token cap.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - SEC_07 (Token Budget Monitoring - Prompt Stuffing Defense)
+    - BIZ_06 (Cost and Abuse Budgeting)
+    - MON_08 (Behavioral Analytics & Anomaly Detection)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-005
+  name: Parallel agents share mutable global state
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-005
+  category: Agent Orchestration
+  severity: high
+  targets:
+  - agent
+  analysis:
+    type: structural
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Parallel agents share mutable global state
+  description: Parallel agents share mutable global state. Flag global mutable conversation/memory/tool state accessed by
+    concurrent agent handlers
+  remediation:
+  - Per-session isolated state store
+  source_description: Multiple sessions/agents
+  sink_description: module/global mutable dict/list/state object
+  detection_logic: Flag global mutable conversation/memory/tool state accessed by concurrent agent handlers.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - MEM_01 (Memory Store Classification and Ownership)
+    - MEM_02 (Memory Read Authorization and ACL Filtering)
+    - MON_08 (Behavioral Analytics & Anomaly Detection)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-006
+  name: Model output selects arbitrary callable/function by name
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-006
+  category: Agent Orchestration
+  severity: critical
+  targets:
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Model output selects arbitrary callable/function by name
+  description: Model output selects arbitrary callable/function by name. Flag model-controlled name used in dynamic callable
+    lookup/invocation without allowlist
+  remediation:
+  - Allowlisted registry with fixed capability set
+  source_description: LLM output function/tool name
+  sink_description: globals(), getattr(), registry lookup followed by call
+  detection_logic: Flag model-controlled name used in dynamic callable lookup/invocation without allowlist.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-007
+  name: Agent can dynamically install/load new tools during execution
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-007
+  category: Agent Orchestration
+  severity: critical
+  targets:
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - user_input
+  sinks: []
+  barriers: []
+  match: {}
+  message: Agent can dynamically install/load new tools during execution
+  description: Agent can dynamically install/load new tools during execution. Flag model/user-controlled dynamic tool registration,
+    package install, plugin load, or MCP server connection
+  remediation:
+  - Admin-approved signed registry only
+  source_description: Model/user tool/package/server identifier
+  sink_description: tool installer/registry/import/MCP connect
+  detection_logic: Flag model/user-controlled dynamic tool registration, package install, plugin load, or MCP server connection.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - REG_01 (Authoritative Agent Registry)
+    - REG_03 (AIBOM Required for Every Agent)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - REG_07 (Runtime Drift Detection Against Registry)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-008
+  name: Planner-generated arguments bypass typed tool interface
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-008
+  category: Agent Orchestration
+  severity: high
+  targets:
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks: []
+  barriers:
+  - schema_validation
+  match: {}
+  message: Planner-generated arguments bypass typed tool interface
+  description: Planner-generated arguments bypass typed tool interface. Flag generic dispatcher that forwards model-produced
+    dicts to callables without per-tool validation
+  remediation:
+  - Per-tool typed schema and validation
+  source_description: Planner raw text/JSON
+  sink_description: generic dispatch **kwargs/dict to arbitrary tool
+  detection_logic: Flag generic dispatcher that forwards model-produced dicts to callables without per-tool validation.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-009
+  name: Sub-agent can call parent-only privileged tools
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-009
+  category: Agent Orchestration
+  severity: critical
+  targets:
+  - multi-agent
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Sub-agent can call parent-only privileged tools
+  description: Sub-agent can call parent-only privileged tools. Build agent-to-tool graph; flag privileged tool bound to or
+    reachable by unauthorized sub-agents
+  remediation:
+  - Per-agent capability set
+  source_description: Sub-agent execution context
+  sink_description: privileged parent tool
+  detection_logic: Build agent-to-tool graph; flag privileged tool bound to or reachable by unauthorized sub-agents.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - IAM_14 (Agent-to-Agent Trust Scoping)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AGENT-010
+  name: Agent-to-agent messages can spoof system/internal role
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AGENT-010
+  category: Agent Orchestration
+  severity: critical
+  targets:
+  - multi-agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Agent-to-agent messages can spoof system/internal role
+  description: Agent-to-agent messages can spoof system/internal role. Flag remote agent content accepted with caller-supplied
+    privileged role/type
+  remediation:
+  - Authenticated channel + fixed role assignment
+  source_description: Remote/sub-agent message
+  sink_description: system/internal message channel
+  detection_logic: Flag remote agent content accepted with caller-supplied privileged role/type.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/agent_orchestration.yaml
+  mappings:
+    security_controls:
+    - IAM_05 (A2A Delegation Bundle Validation)
+    - IAM_14 (Agent-to-Agent Trust Scoping)
+    - SEC_04 (A2A Inbound Content Filtering)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/agent_orchestration.yaml
+- id: AIR-AUTH-001
+  name: Tool authorization does not bind to initiating user identity
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AUTH-001
+  category: Authorization
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: control_flow
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - rbac_check
+  match: {}
+  message: Tool authorization does not bind to initiating user identity
+  description: Tool authorization does not bind to initiating user identity. Flag sensitive tool functions lacking user/principal
+    parameter or authorization call before side effect
+  remediation:
+  - Propagate identity and enforce RBAC/ABAC at tool boundary
+  source_description: Authenticated user identity
+  sink_description: sensitive tool handler
+  detection_logic: Flag sensitive tool functions lacking user/principal parameter or authorization call before side effect.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/authorization.yaml
+  mappings:
+    security_controls:
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/authorization.yaml
+- id: AIR-AUTH-002
+  name: Cross-agent delegation drops authorization context
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AUTH-002
+  category: Authorization
+  severity: critical
+  targets:
+  - multi-agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Cross-agent delegation drops authorization context
+  description: Cross-agent delegation drops authorization context. Track identity object across agent call graph; flag delegation
+    where identity is absent/replaced with service identity only
+  remediation:
+  - Propagate signed identity/claims and reduce privileges
+  source_description: User principal/claims/tenant
+  sink_description: sub-agent invocation / remote agent call
+  detection_logic: Track identity object across agent call graph; flag delegation where identity is absent/replaced with service
+    identity only.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/authorization.yaml
+  mappings:
+    security_controls:
+    - IAM_05 (A2A Delegation Bundle Validation)
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+    - IAM_14 (Agent-to-Agent Trust Scoping)
+    - IAM_13 (Federated Identity Subject Consistency Verification)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/authorization.yaml
+- id: AIR-AUTH-003
+  name: Agent identity trusted from spoofable header/string
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AUTH-003
+  category: Identity
+  severity: critical
+  targets:
+  - agent
+  - tool
+  - mcp
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  sinks:
+  - authorization_decision
+  barriers: []
+  match: {}
+  message: Agent identity trusted from spoofable header/string
+  description: Agent identity trusted from spoofable header/string. Flag request/model-controlled identity strings used in
+    allow/deny checks
+  remediation:
+  - Verified signed token/workload identity
+  source_description: X-Agent-Name, agent_id, role, caller name from request/model
+  sink_description: authorization decision
+  detection_logic: Flag request/model-controlled identity strings used in allow/deny checks.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/identity.yaml
+  mappings:
+    security_controls:
+    - IAM_13 (Federated Identity Subject Consistency Verification)
+    - IAM_05 (A2A Delegation Bundle Validation)
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/identity.yaml
+- id: AIR-AUTH-004
+  name: Runtime service account uses wildcard/broad cloud permissions
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AUTH-004
+  category: Authorization
+  severity: critical
+  targets:
+  - agent_runtime
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Runtime service account uses wildcard/broad cloud permissions
+  description: Runtime service account uses wildcard/broad cloud permissions. IaC rule for agent workload identity with wildcard
+    actions/resources or broad predefined admin roles
+  remediation:
+  - Least-privilege role scoped to approved tools/resources
+  source_description: N/A
+  sink_description: IAM roles/actions/resources with wildcard/admin/editor/owner
+  detection_logic: IaC rule for agent workload identity with wildcard actions/resources or broad predefined admin roles.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/authorization.yaml
+  mappings:
+    security_controls:
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - IAM_12 (Periodic Access Review & Recertification)
+    - REG_04 (Policy-as-Code Coverage for Must Controls)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/authorization.yaml
+- id: AIR-AUTH-005
+  name: Tool allowlist is derived from model or user input
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AUTH-005
+  category: Authorization
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - user_input
+  sinks:
+  - policy_mutation
+  barriers:
+  - allowlist
+  match: {}
+  message: Tool allowlist is derived from model or user input
+  description: Tool allowlist is derived from model or user input. Flag tainted values mutating enabled/allowed tool lists
+  remediation:
+  - Server-side static/policy-derived allowlist
+  source_description: User/model-selected tool names
+  sink_description: enabled_tools/allowed_tools/tool registry
+  detection_logic: Flag tainted values mutating enabled/allowed tool lists.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/authorization.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/authorization.yaml
+- id: AIR-AUTH-006
+  name: All registered tools exposed to model regardless of user role
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AUTH-006
+  category: Authorization
+  severity: high
+  targets:
+  - agent
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: All registered tools exposed to model regardless of user role
+  description: All registered tools exposed to model regardless of user role. Flag sensitive tool set bound unconditionally
+    in apps with multiple roles/tenants
+  remediation:
+  - Role/policy-filtered tool set
+  source_description: User role/identity
+  sink_description: llm.bind_tools/tools=[all_tools]/agent executor
+  detection_logic: Flag sensitive tool set bound unconditionally in apps with multiple roles/tenants.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/authorization.yaml
+  mappings:
+    security_controls:
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/authorization.yaml
+- id: AIR-AUTH-007
+  name: Sensitive action lacks step-up or human approval gate
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AUTH-007
+  category: Authorization
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: control_flow
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks: []
+  barriers:
+  - approval_gate
+  match: {}
+  message: Sensitive action lacks step-up or human approval gate
+  description: Sensitive action lacks step-up or human approval gate. Flag configured high-impact sinks directly reachable
+    from model tool call without approval function/node
+  remediation:
+  - Explicit approval/policy node
+  source_description: LLM tool-call decision
+  sink_description: delete/deploy/payment/email/admin/production side-effect
+  detection_logic: Flag configured high-impact sinks directly reachable from model tool call without approval function/node.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/authorization.yaml
+  mappings:
+    security_controls:
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+    - BIZ_02 (High-Risk Action Catalog)
+    - IAM_11 (Conditional Access for Agent Admin Operations)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/authorization.yaml
+- id: AIR-AUTH-008
+  name: Authorization result cached without user/resource scoping
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-AUTH-008
+  category: Authorization
+  severity: high
+  targets:
+  - tool
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Authorization result cached without user/resource scoping
+  description: Authorization result cached without user/resource scoping. Flag global/static allow cache or cache keyed only
+    by tool/action
+  remediation:
+  - Cache key includes principal
+  - action
+  - resource
+  - policy version
+  source_description: Auth decision cache
+  sink_description: tool/resource access
+  detection_logic: Flag global/static allow cache or cache keyed only by tool/action.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/authorization.yaml
+  mappings:
+    security_controls:
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/authorization.yaml
+- id: AIR-CLOUD-001
+  name: Agent service account key embedded or mounted as static credential
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-CLOUD-001
+  category: Cloud Config
+  severity: critical
+  targets:
+  - agent_runtime
+  analysis:
+    type: secret
+    interprocedural: true
+  sources:
+  - sensitive_data
+  sinks: []
+  barriers: []
+  match: {}
+  message: Agent service account key embedded or mounted as static credential
+  description: Agent service account key embedded or mounted as static credential. Detect cloud key JSON/private key files
+    and static credential mounts in agent deployments
+  remediation:
+  - Workload identity / short-lived credentials
+  source_description: Service-account key file/token
+  sink_description: container/env/secret volume/code
+  detection_logic: Detect cloud key JSON/private key files and static credential mounts in agent deployments.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/cloud_config.yaml
+  mappings:
+    security_controls:
+    - IAM_02 (Workload Identity - Zero Static Key Files)
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - IAM_09 (Non-Human Identity (NHI) Lifecycle Management)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/cloud_config.yaml
+- id: AIR-CLOUD-002
+  name: Agent container runs privileged or with host mounts
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-CLOUD-002
+  category: Cloud Config
+  severity: critical
+  targets:
+  - agent_runtime
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - path_containment
+  match: {}
+  message: Agent container runs privileged or with host mounts
+  description: Agent container runs privileged or with host mounts. Kubernetes/Docker IaC rule scoped to AI agent/tool/MCP
+    workloads
+  remediation:
+  - Restricted container security context
+  source_description: N/A
+  sink_description: privileged:true, hostPath, docker.sock, hostNetwork/hostPID
+  detection_logic: Kubernetes/Docker IaC rule scoped to AI agent/tool/MCP workloads.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/cloud_config.yaml
+  mappings:
+    security_controls:
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - REG_04 (Policy-as-Code Coverage for Must Controls)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/cloud_config.yaml
+- id: AIR-CLOUD-003
+  name: Agent workload has unrestricted outbound network egress
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-CLOUD-003
+  category: Cloud Config
+  severity: high
+  targets:
+  - agent_runtime
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Agent workload has unrestricted outbound network egress
+  description: Agent workload has unrestricted outbound network egress. Flag agent/tool workloads with powerful data access
+    and no egress restrictions; repository-level config rule
+  remediation:
+  - Egress allowlist/proxy/network policy
+  source_description: N/A
+  sink_description: no NetworkPolicy/egress restriction where architecture expects isolation
+  detection_logic: Flag agent/tool workloads with powerful data access and no egress restrictions; repository-level config
+    rule.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/cloud_config.yaml
+  mappings:
+    security_controls:
+    - NET_06 (Per-Agent Egress Allowlist)
+    - NET_11 (Network Segmentation by Trust Tier)
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - MON_11 (Security Threat Detection Integration)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/cloud_config.yaml
+- id: AIR-CLOUD-004
+  name: Publicly exposed agent/MCP/admin service without auth proxy
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-CLOUD-004
+  category: Cloud Config
+  severity: critical
+  targets:
+  - agent_runtime
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Publicly exposed agent/MCP/admin service without auth proxy
+  description: Publicly exposed agent/MCP/admin service without auth proxy. Correlate public ingress with service lacking
+    app/auth middleware
+  remediation:
+  - Auth gateway/IAP/API gateway/private ingress
+  source_description: Internet ingress
+  sink_description: LoadBalancer/Ingress/public endpoint to sensitive service
+  detection_logic: Correlate public ingress with service lacking app/auth middleware.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/cloud_config.yaml
+  mappings:
+    security_controls:
+    - NET_01 (WAF-Capable Edge for Every Agent)
+    - NET_04 (Private Origin Configuration)
+    - MCP_02 (MCP Authentication and Authorization)
+    - NET_09 (Geo & IP Allowlisting)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/cloud_config.yaml
+- id: AIR-EXEC-001
+  name: LLM or user input reaches shell command execution
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-001
+  category: Code Execution
+  severity: critical
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  - tool_result
+  - retrieval
+  sinks:
+  - shell_execution
+  barriers:
+  - allowlist
+  match: {}
+  message: LLM or user input reaches shell command execution
+  description: LLM or user input reaches shell command execution. Source-to-sink taint rule; treat string formatting into
+    shell commands as exploitable
+  remediation:
+  - Argument arrays
+  - allowlisted commands
+  - no shell interpolation
+  source_description: User input, model output, tool args, retrieved content
+  sink_description: os.system, subprocess.* with shell=True, child_process.exec, execSync, spawn with shell
+  detection_logic: Source-to-sink taint rule; treat string formatting into shell commands as exploitable.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/code_execution.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/code_execution.yaml
+- id: AIR-EXEC-002
+  name: LLM or user input reaches eval/exec
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-002
+  category: Code Execution
+  severity: critical
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  - tool_result
+  - retrieval
+  sinks:
+  - dynamic_code
+  barriers:
+  - allowlist
+  match: {}
+  message: LLM or user input reaches eval/exec
+  description: LLM or user input reaches eval/exec. Flag any untrusted source reaching dynamic language execution
+  remediation:
+  - No dynamic code execution; parser/allowlist instead
+  source_description: User/model/tool/retrieval content
+  sink_description: eval, exec, compile+exec, Function(), vm.runIn*
+  detection_logic: Flag any untrusted source reaching dynamic language execution.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/code_execution.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/code_execution.yaml
+- id: AIR-EXEC-003
+  name: Dynamic import/module loading from untrusted input
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-003
+  category: Code Execution
+  severity: high
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - path_input
+  - user_input
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Dynamic import/module loading from untrusted input
+  description: Dynamic import/module loading from untrusted input. Flag untrusted module/package name reaching dynamic import
+    API
+  remediation:
+  - Allowlisted module identifiers
+  source_description: User/model/tool-controlled module/package/path
+  sink_description: importlib.import_module, __import__, require(), dynamic import()
+  detection_logic: Flag untrusted module/package name reaching dynamic import API.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/code_execution.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/code_execution.yaml
+- id: AIR-EXEC-004
+  name: LLM or user input reaches SQL query construction
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-004
+  category: Injection
+  severity: critical
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  sinks:
+  - sql_query
+  barriers: []
+  match: {}
+  message: LLM or user input reaches SQL query construction
+  description: LLM or user input reaches SQL query construction. Flag tainted value concatenated/interpolated into SQL passed
+    to execution sink
+  remediation:
+  - Parameterized queries / query builder
+  source_description: User input, model output, tool args
+  sink_description: cursor.execute/query/raw SQL/string SQL APIs
+  detection_logic: Flag tainted value concatenated/interpolated into SQL passed to execution sink.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/injection.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/injection.yaml
+- id: AIR-EXEC-005
+  name: LLM or user input reaches NoSQL/graph query object unsafely
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-005
+  category: Injection
+  severity: high
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - user_input
+  sinks: []
+  barriers:
+  - allowlist
+  - schema_validation
+  match: {}
+  message: LLM or user input reaches NoSQL/graph query object unsafely
+  description: LLM or user input reaches NoSQL/graph query object unsafely. Flag tainted object/operator keys such as $where/$regex/script
+    or raw graph query strings
+  remediation:
+  - Schema + operator allowlist; parameterized query APIs
+  source_description: User/model/tool-controlled filters/operators
+  sink_description: Mongo find/update, Elasticsearch query DSL, Cypher/Gremlin raw query
+  detection_logic: Flag tainted object/operator keys such as $where/$regex/script or raw graph query strings.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/injection.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/injection.yaml
+- id: AIR-EXEC-006
+  name: LLM output reaches template engine with code-capable expressions
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-006
+  category: Injection
+  severity: critical
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - user_input
+  sinks: []
+  barriers: []
+  match: {}
+  message: LLM output reaches template engine with code-capable expressions
+  description: LLM output reaches template engine with code-capable expressions. Flag untrusted content used as template source
+    rather than template data
+  remediation:
+  - Sandboxed template + fixed template source
+  source_description: Model/user/tool content
+  sink_description: Jinja2 Template/from_string, render_template_string, EJS/Pug/Handlebars unsafe helpers
+  detection_logic: Flag untrusted content used as template source rather than template data.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/injection.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/injection.yaml
+- id: AIR-EXEC-007
+  name: Downloaded content executed without integrity verification
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-007
+  category: Code Execution
+  severity: critical
+  targets:
+  - tool
+  - skill
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - url_input
+  sinks:
+  - shell_execution
+  barriers:
+  - signature_verification
+  match: {}
+  message: Downloaded content executed without integrity verification
+  description: Downloaded content executed without integrity verification. Detect download-to-execute chains and curl|bash
+    / wget|sh patterns
+  remediation:
+  - Checksum/signature verification and trusted origin
+  source_description: HTTP download, curl/wget, remote URL, package artifact
+  sink_description: shell execution, chmod+execute, python/node/bash invocation
+  detection_logic: Detect download-to-execute chains and curl|bash / wget|sh patterns.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/code_execution.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/code_execution.yaml
+- id: AIR-EXEC-008
+  name: Skill installs and executes unpinned package at runtime
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-008
+  category: Code Execution
+  severity: high
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: dependency
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Skill installs and executes unpinned package at runtime
+  description: Skill installs and executes unpinned package at runtime. Flag pip install pkg, npm install pkg, npx pkg without
+    exact version/digest inside skills/tools
+  remediation:
+  - Pinned version + lockfile + trusted registry
+  source_description: pip/npm/uv/npx/package install command in skill/tool
+  sink_description: runtime execution/import of installed package
+  detection_logic: Flag pip install pkg, npm install pkg, npx pkg without exact version/digest inside skills/tools.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/code_execution.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/code_execution.yaml
+- id: AIR-EXEC-009
+  name: User or model-controlled interpreter selection
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-EXEC-009
+  category: Code Execution
+  severity: critical
+  targets:
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - path_input
+  - user_input
+  sinks:
+  - dynamic_code
+  - shell_execution
+  barriers:
+  - allowlist
+  match: {}
+  message: User or model-controlled interpreter selection
+  description: User or model-controlled interpreter selection. Flag tainted executable/program argument at process-creation
+    sink
+  remediation:
+  - Fixed executable allowlist
+  source_description: Interpreter/runtime name or executable path from input
+  sink_description: subprocess/exec/spawn
+  detection_logic: Flag tainted executable/program argument at process-creation sink.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/code_execution.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/code_execution.yaml
+- id: AIR-FILE-001
+  name: Model-controlled path reaches file read
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-FILE-001
+  category: File Access
+  severity: high
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  - path_input
+  sinks:
+  - file_read
+  barriers: []
+  match: {}
+  message: Model-controlled path reaches file read
+  description: Model-controlled path reaches file read. Flag tainted path at read sink without resolve+root containment check
+  remediation:
+  - Canonicalize + restrict to approved root
+  source_description: Model/user/tool path
+  sink_description: open/readFile/read_text/send_file/file loader
+  detection_logic: Flag tainted path at read sink without resolve+root containment check.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/file_access.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/file_access.yaml
+- id: AIR-FILE-002
+  name: Model-controlled path reaches file write/delete
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-FILE-002
+  category: File Access
+  severity: critical
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  - path_input
+  sinks:
+  - file_write
+  barriers: []
+  match: {}
+  message: Model-controlled path reaches file write/delete
+  description: Model-controlled path reaches file write/delete. Flag tainted path at write/delete sink without containment
+    policy
+  remediation:
+  - Canonicalize + approved writable root + deny sensitive paths
+  source_description: Model/user/tool path
+  sink_description: open(write), writeFile, unlink/remove/rmtree, rename
+  detection_logic: Flag tainted path at write/delete sink without containment policy.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/file_access.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/file_access.yaml
+- id: AIR-FILE-003
+  name: Arbitrary local URI loader permits file disclosure
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-FILE-003
+  category: File Access
+  severity: high
+  targets:
+  - tool
+  - rag
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - url_input
+  - user_input
+  sinks:
+  - file_read
+  barriers:
+  - allowlist
+  match: {}
+  message: Arbitrary local URI loader permits file disclosure
+  description: Arbitrary local URI loader permits file disclosure. Flag user/model URI entering loader that supports file://
+    or local paths
+  remediation:
+  - Allowlisted schemes and roots
+  source_description: User/model-controlled URI
+  sink_description: file:// loader, generic URL/file loader, document loader
+  detection_logic: Flag user/model URI entering loader that supports file:// or local paths.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/file_access.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/file_access.yaml
+- id: AIR-FILE-004
+  name: Unsafe archive extraction permits Zip Slip
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-FILE-004
+  category: Archive
+  severity: high
+  targets:
+  - tool
+  - skill
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Unsafe archive extraction permits Zip Slip
+  description: Unsafe archive extraction permits Zip Slip. Flag archive extraction without member path containment validation
+  remediation:
+  - Validate each extracted path remains under destination
+  source_description: Uploaded/downloaded archive
+  sink_description: extractall/unzip/tar extraction
+  detection_logic: Flag archive extraction without member path containment validation.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/archive.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/archive.yaml
+- id: AIR-FILE-005
+  name: Uploaded executable/script content stored in executable location
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-FILE-005
+  category: File Upload
+  severity: critical
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - retrieval
+  sinks: []
+  barriers: []
+  match: {}
+  message: Uploaded executable/script content stored in executable location
+  description: Uploaded executable/script content stored in executable location. Flag uploads written into directories later
+    imported/executed or served as executable content
+  remediation:
+  - Extension/content validation + non-executable storage
+  source_description: User/tool file upload
+  sink_description: web root, plugin/skill directory, executable workspace
+  detection_logic: Flag uploads written into directories later imported/executed or served as executable content.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/file_upload.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_10 (Document Screening for File-Typed Outputs)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/file_upload.yaml
+- id: AIR-FILE-006
+  name: Skill scans broad filesystem or home directory for secrets
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-FILE-006
+  category: File Access
+  severity: high
+  targets:
+  - skill
+  - agent
+  analysis:
+    type: structural
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Skill scans broad filesystem or home directory for secrets
+  description: Skill scans broad filesystem or home directory for secrets. Flag skill/tool instructions or code that enumerate
+    known credential paths without a narrow documented target
+  remediation:
+  - Explicit narrow file allowlist
+  source_description: Skill/tool logic
+  sink_description: ~/.ssh, ~/.aws, ~/.config, .env, credentials files, recursive home scan
+  detection_logic: Flag skill/tool instructions or code that enumerate known credential paths without a narrow documented
+    target.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/file_access.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - DATA_03 (DLP at Prompt Assembly Time)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/file_access.yaml
+- id: AIR-MCP-001
+  name: MCP server exposed over plaintext HTTP
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-001
+  category: MCP
+  severity: high
+  targets:
+  - mcp_server
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - tls_validation
+  match: {}
+  message: MCP server exposed over plaintext HTTP
+  description: MCP server exposed over plaintext HTTP. Flag network MCP server configured with plaintext remote listener;
+    exempt loopback/local development by policy
+  remediation:
+  - TLS or trusted local-only transport
+  source_description: N/A
+  sink_description: http:// listener / SSE or streamable HTTP without TLS termination requirement
+  detection_logic: Flag network MCP server configured with plaintext remote listener; exempt loopback/local development by
+    policy.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - NET_03 (TLS 1.2+ End-to-End)
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_04 (MCP Network Isolation and Egress Control)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-002
+  name: MCP server lacks authentication for sensitive tools/resources
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-002
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_server
+  analysis:
+    type: control_flow
+    interprocedural: true
+  sources:
+  - user_input
+  sinks: []
+  barriers:
+  - authorization_check
+  match: {}
+  message: MCP server lacks authentication for sensitive tools/resources
+  description: MCP server lacks authentication for sensitive tools/resources. Flag sensitive handlers reachable without auth
+    middleware/decorator or identity check
+  remediation:
+  - OAuth/workload identity/API auth plus authorization
+  source_description: Incoming MCP request
+  sink_description: tool/resource/prompt handler
+  detection_logic: Flag sensitive handlers reachable without auth middleware/decorator or identity check.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_02 (MCP Authentication and Authorization)
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-003
+  name: MCP server trusts static shared token embedded in code/config
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-003
+  category: MCP
+  severity: high
+  targets:
+  - mcp_server
+  analysis:
+    type: secret
+    interprocedural: true
+  sources:
+  - sensitive_data
+  sinks: []
+  barriers: []
+  match: {}
+  message: MCP server trusts static shared token embedded in code/config
+  description: MCP server trusts static shared token embedded in code/config. Secret-scan tokens specifically in MCP auth/server
+    configuration
+  remediation:
+  - External secret store + rotation
+  source_description: Hardcoded bearer/API token
+  sink_description: MCP authentication middleware
+  detection_logic: Secret-scan tokens specifically in MCP auth/server configuration.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - IAM_08 (Short-Lived Token Enforcement)
+    - MCP_02 (MCP Authentication and Authorization)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-004
+  name: Permissive CORS or missing Origin validation on browser-reachable MCP
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-004
+  category: MCP
+  severity: high
+  targets:
+  - mcp_server
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Permissive CORS or missing Origin validation on browser-reachable MCP
+  description: Permissive CORS or missing Origin validation on browser-reachable MCP. Flag Access-Control-Allow-Origin:* or
+    disabled origin checks on MCP network endpoints
+  remediation:
+  - Explicit trusted origins and origin validation
+  source_description: Browser Origin
+  sink_description: MCP HTTP/SSE endpoint
+  detection_logic: Flag Access-Control-Allow-Origin:* or disabled origin checks on MCP network endpoints.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - NET_01 (WAF-Capable Edge for Every Agent)
+    - MCP_02 (MCP Authentication and Authorization)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-005
+  name: MCP server URL is user/model controlled
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-005
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_client
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: MCP server URL is user/model controlled
+  description: MCP server URL is user/model controlled. Flag tainted server URL passed to MCP client connection
+  remediation:
+  - Server registry allowlist + fixed trust configuration
+  source_description: User/model/config input at runtime
+  sink_description: MCP client connect/server URL
+  detection_logic: Flag tainted server URL passed to MCP client connection.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_04 (MCP Network Isolation and Egress Control)
+    - NET_06 (Per-Agent Egress Allowlist)
+    - MCP_03 (MCP Schema and Argument Validation)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-006
+  name: Automatic trust of all discovered MCP tools
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-006
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_client
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks:
+  - policy_mutation
+  barriers:
+  - allowlist
+  - approval_gate
+  match: {}
+  message: Automatic trust of all discovered MCP tools
+  description: Automatic trust of all discovered MCP tools. Flag code that registers every remote tool in returned capability
+    list without filtering
+  remediation:
+  - Per-server and per-tool allowlist/approval
+  source_description: Remote list_tools/capabilities result
+  sink_description: agent tool registry
+  detection_logic: Flag code that registers every remote tool in returned capability list without filtering.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_08 (MCP Periodic Recertification)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-007
+  name: Remote MCP prompt inserted as system/developer message
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-007
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_client
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks:
+  - privileged_prompt
+  barriers: []
+  match: {}
+  message: Remote MCP prompt inserted as system/developer message
+  description: Remote MCP prompt inserted as system/developer message. Flag remote MCP prompt content promoted to privileged
+    message role
+  remediation:
+  - Treat remote prompt as untrusted content unless signed/approved
+  source_description: MCP prompts/get or remote prompt content
+  sink_description: system/developer role
+  detection_logic: Flag remote MCP prompt content promoted to privileged message role.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_05 (MCP Output Scanning and Boundary Tagging)
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - ENC_06 (System Prompt Integrity Protection)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-008
+  name: MCP resource URI permits path traversal
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-008
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_server
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - path_input
+  - url_input
+  sinks:
+  - file_read
+  barriers:
+  - path_containment
+  match: {}
+  message: MCP resource URI permits path traversal
+  description: MCP resource URI permits path traversal. Flag resource URI/path reaching filesystem sink without containment
+    check
+  remediation:
+  - Canonical path + resource-root containment
+  source_description: Resource URI/path parameter
+  sink_description: filesystem read/write/resource handler
+  detection_logic: Flag resource URI/path reaching filesystem sink without containment check.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_03 (MCP Schema and Argument Validation)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-009
+  name: MCP resource handler permits arbitrary URL fetching
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-009
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_server
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - url_input
+  - user_input
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: MCP resource handler permits arbitrary URL fetching
+  description: MCP resource handler permits arbitrary URL fetching. Flag resource/tool parameters used as arbitrary outbound
+    URL
+  remediation:
+  - Scheme/host allowlist + SSRF protections
+  source_description: Resource URI or tool argument
+  sink_description: HTTP fetch/client
+  detection_logic: Flag resource/tool parameters used as arbitrary outbound URL.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_04 (MCP Network Isolation and Egress Control)
+    - NET_06 (Per-Agent Egress Allowlist)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-010
+  name: MCP tool exposes arbitrary command execution primitive
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-010
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_server
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  sinks:
+  - shell_execution
+  barriers:
+  - allowlist
+  - schema_validation
+  match: {}
+  message: MCP tool exposes arbitrary command execution primitive
+  description: MCP tool exposes arbitrary command execution primitive. Flag MCP tools whose user/model-controlled schema is
+    directly mapped to process execution
+  remediation:
+  - Narrow task-specific tool schema and command allowlist
+  source_description: Tool schema fields such as command, cmd, shell, script
+  sink_description: process execution APIs
+  detection_logic: Flag MCP tools whose user/model-controlled schema is directly mapped to process execution.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_03 (MCP Schema and Argument Validation)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-011
+  name: MCP tool exposes arbitrary filesystem primitive
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-011
+  category: MCP
+  severity: high
+  targets:
+  - mcp_server
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  - path_input
+  sinks:
+  - file_read
+  - file_write
+  barriers:
+  - allowlist
+  match: {}
+  message: MCP tool exposes arbitrary filesystem primitive
+  description: MCP tool exposes arbitrary filesystem primitive. Flag generic read/write/delete tools accepting arbitrary paths
+    without root restriction
+  remediation:
+  - Scoped root + operation allowlist
+  source_description: Tool schema fields path/file/directory
+  sink_description: read/write/delete filesystem APIs
+  detection_logic: Flag generic read/write/delete tools accepting arbitrary paths without root restriction.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_03 (MCP Schema and Argument Validation)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-012
+  name: MCP tool exposes arbitrary HTTP request primitive
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-012
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_server
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  - url_input
+  sinks:
+  - network_request
+  barriers: []
+  match: {}
+  message: MCP tool exposes arbitrary HTTP request primitive
+  description: MCP tool exposes arbitrary HTTP request primitive. Flag generic request tools that forward model-controlled
+    URL/method/headers
+  remediation:
+  - Approved domains/methods; SSRF and header restrictions
+  source_description: Tool schema url/method/headers/body
+  sink_description: generic HTTP client
+  detection_logic: Flag generic request tools that forward model-controlled URL/method/headers.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_04 (MCP Network Isolation and Egress Control)
+    - NET_06 (Per-Agent Egress Allowlist)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-013
+  name: MCP tool result bypasses trust validation before sensitive action
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-013
+  category: MCP
+  severity: high
+  targets:
+  - mcp_client
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - mcp_result
+  - tool_result
+  sinks:
+  - network_request
+  barriers:
+  - schema_validation
+  match: {}
+  message: MCP tool result bypasses trust validation before sensitive action
+  description: MCP tool result bypasses trust validation before sensitive action. Flag MCP result transitively reaching sensitive
+    sink without validator/policy node
+  remediation:
+  - Schema and semantic validation; policy check
+  source_description: MCP tool result
+  sink_description: privileged tool/action, command, query, file/network sink
+  detection_logic: Flag MCP result transitively reaching sensitive sink without validator/policy node.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_05 (MCP Output Scanning and Boundary Tagging)
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-014
+  name: MCP process launched through shell with interpolated configuration
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-014
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_server
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  sinks:
+  - dynamic_code
+  barriers: []
+  match: {}
+  message: MCP process launched through shell with interpolated configuration
+  description: MCP process launched through shell with interpolated configuration. Flag MCP stdio server launch using shell
+    strings or interpolation
+  remediation:
+  - Direct argv process launch; fixed executable
+  source_description: Server command/args/env from config or input
+  sink_description: shell=True, exec(command string)
+  detection_logic: Flag MCP stdio server launch using shell strings or interpolation.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_03 (MCP Schema and Argument Validation)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-015
+  name: Secrets stored directly in MCP configuration
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-015
+  category: MCP
+  severity: critical
+  targets:
+  - mcp_config
+  analysis:
+    type: secret
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Secrets stored directly in MCP configuration
+  description: Secrets stored directly in MCP configuration. Secret scan MCP configuration and manifests
+  remediation:
+  - Secret references/environment injection from secret manager
+  source_description: Tokens/passwords/API keys/private keys
+  sink_description: mcp.json, servers config, environment blocks, manifests
+  detection_logic: Secret scan MCP configuration and manifests.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - MCP_08 (MCP Periodic Recertification)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MCP-016
+  name: MCP capability expansion is not bounded by configured policy
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MCP-016
+  category: MCP
+  severity: high
+  targets:
+  - mcp_client
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: MCP capability expansion is not bounded by configured policy
+  description: MCP capability expansion is not bounded by configured policy. Flag dynamic capability registration when no
+    local allowlist/policy filter exists
+  remediation:
+  - Explicit configured capabilities per server
+  source_description: Remote capability list
+  sink_description: agent available tools/resources/prompts
+  detection_logic: Flag dynamic capability registration when no local allowlist/policy filter exists.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml
+  mappings:
+    security_controls:
+    - MCP_01 (Approved MCP Server Registry)
+    - SEC_22 (Formal MCP Server Security Review)
+    - MCP_03 (MCP Schema and Argument Validation)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - REG_07 (Runtime Drift Detection Against Registry)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/mcp.yaml
+- id: AIR-MODEL-001
+  name: Remote model code execution enabled
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-001
+  category: Model Supply Chain
+  severity: critical
+  targets:
+  - model_loader
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Remote model code execution enabled
+  description: Remote model code execution enabled. Direct rule for trust_remote_code=True and equivalent flags
+  remediation:
+  - Disable remote code or pin+review trusted repository
+  source_description: N/A
+  sink_description: trust_remote_code=True or equivalent custom-code loading
+  detection_logic: Direct rule for trust_remote_code=True and equivalent flags.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_supply_chain.yaml
+  mappings:
+    security_controls:
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_supply_chain.yaml
+- id: AIR-MODEL-002
+  name: Unsafe pickle/joblib model deserialization
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-002
+  category: Model Supply Chain
+  severity: critical
+  targets:
+  - model_loader
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  sinks:
+  - model_load
+  barriers: []
+  match: {}
+  message: Unsafe pickle/joblib model deserialization
+  description: Unsafe pickle/joblib model deserialization. Flag untrusted artifact reaching unsafe deserialization
+  remediation:
+  - Safe format or cryptographically trusted artifact
+  source_description: Downloaded/user-controlled model artifact
+  sink_description: pickle.load/loads, joblib.load, dill/cloudpickle
+  detection_logic: Flag untrusted artifact reaching unsafe deserialization.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_supply_chain.yaml
+  mappings:
+    security_controls:
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_supply_chain.yaml
+- id: AIR-MODEL-003
+  name: Unsafe torch.load of untrusted artifact
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-003
+  category: Model Supply Chain
+  severity: critical
+  targets:
+  - pytorch_model_loader
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  sinks:
+  - model_load
+  barriers: []
+  match: {}
+  message: Unsafe torch.load of untrusted artifact
+  description: Unsafe torch.load of untrusted artifact. Flag untrusted path to torch.load; increase confidence when weights_only=False
+  remediation:
+  - weights_only=True plus trusted artifact policy
+  source_description: Downloaded/user-controlled .pt/.pth artifact
+  sink_description: torch.load with weights_only=False/omitted where unsafe
+  detection_logic: Flag untrusted path to torch.load; increase confidence when weights_only=False.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_supply_chain.yaml
+  mappings:
+    security_controls:
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_supply_chain.yaml
+- id: AIR-MODEL-004
+  name: Model revision/version is floating or unpinned
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-004
+  category: Model Supply Chain
+  severity: high
+  targets:
+  - model_loader
+  analysis:
+    type: dependency
+    interprocedural: true
+  sources: []
+  sinks:
+  - model_load
+  barriers: []
+  match: {}
+  message: Model revision/version is floating or unpinned
+  description: Model revision/version is floating or unpinned. Flag production model loads without revision/version/digest
+    pinning
+  remediation:
+  - Pinned immutable revision/digest
+  source_description: N/A
+  sink_description: from_pretrained/model load using latest/main/master/no revision
+  detection_logic: Flag production model loads without revision/version/digest pinning.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_supply_chain.yaml
+  mappings:
+    security_controls:
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_supply_chain.yaml
+- id: AIR-MODEL-005
+  name: LoRA/adapter loaded from untrusted or mutable source
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-005
+  category: Model Supply Chain
+  severity: high
+  targets:
+  - model
+  - adapter_loader
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks:
+  - model_load
+  barriers: []
+  match: {}
+  message: LoRA/adapter loaded from untrusted or mutable source
+  description: LoRA/adapter loaded from untrusted or mutable source. Flag tainted adapter identifier or missing revision/digest
+  remediation:
+  - Trusted registry + pinned revision
+  source_description: User/config remote adapter identifier
+  sink_description: adapter/PEFT load
+  detection_logic: Flag tainted adapter identifier or missing revision/digest.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_supply_chain.yaml
+  mappings:
+    security_controls:
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_supply_chain.yaml
+- id: AIR-MODEL-006
+  name: Model/artifact downloaded without checksum or signature verification
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-006
+  category: Model Supply Chain
+  severity: critical
+  targets:
+  - artifact_downloader
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - url_input
+  sinks:
+  - model_load
+  barriers:
+  - signature_verification
+  match: {}
+  message: Model/artifact downloaded without checksum or signature verification
+  description: Model/artifact downloaded without checksum or signature verification. Detect remote download -> load chain
+    without intervening integrity verification
+  remediation:
+  - Digest/signature verification before load
+  source_description: Remote URL
+  sink_description: model load/deserialization
+  detection_logic: Detect remote download -> load chain without intervening integrity verification.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_supply_chain.yaml
+  mappings:
+    security_controls:
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_supply_chain.yaml
+- id: AIR-MODEL-007
+  name: Model API base URL is user/model controlled
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-007
+  category: Model Provider
+  severity: critical
+  targets:
+  - llm_client
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Model API base URL is user/model controlled
+  description: Model API base URL is user/model controlled. Flag tainted endpoint/base_url passed to LLM/embedding client
+  remediation:
+  - Provider allowlist
+  source_description: Request/model/config runtime input
+  sink_description: OpenAI-compatible base_url/endpoint/client host
+  detection_logic: Flag tainted endpoint/base_url passed to LLM/embedding client.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_provider.yaml
+  mappings:
+    security_controls:
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - NET_06 (Per-Agent Egress Allowlist)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_provider.yaml
+- id: AIR-MODEL-008
+  name: Unapproved model identifier is user/model controlled
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-008
+  category: Model Provider
+  severity: high
+  targets:
+  - llm_client
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Unapproved model identifier is user/model controlled
+  description: Unapproved model identifier is user/model controlled. Flag tainted model name when no explicit allowlist check
+    dominates
+  remediation:
+  - Approved model allowlist
+  source_description: Request/model-selected model name
+  sink_description: LLM client model parameter
+  detection_logic: Flag tainted model name when no explicit allowlist check dominates.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_provider.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_15 (Agent Registry Compliance Gate)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_provider.yaml
+- id: AIR-MODEL-009
+  name: User-controlled local model path
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-009
+  category: Model Supply Chain
+  severity: high
+  targets:
+  - model_loader
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - path_input
+  - user_input
+  sinks:
+  - model_load
+  barriers:
+  - path_containment
+  match: {}
+  message: User-controlled local model path
+  description: User-controlled local model path. Flag tainted path passed to model/tokenizer loader
+  remediation:
+  - Trusted model directory + canonical containment
+  source_description: Request/model file path
+  sink_description: model/tokenizer/adapter loader
+  detection_logic: Flag tainted path passed to model/tokenizer loader.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_supply_chain.yaml
+  mappings:
+    security_controls:
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_supply_chain.yaml
+- id: AIR-MODEL-010
+  name: Provider client configured with TLS verification disabled
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-MODEL-010
+  category: Model Provider
+  severity: high
+  targets:
+  - llm_client
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks:
+  - network_request
+  barriers:
+  - tls_validation
+  match: {}
+  message: Provider client configured with TLS verification disabled
+  description: Provider client configured with TLS verification disabled. Direct pattern on model/embedding provider HTTP
+    configuration
+  remediation:
+  - TLS verification enabled
+  source_description: N/A
+  sink_description: custom HTTP client verify=False / insecure transport
+  detection_logic: Direct pattern on model/embedding provider HTTP configuration.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/model_provider.yaml
+  mappings:
+    security_controls:
+    - NET_03 (TLS 1.2+ End-to-End)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_05 (Agent Risk Tiering and Promotion Workflow)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/model_provider.yaml
+- id: AIR-NET-001
+  name: Model-controlled URL reaches HTTP client without SSRF protection
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-NET-001
+  category: Network
+  severity: critical
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  - llm_output
+  - url_input
+  sinks:
+  - network_request
+  barriers:
+  - allowlist
+  match: {}
+  message: Model-controlled URL reaches HTTP client without SSRF protection
+  description: Model-controlled URL reaches HTTP client without SSRF protection. Flag tainted URL reaching outbound HTTP client
+    when no URL validator/allowlist dominates
+  remediation:
+  - Scheme/host allowlist; block private/link-local/metadata IPs; re-resolve DNS
+  source_description: LLM output, tool args, user input, retrieved URL
+  sink_description: requests/httpx/urllib/fetch/axios/got/http client
+  detection_logic: Flag tainted URL reaching outbound HTTP client when no URL validator/allowlist dominates.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/network.yaml
+  mappings:
+    security_controls:
+    - NET_06 (Per-Agent Egress Allowlist)
+    - NET_07 (Private Connectivity to Managed Platform Services)
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/network.yaml
+- id: AIR-NET-002
+  name: Arbitrary webhook/callback destination controlled by model
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-NET-002
+  category: Network
+  severity: high
+  targets:
+  - tool
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Arbitrary webhook/callback destination controlled by model
+  description: Arbitrary webhook/callback destination controlled by model. Flag model/user URL used for callbacks/webhooks
+    without registered destination check
+  remediation:
+  - Registered destination allowlist
+  source_description: Model/user-provided webhook/callback URL
+  sink_description: HTTP POST/client sink
+  detection_logic: Flag model/user URL used for callbacks/webhooks without registered destination check.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/network.yaml
+  mappings:
+    security_controls:
+    - NET_06 (Per-Agent Egress Allowlist)
+    - NET_07 (Private Connectivity to Managed Platform Services)
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/network.yaml
+- id: AIR-NET-003
+  name: Sensitive data sent to arbitrary external endpoint
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-NET-003
+  category: Data Exfiltration
+  severity: critical
+  targets:
+  - agent
+  - tool
+  - skill
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - sensitive_data
+  sinks:
+  - network_request
+  barriers:
+  - allowlist
+  - redaction
+  match: {}
+  message: Sensitive data sent to arbitrary external endpoint
+  description: Sensitive data sent to arbitrary external endpoint. Sensitive-source-to-network-sink taint rule; raise when
+    destination is dynamic or external
+  remediation:
+  - Approved-domain allowlist + DLP/redaction
+  source_description: Secrets, PII, files, env vars, retrieval context
+  sink_description: HTTP/email/webhook/socket upload
+  detection_logic: Sensitive-source-to-network-sink taint rule; raise when destination is dynamic or external.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/data_exfiltration.yaml
+  mappings:
+    security_controls:
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - NET_06 (Per-Agent Egress Allowlist)
+    - DATA_03 (DLP at Prompt Assembly Time)
+    - DATA_02 (PII Handling, Redaction, Pseudonymisation)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/data_exfiltration.yaml
+- id: AIR-NET-004
+  name: TLS certificate verification disabled
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-NET-004
+  category: TLS
+  severity: high
+  targets:
+  - agent
+  - mcp
+  - tool
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - tls_validation
+  match: {}
+  message: TLS certificate verification disabled
+  description: TLS certificate verification disabled. Direct pattern/config rule in AI agents, MCP clients/servers, tools
+    and model-provider clients
+  remediation:
+  - TLS verification enabled
+  source_description: N/A
+  sink_description: verify=False, rejectUnauthorized:false, NODE_TLS_REJECT_UNAUTHORIZED=0, insecure transport option
+  detection_logic: Direct pattern/config rule in AI agents, MCP clients/servers, tools and model-provider clients.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/tls.yaml
+  mappings:
+    security_controls:
+    - NET_03 (TLS 1.2+ End-to-End)
+    - NET_10 (DNS & Certificate Governance)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/tls.yaml
+- id: AIR-NET-005
+  name: Proxy configuration allows untrusted proxy injection
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-NET-005
+  category: Network
+  severity: high
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Proxy configuration allows untrusted proxy injection
+  description: Proxy configuration allows untrusted proxy injection. Flag tainted proxy configuration that can intercept model/tool
+    traffic
+  remediation:
+  - Trusted fixed proxy or allowlist
+  source_description: User/model/environment-controlled proxy URL
+  sink_description: HTTP client proxy setting
+  detection_logic: Flag tainted proxy configuration that can intercept model/tool traffic.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/network.yaml
+  mappings:
+    security_controls:
+    - NET_06 (Per-Agent Egress Allowlist)
+    - NET_10 (DNS & Certificate Governance)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/network.yaml
+- id: AIR-NET-006
+  name: Internal cloud metadata endpoint reachable from generic fetch tool
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-NET-006
+  category: Network
+  severity: critical
+  targets:
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - url_input
+  sinks: []
+  barriers: []
+  match: {}
+  message: Internal cloud metadata endpoint reachable from generic fetch tool
+  description: Internal cloud metadata endpoint reachable from generic fetch tool. Flag generic HTTP tools lacking private/link-local
+    denial or containing direct metadata endpoint access
+  remediation:
+  - Explicit metadata/private-network denylist
+  source_description: Generic fetch/browser/tool URL parameter
+  sink_description: 169.254.169.254, metadata.google.internal, metadata.azure, link-local ranges
+  detection_logic: Flag generic HTTP tools lacking private/link-local denial or containing direct metadata endpoint access.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/network.yaml
+  mappings:
+    security_controls:
+    - NET_06 (Per-Agent Egress Allowlist)
+    - NET_07 (Private Connectivity to Managed Platform Services)
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/network.yaml
+- id: AIR-OUT-001
+  name: LLM-generated URL used without validation
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-OUT-001
+  category: Output Validation
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks:
+  - network_request
+  barriers:
+  - allowlist
+  match: {}
+  message: LLM-generated URL used without validation
+  description: LLM-generated URL used without validation. Model-output-to-HTTP sink rule with no validator
+  remediation:
+  - URL parser + scheme/host allowlist + SSRF controls
+  source_description: LLM output
+  sink_description: browser/fetch/webhook/download
+  detection_logic: Model-output-to-HTTP sink rule with no validator.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/output_validation.yaml
+  mappings:
+    security_controls:
+    - SEC_09 (Malicious URL Detection in Tool Outputs)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_05 (Output Content Scanning)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/output_validation.yaml
+- id: AIR-OUT-002
+  name: LLM-generated file path used without validation
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-OUT-002
+  category: Output Validation
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks:
+  - file_read
+  - file_write
+  barriers:
+  - path_containment
+  match: {}
+  message: LLM-generated file path used without validation
+  description: LLM-generated file path used without validation. Model-output-to-filesystem sink rule with no path guard
+  remediation:
+  - Canonical path and root containment
+  source_description: LLM output
+  sink_description: file read/write/delete/load
+  detection_logic: Model-output-to-filesystem sink rule with no path guard.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/output_validation.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_05 (Output Content Scanning)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/output_validation.yaml
+- id: AIR-OUT-003
+  name: LLM-generated command executed
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-OUT-003
+  category: Output Validation
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks:
+  - shell_execution
+  barriers:
+  - allowlist
+  match: {}
+  message: LLM-generated command executed
+  description: LLM-generated command executed. Direct model-output-to-command-sink taint rule
+  remediation:
+  - No free-form command execution; structured allowlisted actions
+  source_description: LLM output
+  sink_description: shell/process execution
+  detection_logic: Direct model-output-to-command-sink taint rule.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/output_validation.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+    - SEC_05 (Output Content Scanning)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/output_validation.yaml
+- id: AIR-OUT-004
+  name: LLM-generated code executed
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-OUT-004
+  category: Output Validation
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks:
+  - dynamic_code
+  barriers: []
+  match: {}
+  message: LLM-generated code executed
+  description: LLM-generated code executed. Direct model-output-to-code-execution-sink rule
+  remediation:
+  - Never execute untrusted generated code; sandbox only where explicitly designed
+  source_description: LLM output
+  sink_description: eval/exec/interpreter/notebook execution
+  detection_logic: Direct model-output-to-code-execution-sink rule.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/output_validation.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+    - SEC_05 (Output Content Scanning)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/output_validation.yaml
+- id: AIR-OUT-005
+  name: LLM-generated structured data used without schema validation
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-OUT-005
+  category: Output Validation
+  severity: high
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks: []
+  barriers:
+  - schema_validation
+  match: {}
+  message: LLM-generated structured data used without schema validation
+  description: LLM-generated structured data used without schema validation. Flag parse-and-use flows where parsed model output
+    reaches sensitive sink and no validator dominates
+  remediation:
+  - Strict schema/type/enum/range validation
+  source_description: LLM JSON/YAML/XML output
+  sink_description: privileged SDK/API/database/tool call
+  detection_logic: Flag parse-and-use flows where parsed model output reaches sensitive sink and no validator dominates.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/output_validation.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - SEC_05 (Output Content Scanning)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/output_validation.yaml
+- id: AIR-OUT-006
+  name: Untrusted YAML loaded with unsafe loader
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-OUT-006
+  category: Deserialization
+  severity: critical
+  targets:
+  - agent
+  - tool
+  - mcp
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - user_input
+  sinks: []
+  barriers: []
+  match: {}
+  message: Untrusted YAML loaded with unsafe loader
+  description: Untrusted YAML loaded with unsafe loader. Flag untrusted YAML at unsafe deserialization APIs
+  remediation:
+  - safe_load / restricted parser
+  source_description: User/model/tool/MCP content
+  sink_description: yaml.load unsafe loader / FullLoader where unsafe context
+  detection_logic: Flag untrusted YAML at unsafe deserialization APIs.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/deserialization.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_05 (Output Content Scanning)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/deserialization.yaml
+- id: AIR-OUT-007
+  name: Untrusted XML parsed with unsafe external entity settings
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-OUT-007
+  category: Deserialization
+  severity: high
+  targets:
+  - agent
+  - tool
+  - mcp
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Untrusted XML parsed with unsafe external entity settings
+  description: Untrusted XML parsed with unsafe external entity settings. Flag untrusted XML parser configurations permitting
+    external entities/network access
+  remediation:
+  - Disable DTD/external entities; hardened parser
+  source_description: Tool/MCP/user XML
+  sink_description: unsafe XML parser
+  detection_logic: Flag untrusted XML parser configurations permitting external entities/network access.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/deserialization.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_05 (Output Content Scanning)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/deserialization.yaml
+- id: AIR-PROMPT-001
+  name: Untrusted input concatenated into system/developer prompt
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-001
+  category: Prompt Boundary
+  severity: critical
+  targets:
+  - agent
+  - llm_app
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - retrieval
+  - tool_result
+  - user_input
+  sinks:
+  - privileged_prompt
+  barriers: []
+  match: {}
+  message: Untrusted input concatenated into system/developer prompt
+  description: Untrusted input concatenated into system/developer prompt. Flag source reaching system/developer prompt via
+    string concat, f-string, template interpolation, format(), join(), or message mutation
+  remediation:
+  - Keep untrusted content in user/data channel; explicit trust boundary
+  source_description: HTTP/query/body/chat/user input, tool result, retrieved document
+  sink_description: system/developer message content or privileged prompt template
+  detection_logic: Flag source reaching system/developer prompt via string concat, f-string, template interpolation, format(),
+    join(), or message mutation.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - ENC_06 (System Prompt Integrity Protection)
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-002
+  name: Retrieved content promoted to privileged instruction
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-002
+  category: Prompt Boundary
+  severity: critical
+  targets:
+  - rag
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - retrieval
+  sinks:
+  - privileged_prompt
+  barriers: []
+  match: {}
+  message: Retrieved content promoted to privileged instruction
+  description: Retrieved content promoted to privileged instruction. Flag retriever/document output assigned to SystemMessage/developer
+    role or prepended to privileged instructions
+  remediation:
+  - Retrieved content must remain untrusted data; delimit and policy-filter
+  source_description: Retriever/vector DB/web/file/email/ticket/document content
+  sink_description: system/developer prompt or planner instruction field
+  detection_logic: Flag retriever/document output assigned to SystemMessage/developer role or prepended to privileged instructions.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - DATA_06 (RAG Source Trust Classification)
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-003
+  name: Tool output promoted to privileged instruction
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-003
+  category: Prompt Boundary
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks:
+  - privileged_prompt
+  barriers:
+  - schema_validation
+  match: {}
+  message: Tool output promoted to privileged instruction
+  description: Tool output promoted to privileged instruction. Flag tool result reaching privileged prompt role without validation
+    or fixed wrapper
+  remediation:
+  - Tool output treated as data with schema/trust validation
+  source_description: Tool/MCP/plugin return value
+  sink_description: system/developer prompt, policy prompt, planner instruction
+  detection_logic: Flag tool result reaching privileged prompt role without validation or fixed wrapper.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - SEC_01 (Unified Guardrail Backend - GuardrailService)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-004
+  name: Prompt-only authorization for privileged action
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-004
+  category: Prompt Boundary
+  severity: critical
+  targets:
+  - agent
+  - llm_app
+  analysis:
+    type: control_flow
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - rbac_check
+  match: {}
+  message: Prompt-only authorization for privileged action
+  description: Prompt-only authorization for privileged action. Flag privileged sink where only dominating safety condition
+    is model/system-prompt text and no code-level authorization check exists
+  remediation:
+  - Deterministic RBAC/ABAC/policy check outside the model
+  source_description: Natural-language policy such as 'only admins may...' in system prompt
+  sink_description: Privileged tool/action call
+  detection_logic: Flag privileged sink where only dominating safety condition is model/system-prompt text and no code-level
+    authorization check exists.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+    - SEC_21 (Policy-as-Code for AI Controls)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-005
+  name: LLM output used as authorization decision
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-005
+  category: Prompt Boundary
+  severity: critical
+  targets:
+  - agent
+  - llm_app
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks:
+  - authorization_decision
+  barriers: []
+  match: {}
+  message: LLM output used as authorization decision
+  description: LLM output used as authorization decision. Flag model output controlling authorization branch or permission
+    mutation
+  remediation:
+  - Deterministic identity and policy engine
+  source_description: LLM text/boolean/classification output
+  sink_description: allow/deny, role assignment, permission grant, authentication result
+  detection_logic: Flag model output controlling authorization branch or permission mutation.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-006
+  name: Secrets embedded in system prompt
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-006
+  category: Prompt Boundary
+  severity: critical
+  targets:
+  - agent
+  - llm_app
+  analysis:
+    type: secret
+    interprocedural: true
+  sources: []
+  sinks:
+  - privileged_prompt
+  barriers: []
+  match: {}
+  message: Secrets embedded in system prompt
+  description: Secrets embedded in system prompt. Run secret patterns specifically against prompt literals/templates and SystemMessage/developer
+    content
+  remediation:
+  - Secret manager; never expose secret material to model context
+  source_description: API keys, tokens, passwords, private keys, connection strings
+  sink_description: system/developer prompt literal or prompt template
+  detection_logic: Run secret patterns specifically against prompt literals/templates and SystemMessage/developer content.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - ENC_06 (System Prompt Integrity Protection)
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-007
+  name: Arbitrary message-role injection
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-007
+  category: Prompt Boundary
+  severity: critical
+  targets:
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: Arbitrary message-role injection
+  description: Arbitrary message-role injection. Flag user-controlled values used as role='system'/'developer' or entire message
+    objects passed through without normalization
+  remediation:
+  - Server-side role allowlist; user content forced to user role
+  source_description: User-controlled role/type/name fields or raw message arrays
+  sink_description: chat completion messages / agent message history
+  detection_logic: Flag user-controlled values used as role='system'/'developer' or entire message objects passed through
+    without normalization.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - SEC_02 (Prompt Injection & Jailbreak Detection on User Input)
+    - SEC_04 (A2A Inbound Content Filtering)
+    - ENC_06 (System Prompt Integrity Protection)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-008
+  name: Model-generated tool arguments used without schema validation
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-008
+  category: Prompt Boundary
+  severity: high
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks: []
+  barriers:
+  - schema_validation
+  match: {}
+  message: Model-generated tool arguments used without schema validation
+  description: Model-generated tool arguments used without schema validation. Flag model tool-call args reaching sensitive
+    tool code when no schema validator or typed model validation dominates the call
+  remediation:
+  - Strict JSON schema
+  - type/range/enum validation
+  source_description: LLM tool/function-call arguments
+  sink_description: Tool handler parameters / SDK invocation
+  detection_logic: Flag model tool-call args reaching sensitive tool code when no schema validator or typed model validation
+    dominates the call.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - MCP_03 (MCP Schema and Argument Validation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-009
+  name: Model output directly mutates security policy or tool allowlist
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-009
+  category: Prompt Boundary
+  severity: critical
+  targets:
+  - agent
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks:
+  - policy_mutation
+  barriers: []
+  match: {}
+  message: Model output directly mutates security policy or tool allowlist
+  description: Model output directly mutates security policy or tool allowlist. Flag model output reaching state/config fields
+    that control permissions, enabled tools, policies, or safety settings
+  remediation:
+  - Control plane immutable to model; signed/admin-only changes
+  source_description: LLM/planner output
+  sink_description: policy config, allowlist, guardrail toggle, permissions, tool registry
+  detection_logic: Flag model output reaching state/config fields that control permissions, enabled tools, policies, or safety
+    settings.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - REG_07 (Runtime Drift Detection Against Registry)
+    - IR_07 (Known-Good Rollback for Prompts, Policies, Memory and Vector Indexes)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-PROMPT-010
+  name: Untrusted tool or skill description influences privileged planning
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-PROMPT-010
+  category: Prompt Boundary
+  severity: high
+  targets:
+  - agent
+  - mcp
+  - skill
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers:
+  - allowlist
+  - signature_verification
+  match: {}
+  message: Untrusted tool or skill description influences privileged planning
+  description: Untrusted tool or skill description influences privileged planning. Flag remote/mutable descriptions auto-inserted
+    into model context when tool can perform sensitive actions and source is not allowlisted/pinned
+  remediation:
+  - Trusted registry
+  - signature/allowlist
+  - metadata sanitization
+  source_description: Remote MCP metadata, skill markdown, plugin manifest, tool description
+  sink_description: planner/tool-selection prompt
+  detection_logic: Flag remote/mutable descriptions auto-inserted into model context when tool can perform sensitive actions
+    and source is not allowlisted/pinned.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/prompt_boundary.yaml
+  mappings:
+    security_controls:
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - SEC_12 (Safety Evaluation Gate - Severity-Based Release Blocking)
+    - REG_02 (Agent Manifest Schema Validation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/prompt_boundary.yaml
+- id: AIR-RAG-001
+  name: Untrusted documents indexed without trust classification or sanitization
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-001
+  category: RAG
+  severity: high
+  targets:
+  - rag_ingestion
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - retrieval
+  sinks:
+  - vector_write
+  barriers:
+  - allowlist
+  - approval_gate
+  match: {}
+  message: Untrusted documents indexed without trust classification or sanitization
+  description: Untrusted documents indexed without trust classification or sanitization. Flag external source reaching vector-store
+    ingestion with no validation/trust-processing function
+  remediation:
+  - Trust label
+  - content sanitization
+  - source allowlist
+  - approval
+  source_description: Web/upload/email/ticket/wiki/external file
+  sink_description: embedding/vector-store add/upsert
+  detection_logic: Flag external source reaching vector-store ingestion with no validation/trust-processing function.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/rag.yaml
+  mappings:
+    security_controls:
+    - DATA_06 (RAG Source Trust Classification)
+    - SEC_10 (Document Screening for File-Typed Outputs)
+    - DATA_05 (Memory Write Scanning (Poisoning Defense))
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/rag.yaml
+- id: AIR-RAG-002
+  name: Missing tenant/user filter on vector retrieval
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-002
+  category: RAG
+  severity: critical
+  targets:
+  - rag
+  - vector_db
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Missing tenant/user filter on vector retrieval
+  description: Missing tenant/user filter on vector retrieval. Flag multi-user app retriever calls lacking filter/namespace
+    bound to identity
+  remediation:
+  - Mandatory tenant/user metadata filter
+  source_description: Authenticated tenant/user identity
+  sink_description: similarity_search/query/search
+  detection_logic: Flag multi-user app retriever calls lacking filter/namespace bound to identity.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/rag.yaml
+  mappings:
+    security_controls:
+    - DATA_11 (Document/Chunk-Level RAG Authorization)
+    - MEM_02 (Memory Read Authorization and ACL Filtering)
+    - IAM_04 (User Identity Propagation - AgentAuthContext)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/rag.yaml
+- id: AIR-RAG-003
+  name: User controls metadata filter operators directly
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-003
+  category: RAG
+  severity: high
+  targets:
+  - rag
+  - vector_db
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  sinks:
+  - vector_write
+  barriers:
+  - allowlist
+  - schema_validation
+  match: {}
+  message: User controls metadata filter operators directly
+  description: User controls metadata filter operators directly. Flag tainted filter object passed through to vector/search
+    backend
+  remediation:
+  - Schema and field/operator allowlist
+  source_description: Request/model filter object
+  sink_description: vector DB filter/query
+  detection_logic: Flag tainted filter object passed through to vector/search backend.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/rag.yaml
+  mappings:
+    security_controls:
+    - DATA_11 (Document/Chunk-Level RAG Authorization)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - MEM_02 (Memory Read Authorization and ACL Filtering)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/rag.yaml
+- id: AIR-RAG-004
+  name: Retrieved text directly controls tool/action execution
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-004
+  category: RAG
+  severity: critical
+  targets:
+  - rag
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - retrieval
+  sinks:
+  - shell_execution
+  - sql_query
+  - network_request
+  - file_write
+  barriers: []
+  match: {}
+  message: Retrieved text directly controls tool/action execution
+  description: 'Retrieved text directly controls tool/action execution. Cross-component taint: retriever -> model -> privileged
+    sink without approval/policy guard'
+  remediation:
+  - Injection-resistant boundary + deterministic policy
+  source_description: retriever/document output
+  sink_description: command/query/file/network/privileged tool sink via model
+  detection_logic: 'Cross-component taint: retriever -> model -> privileged sink without approval/policy guard.'
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/rag.yaml
+  mappings:
+    security_controls:
+    - SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)
+    - SEC_18 (Human-in-the-Loop for High-Risk Actions)
+    - DATA_06 (RAG Source Trust Classification)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/rag.yaml
+- id: AIR-RAG-005
+  name: Sensitive source documents embedded using external provider without control
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-005
+  category: RAG
+  severity: high
+  targets:
+  - rag
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - sensitive_data
+  sinks:
+  - network_request
+  barriers:
+  - redaction
+  match: {}
+  message: Sensitive source documents embedded using external provider without control
+  description: Sensitive source documents embedded using external provider without control. Flag sensitive file/data source
+    to external embeddings client without redaction or approved classification
+  remediation:
+  - Redaction/classification + approved provider policy
+  source_description: PII/secrets/internal docs
+  sink_description: external embedding API
+  detection_logic: Flag sensitive file/data source to external embeddings client without redaction or approved classification.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/rag.yaml
+  mappings:
+    security_controls:
+    - DATA_07 (Data Residency & Region Pinning)
+    - DATA_08 (Restricted Data Business-Owner Sign-Off)
+    - DATA_03 (DLP at Prompt Assembly Time)
+    - NET_06 (Per-Agent Egress Allowlist)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/rag.yaml
+- id: AIR-RAG-006
+  name: Raw untrusted content persisted into long-term memory
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-006
+  category: Memory
+  severity: high
+  targets:
+  - agent_memory
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - retrieval
+  sinks:
+  - memory_write
+  - vector_write
+  barriers: []
+  match: {}
+  message: Raw untrusted content persisted into long-term memory
+  description: Raw untrusted content persisted into long-term memory. Flag raw external content written to long-term memory
+    without validation/trust labeling
+  remediation:
+  - Sanitize
+  - trust-label
+  - TTL
+  - ownership metadata
+  source_description: User/tool/web/retrieval content
+  sink_description: persistent memory save/store/upsert
+  detection_logic: Flag raw external content written to long-term memory without validation/trust labeling.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/memory.yaml
+  mappings:
+    security_controls:
+    - DATA_05 (Memory Write Scanning (Poisoning Defense))
+    - MEM_03 (Memory Write Validation and Provenance)
+    - MEM_07 (Memory Anomaly Detection)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/memory.yaml
+- id: AIR-RAG-007
+  name: Shared persistent memory lacks tenant/agent namespace
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-007
+  category: Memory
+  severity: critical
+  targets:
+  - agent_memory
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks:
+  - memory_write
+  barriers: []
+  match: {}
+  message: Shared persistent memory lacks tenant/agent namespace
+  description: Shared persistent memory lacks tenant/agent namespace. Flag global/static memory collections or keys in multi-user/multi-agent
+    code
+  remediation:
+  - Namespace keyed by authenticated tenant/user/agent
+  source_description: User/agent identity
+  sink_description: memory store key/collection/session
+  detection_logic: Flag global/static memory collections or keys in multi-user/multi-agent code.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/memory.yaml
+  mappings:
+    security_controls:
+    - MEM_02 (Memory Read Authorization and ACL Filtering)
+    - MEM_01 (Memory Store Classification and Ownership)
+    - MEM_06 (Vector Index ACL and Deletion Propagation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/memory.yaml
+- id: AIR-RAG-008
+  name: Secrets persisted in agent memory
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-008
+  category: Memory
+  severity: high
+  targets:
+  - agent_memory
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks:
+  - memory_write
+  - vector_write
+  barriers:
+  - redaction
+  match: {}
+  message: Secrets persisted in agent memory
+  description: Secrets persisted in agent memory. Sensitive-source-to-memory-sink taint rule
+  remediation:
+  - Redact before persistence
+  source_description: API keys, passwords, tokens, private data
+  sink_description: memory save/checkpoint/vector memory
+  detection_logic: Sensitive-source-to-memory-sink taint rule.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/memory.yaml
+  mappings:
+    security_controls:
+    - MEM_08 (Memory Minimization by Design)
+    - DATA_05 (Memory Write Scanning (Poisoning Defense))
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/memory.yaml
+- id: AIR-RAG-009
+  name: User-controlled loader type enables unsafe local/network access
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-009
+  category: RAG
+  severity: high
+  targets:
+  - document_loader
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - user_input
+  sinks: []
+  barriers:
+  - allowlist
+  match: {}
+  message: User-controlled loader type enables unsafe local/network access
+  description: User-controlled loader type enables unsafe local/network access. Flag tainted loader class/type or URI scheme
+    controlling loader selection
+  remediation:
+  - Allowlisted loader types and schemes
+  source_description: User/model-selected loader/scheme/type
+  sink_description: generic document loader factory
+  detection_logic: Flag tainted loader class/type or URI scheme controlling loader selection.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/rag.yaml
+  mappings:
+    security_controls:
+    - REG_02 (Agent Manifest Schema Validation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/rag.yaml
+- id: AIR-RAG-010
+  name: Crawler follows redirects into private/internal networks
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-RAG-010
+  category: RAG
+  severity: high
+  targets:
+  - web_crawler
+  - loader
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - url_input
+  sinks: []
+  barriers: []
+  match: {}
+  message: Crawler follows redirects into private/internal networks
+  description: Crawler follows redirects into private/internal networks. Flag generic crawler with redirects enabled and no
+    per-hop SSRF validation
+  remediation:
+  - Revalidate each redirect target; block private/link-local networks
+  source_description: External URL
+  sink_description: crawler/browser/fetch with redirects
+  detection_logic: Flag generic crawler with redirects enabled and no per-hop SSRF validation.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/rag.yaml
+  mappings:
+    security_controls:
+    - NET_06 (Per-Agent Egress Allowlist)
+    - DATA_06 (RAG Source Trust Classification)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/rag.yaml
+- id: AIR-SECRET-001
+  name: Hardcoded AI provider or tool credential
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SECRET-001
+  category: Secrets
+  severity: critical
+  targets:
+  - agent
+  - tool
+  - mcp
+  - skill
+  analysis:
+    type: secret
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Hardcoded AI provider or tool credential
+  description: Hardcoded AI provider or tool credential. Secret scanner tuned for OpenAI, Anthropic, Google, AWS, Azure, Hugging
+    Face, GitHub, Slack and generic bearer credentials
+  remediation:
+  - Secret manager/environment reference
+  source_description: N/A
+  sink_description: source/config literals
+  detection_logic: Secret scanner tuned for OpenAI, Anthropic, Google, AWS, Azure, Hugging Face, GitHub, Slack and generic
+    bearer credentials.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/secrets.yaml
+  mappings:
+    security_controls:
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - IAM_02 (Workload Identity - Zero Static Key Files)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/secrets.yaml
+- id: AIR-SECRET-002
+  name: API token included in URL/query string
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SECRET-002
+  category: Secrets
+  severity: high
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - sensitive_data
+  sinks:
+  - network_request
+  barriers:
+  - authorization_check
+  match: {}
+  message: API token included in URL/query string
+  description: API token included in URL/query string. Flag secret variables/literals concatenated into query parameters or
+    URLs
+  remediation:
+  - Authorization header or secure credential mechanism
+  source_description: Secret/token
+  sink_description: URL construction / HTTP request
+  detection_logic: Flag secret variables/literals concatenated into query parameters or URLs.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/secrets.yaml
+  mappings:
+    security_controls:
+    - ENC_02 (No Tokens/Auth Codes in Logs)
+    - MON_02 (Prompt/Response Logging - Privacy-Safe Restricted Sink)
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/secrets.yaml
+- id: AIR-SECRET-003
+  name: Raw prompts/responses logged
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SECRET-003
+  category: Logging
+  severity: high
+  targets:
+  - agent
+  - llm_app
+  analysis:
+    type: taint
+    interprocedural: true
+  sources: []
+  sinks:
+  - logging_sink
+  barriers:
+  - redaction
+  match: {}
+  message: Raw prompts/responses logged
+  description: Raw prompts/responses logged. Flag prompt/message/response objects sent to logs; raise severity when sensitive
+    sources feed prompt
+  remediation:
+  - Structured redacted logging
+  source_description: Prompt, messages, completion text
+  sink_description: logger/print/telemetry/trace
+  detection_logic: Flag prompt/message/response objects sent to logs; raise severity when sensitive sources feed prompt.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/logging.yaml
+  mappings:
+    security_controls:
+    - MON_02 (Prompt/Response Logging - Privacy-Safe Restricted Sink)
+    - DATA_02 (PII Handling, Redaction, Pseudonymisation)
+    - ENC_02 (No Tokens/Auth Codes in Logs)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/logging.yaml
+- id: AIR-SECRET-004
+  name: Tool arguments/results logged without redaction
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SECRET-004
+  category: Logging
+  severity: high
+  targets:
+  - tool
+  - mcp
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  sinks:
+  - logging_sink
+  barriers:
+  - redaction
+  match: {}
+  message: Tool arguments/results logged without redaction
+  description: Tool arguments/results logged without redaction. Flag sensitive tool/MCP objects passed to logging/tracing
+    sinks
+  remediation:
+  - Field-level redaction
+  source_description: Tool args/results, headers, tokens, file contents
+  sink_description: logger/trace/APM
+  detection_logic: Flag sensitive tool/MCP objects passed to logging/tracing sinks.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/logging.yaml
+  mappings:
+    security_controls:
+    - MON_02 (Prompt/Response Logging - Privacy-Safe Restricted Sink)
+    - MON_03 (Decision Trace Logging - Tool, Policy and Evidence Trace)
+    - DATA_02 (PII Handling, Redaction, Pseudonymisation)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/logging.yaml
+- id: AIR-SECRET-005
+  name: Debug mode exposes prompts, tool schemas, stack traces, or secrets
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SECRET-005
+  category: Debug Exposure
+  severity: high
+  targets:
+  - agent
+  - mcp
+  - tool
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks: []
+  barriers: []
+  match: {}
+  message: Debug mode exposes prompts, tool schemas, stack traces, or secrets
+  description: Debug mode exposes prompts, tool schemas, stack traces, or secrets. Framework-specific config rule for debug/verbose
+    modes in deployable agent/MCP services
+  remediation:
+  - Production debug disabled
+  source_description: N/A
+  sink_description: debug=True, verbose tracing, development exception pages
+  detection_logic: Framework-specific config rule for debug/verbose modes in deployable agent/MCP services.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/debug_exposure.yaml
+  mappings:
+    security_controls:
+    - MON_02 (Prompt/Response Logging - Privacy-Safe Restricted Sink)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/debug_exposure.yaml
+- id: AIR-SECRET-006
+  name: Entire environment exported to model/tool context
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SECRET-006
+  category: Secrets
+  severity: critical
+  targets:
+  - agent
+  - tool
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - sensitive_data
+  sinks:
+  - privileged_prompt
+  - network_request
+  - logging_sink
+  barriers:
+  - allowlist
+  match: {}
+  message: Entire environment exported to model/tool context
+  description: Entire environment exported to model/tool context. Flag dict(os.environ), process.env spreading, env dumps,
+    or full environment serialization into model/tool contexts
+  remediation:
+  - Named environment-variable allowlist
+  source_description: os.environ/process.env
+  sink_description: prompt/tool args/network/log
+  detection_logic: Flag dict(os.environ), process.env spreading, env dumps, or full environment serialization into model/tool
+    contexts.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/secrets.yaml
+  mappings:
+    security_controls:
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - DATA_03 (DLP at Prompt Assembly Time)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/secrets.yaml
+- id: AIR-SKILL-001
+  name: Skill executes shell command with interpolated user/model variables
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-001
+  category: Skill Security
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - user_input
+  sinks:
+  - shell_execution
+  barriers: []
+  match: {}
+  message: Skill executes shell command with interpolated user/model variables
+  description: Skill executes shell command with interpolated user/model variables. Analyze skill code and Markdown command
+    templates for untrusted variable interpolation into shell commands
+  remediation:
+  - Typed parameters + fixed command mapping
+  source_description: Skill input/model output placeholders
+  sink_description: shell/terminal command in skill implementation
+  detection_logic: Analyze skill code and Markdown command templates for untrusted variable interpolation into shell commands.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-002
+  name: Skill downloads and executes remote script
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-002
+  category: Skill Security
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: structural
+    interprocedural: true
+  sources:
+  - url_input
+  sinks: []
+  barriers:
+  - signature_verification
+  match: {}
+  message: Skill downloads and executes remote script
+  description: Skill downloads and executes remote script. Pattern rule across Markdown, YAML, shell snippets, Python/JS implementation
+  remediation:
+  - Pinned artifact + checksum/signature
+  source_description: Remote URL
+  sink_description: curl|bash, wget|sh, Invoke-WebRequest + execution
+  detection_logic: Pattern rule across Markdown, YAML, shell snippets, Python/JS implementation.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-003
+  name: Skill loads executable code from writable/untrusted directory
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-003
+  category: Skill Security
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - path_input
+  - retrieval
+  sinks: []
+  barriers: []
+  match: {}
+  message: Skill loads executable code from writable/untrusted directory
+  description: Skill loads executable code from writable/untrusted directory. Flag plugin discovery/import from current directory,
+    tmp, uploads, workspace, or user-controlled paths
+  remediation:
+  - Read-only trusted skill directory and signed artifacts
+  source_description: Workspace, temp, upload, user-writable skill directory
+  sink_description: plugin/skill loader/import
+  detection_logic: Flag plugin discovery/import from current directory, tmp, uploads, workspace, or user-controlled paths.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-004
+  name: Skill source is fetched from mutable remote branch/tag
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-004
+  category: Skill Security
+  severity: high
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: dependency
+    interprocedural: true
+  sources:
+  - url_input
+  sinks:
+  - package_install
+  barriers:
+  - signature_verification
+  match: {}
+  message: Skill source is fetched from mutable remote branch/tag
+  description: Skill source is fetched from mutable remote branch/tag. Flag main/master/latest/HEAD/floating version references
+    used to install or load skills/plugins
+  remediation:
+  - Commit SHA/digest/signature pinning
+  source_description: Git URL/package/model/skill URL
+  sink_description: runtime install/load
+  detection_logic: Flag main/master/latest/HEAD/floating version references used to install or load skills/plugins.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-005
+  name: Skill requests broad secret/environment access
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-005
+  category: Skill Security
+  severity: high
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: structural
+    interprocedural: true
+  sources:
+  - sensitive_data
+  sinks:
+  - logging_sink
+  barriers:
+  - allowlist
+  match: {}
+  message: Skill requests broad secret/environment access
+  description: Skill requests broad secret/environment access. Flag skills enumerating all environment variables or reading
+    known cloud/token credential names unrelated to narrow purpose
+  remediation:
+  - Explicit named-secret allowlist
+  source_description: os.environ/process.env/credential stores
+  sink_description: network/tool output/logging
+  detection_logic: Flag skills enumerating all environment variables or reading known cloud/token credential names unrelated
+    to narrow purpose.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-006
+  name: Skill contains direct secret exfiltration path
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-006
+  category: Skill Security
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - sensitive_data
+  sinks:
+  - network_request
+  barriers:
+  - allowlist
+  match: {}
+  message: Skill contains direct secret exfiltration path
+  description: Skill contains direct secret exfiltration path. Taint sensitive secret sources to external network sinks inside
+    skill implementation
+  remediation:
+  - No secret egress; DLP/allowlist
+  source_description: env vars, credential files, tokens, SSH/cloud credentials
+  sink_description: HTTP/email/webhook/socket
+  detection_logic: Taint sensitive secret sources to external network sinks inside skill implementation.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - NET_12 (Data Exfiltration Perimeter (Egress DLP))
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - ENC_01 (Secrets Retrieval via Platform Module - No Bypass)
+    - MON_04 (Tool Invocation Monitoring + Auto-Response)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-007
+  name: Skill can modify security configuration or policy files
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-007
+  category: Skill Security
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - user_input
+  sinks:
+  - file_write
+  - policy_mutation
+  barriers: []
+  match: {}
+  message: Skill can modify security configuration or policy files
+  description: Skill can modify security configuration or policy files. Flag skill code writing known security/policy/agent
+    configuration paths
+  remediation:
+  - Admin-only control plane outside skill runtime
+  source_description: Skill/model input
+  sink_description: guardrail config, policy files, auth config, tool registry
+  detection_logic: Flag skill code writing known security/policy/agent configuration paths.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_07 (Runtime Drift Detection Against Registry)
+    - IR_07 (Known-Good Rollback for Prompts, Policies, Memory and Vector Indexes)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-008
+  name: Skill declares wildcard or excessive tool/capability permissions
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-008
+  category: Skill Security
+  severity: high
+  targets:
+  - skill_manifest
+  analysis:
+    type: config
+    interprocedural: true
+  sources: []
+  sinks:
+  - policy_mutation
+  barriers: []
+  match: {}
+  message: Skill declares wildcard or excessive tool/capability permissions
+  description: Skill declares wildcard or excessive tool/capability permissions. Manifest rule for wildcard/broad capabilities
+    and dangerous permission combinations
+  remediation:
+  - Least-privilege manifest
+  source_description: N/A
+  sink_description: permissions:* / tools:* / filesystem:* / network:* / unrestricted capabilities
+  detection_logic: Manifest rule for wildcard/broad capabilities and dangerous permission combinations.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - IAM_03 (Least-Privilege Resource-Scoped IAM)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_02 (Agent Manifest Schema Validation)
+    - SEC_15 (Agent Registry Compliance Gate)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-009
+  name: Skill executes package manager with model-controlled package name
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-009
+  category: Skill Security
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  - user_input
+  sinks:
+  - package_install
+  barriers:
+  - allowlist
+  match: {}
+  message: Skill executes package manager with model-controlled package name
+  description: Skill executes package manager with model-controlled package name. Flag tainted package names or URLs reaching
+    package-manager process/API
+  remediation:
+  - Fixed allowlisted dependencies
+  source_description: Model/user package/repository identifier
+  sink_description: pip/npm/uv/poetry/npx install
+  detection_logic: Flag tainted package names or URLs reaching package-manager process/API.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - SEC_06 (Structured Output Schema + Tool Name Auth)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml
+- id: AIR-SKILL-010
+  name: Skill modifies its own instructions or source from model output
+  engine: agentguard
+  origin: AgentGuard Risk Catalog
+  origin_rule_id: AIR-SKILL-010
+  category: Skill Security
+  severity: critical
+  targets:
+  - skill
+  - plugin
+  analysis:
+    type: taint
+    interprocedural: true
+  sources:
+  - llm_output
+  sinks:
+  - file_write
+  barriers: []
+  match: {}
+  message: Skill modifies its own instructions or source from model output
+  description: Skill modifies its own instructions or source from model output. Flag model output written to skill definition,
+    manifest, plugin code, or loader configuration
+  remediation:
+  - Immutable signed skill definition
+  source_description: Model output
+  sink_description: skill.md/plugin manifest/source/config write
+  detection_logic: Flag model output written to skill definition, manifest, plugin code, or loader configuration.
+  references:
+  - https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/skill_security.yaml
+  mappings:
+    security_controls:
+    - SEC_21 (Policy-as-Code for AI Controls)
+    - SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)
+    - SEC_20 (AIBOM - AI Bill of Materials)
+    - REG_03 (AIBOM Required for Every Agent)
+    - REG_07 (Runtime Drift Detection Against Registry)
+    - IR_07 (Known-Good Rollback for Prompts, Policies, Memory and Vector Indexes)
+    - IR_01 (Multi-Level Kill-Switch Model)
+  cwe: []
+  rule_version: '1'
+  implementation: native-catalog
+  legacy_engine: agentguard
+  source_file: rules/builtin/skill_security.yaml

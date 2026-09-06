@@ -1,0 +1,1035 @@
+{
+  "contract_version": "1.2",
+  "scan": {
+    "scan_id": "83a4b38a-6209-472a-b9a5-7ff4d54525b0",
+    "root": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo",
+    "started_at": "2026-09-04T12:10:31.036805+00:00",
+    "completed_at": "2026-09-04T12:10:31.068040+00:00",
+    "status": "completed",
+    "git_commit": "",
+    "git_branch": "",
+    "git_remote": ""
+  },
+  "engines": [
+    {
+      "engine_id": "agentguard-core",
+      "version": "0.4.0",
+      "kind": "static-analysis"
+    }
+  ],
+  "findings": [
+    {
+      "rule_id": "CUSTOM-AI-001",
+      "name": "Example organization admin command rule",
+      "severity": "Critical",
+      "file": "app.py",
+      "line": 13,
+      "message": "LLM output reaches a custom privileged command API.",
+      "evidence": [
+        {
+          "kind": "source",
+          "label": "external tool/endpoint parameter command",
+          "file": "app.py",
+          "line": 12,
+          "symbol": "command",
+          "detail": "def run_shell(command: str):"
+        },
+        {
+          "kind": "sink",
+          "label": "shell_execution",
+          "file": "app.py",
+          "line": 13,
+          "symbol": "subprocess.run",
+          "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout"
+        }
+      ],
+      "code": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+      "analysis_type": "taint",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "e08a030b34d6f8e95cfa578e",
+      "semantic_anchor": "app.run_shell|subprocess.run|Call(func=Attribute(value=Name(id='subprocess', ctx=Load()), attr='run', ctx=Load()), args=[Name(id='command', ctx=Load())], keywords=[keyword(arg='shell', value=Constant(value=True)), keyword(arg='capture_output', value=Constant(value=True)), keyword(arg='text', value=Constant(value=True))])",
+      "engine_metadata": {
+        "resolution": "exact",
+        "engine": "project-python",
+        "rule_engine": "agentguard"
+      },
+      "finding_id": "AGF-E08A030B34D6F8E95CFA578E",
+      "title": "Example organization admin command rule",
+      "description": "LLM output reaches a custom privileged command API.",
+      "category": "custom",
+      "remediation": [
+        "Use a fixed operation enum and deterministic authorization before execution."
+      ],
+      "source_description": "",
+      "sink_description": "",
+      "detection_logic": "",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/custom/example.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "SEC_06 (Structured Output Schema + Tool Name Auth)",
+          "IAM_04 (User Identity Propagation - AgentAuthContext)",
+          "SEC_18 (Human-in-the-Loop for High-Risk Actions)",
+          "MON_04 (Tool Invocation Monitoring + Auto-Response)",
+          "IR_01 (Multi-Level Kill-Switch Model)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 13
+      }
+    },
+    {
+      "rule_id": "AIR-OUT-003",
+      "name": "LLM-generated command executed",
+      "severity": "Critical",
+      "file": "app.py",
+      "line": 13,
+      "message": "LLM-generated command executed",
+      "evidence": [
+        {
+          "kind": "source",
+          "label": "external tool/endpoint parameter command",
+          "file": "app.py",
+          "line": 12,
+          "symbol": "command",
+          "detail": "def run_shell(command: str):"
+        },
+        {
+          "kind": "sink",
+          "label": "shell_execution",
+          "file": "app.py",
+          "line": 13,
+          "symbol": "subprocess.run",
+          "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout"
+        }
+      ],
+      "code": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+      "analysis_type": "taint",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "0f809c2872cfbf027017063b",
+      "semantic_anchor": "app.run_shell|subprocess.run|Call(func=Attribute(value=Name(id='subprocess', ctx=Load()), attr='run', ctx=Load()), args=[Name(id='command', ctx=Load())], keywords=[keyword(arg='shell', value=Constant(value=True)), keyword(arg='capture_output', value=Constant(value=True)), keyword(arg='text', value=Constant(value=True))])",
+      "engine_metadata": {
+        "resolution": "exact",
+        "engine": "project-python",
+        "rule_engine": "agentguard"
+      },
+      "finding_id": "AGF-0F809C2872CFBF027017063B",
+      "title": "LLM-generated command executed",
+      "description": "LLM-generated command executed. Direct model-output-to-command-sink taint rule",
+      "category": "Output Validation",
+      "remediation": [
+        "No free-form command execution; structured allowlisted actions"
+      ],
+      "source_description": "LLM output",
+      "sink_description": "shell/process execution",
+      "detection_logic": "Direct model-output-to-command-sink taint rule.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/output_validation.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "SEC_06 (Structured Output Schema + Tool Name Auth)",
+          "SEC_18 (Human-in-the-Loop for High-Risk Actions)",
+          "SEC_05 (Output Content Scanning)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 13
+      }
+    },
+    {
+      "rule_id": "AIR-MCP-010",
+      "name": "MCP tool exposes arbitrary command execution primitive",
+      "severity": "Critical",
+      "file": "app.py",
+      "line": 13,
+      "message": "MCP tool exposes arbitrary command execution primitive",
+      "evidence": [
+        {
+          "kind": "source",
+          "label": "external tool/endpoint parameter command",
+          "file": "app.py",
+          "line": 12,
+          "symbol": "command",
+          "detail": "def run_shell(command: str):"
+        },
+        {
+          "kind": "sink",
+          "label": "shell_execution",
+          "file": "app.py",
+          "line": 13,
+          "symbol": "subprocess.run",
+          "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout"
+        }
+      ],
+      "code": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+      "analysis_type": "taint",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "6eae471cb485452e50939dcf",
+      "semantic_anchor": "app.run_shell|subprocess.run|Call(func=Attribute(value=Name(id='subprocess', ctx=Load()), attr='run', ctx=Load()), args=[Name(id='command', ctx=Load())], keywords=[keyword(arg='shell', value=Constant(value=True)), keyword(arg='capture_output', value=Constant(value=True)), keyword(arg='text', value=Constant(value=True))])",
+      "engine_metadata": {
+        "resolution": "exact",
+        "engine": "project-python",
+        "rule_engine": "agentguard"
+      },
+      "finding_id": "AGF-6EAE471CB485452E50939DCF",
+      "title": "MCP tool exposes arbitrary command execution primitive",
+      "description": "MCP tool exposes arbitrary command execution primitive. Flag MCP tools whose user/model-controlled schema is directly mapped to process execution",
+      "category": "MCP",
+      "remediation": [
+        "Narrow task-specific tool schema and command allowlist"
+      ],
+      "source_description": "Tool schema fields such as command, cmd, shell, script",
+      "sink_description": "process execution APIs",
+      "detection_logic": "Flag MCP tools whose user/model-controlled schema is directly mapped to process execution.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/mcp.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "MCP_01 (Approved MCP Server Registry)",
+          "SEC_22 (Formal MCP Server Security Review)",
+          "MCP_03 (MCP Schema and Argument Validation)",
+          "SEC_18 (Human-in-the-Loop for High-Risk Actions)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 13
+      }
+    },
+    {
+      "rule_id": "AIR-EXEC-009",
+      "name": "User or model-controlled interpreter selection",
+      "severity": "Critical",
+      "file": "app.py",
+      "line": 13,
+      "message": "User or model-controlled interpreter selection",
+      "evidence": [
+        {
+          "kind": "source",
+          "label": "external tool/endpoint parameter command",
+          "file": "app.py",
+          "line": 12,
+          "symbol": "command",
+          "detail": "def run_shell(command: str):"
+        },
+        {
+          "kind": "sink",
+          "label": "shell_execution",
+          "file": "app.py",
+          "line": 13,
+          "symbol": "subprocess.run",
+          "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout"
+        }
+      ],
+      "code": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+      "analysis_type": "taint",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "5b2266f01d69fb1d1756a678",
+      "semantic_anchor": "app.run_shell|subprocess.run|Call(func=Attribute(value=Name(id='subprocess', ctx=Load()), attr='run', ctx=Load()), args=[Name(id='command', ctx=Load())], keywords=[keyword(arg='shell', value=Constant(value=True)), keyword(arg='capture_output', value=Constant(value=True)), keyword(arg='text', value=Constant(value=True))])",
+      "engine_metadata": {
+        "resolution": "exact",
+        "engine": "project-python",
+        "rule_engine": "agentguard"
+      },
+      "finding_id": "AGF-5B2266F01D69FB1D1756A678",
+      "title": "User or model-controlled interpreter selection",
+      "description": "User or model-controlled interpreter selection. Flag tainted executable/program argument at process-creation sink",
+      "category": "Code Execution",
+      "remediation": [
+        "Fixed executable allowlist"
+      ],
+      "source_description": "Interpreter/runtime name or executable path from input",
+      "sink_description": "subprocess/exec/spawn",
+      "detection_logic": "Flag tainted executable/program argument at process-creation sink.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/code_execution.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)",
+          "MON_04 (Tool Invocation Monitoring + Auto-Response)",
+          "SEC_06 (Structured Output Schema + Tool Name Auth)",
+          "SEC_18 (Human-in-the-Loop for High-Risk Actions)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 13
+      }
+    },
+    {
+      "rule_id": "AIR-EXEC-001",
+      "name": "LLM or user input reaches shell command execution",
+      "severity": "Critical",
+      "file": "app.py",
+      "line": 13,
+      "message": "LLM or user input reaches shell command execution",
+      "evidence": [
+        {
+          "kind": "source",
+          "label": "external tool/endpoint parameter command",
+          "file": "app.py",
+          "line": 12,
+          "symbol": "command",
+          "detail": "def run_shell(command: str):"
+        },
+        {
+          "kind": "sink",
+          "label": "shell_execution",
+          "file": "app.py",
+          "line": 13,
+          "symbol": "subprocess.run",
+          "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout"
+        }
+      ],
+      "code": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+      "analysis_type": "taint",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "f59fbbdaf0424258ceaf870a",
+      "semantic_anchor": "app.run_shell|subprocess.run|Call(func=Attribute(value=Name(id='subprocess', ctx=Load()), attr='run', ctx=Load()), args=[Name(id='command', ctx=Load())], keywords=[keyword(arg='shell', value=Constant(value=True)), keyword(arg='capture_output', value=Constant(value=True)), keyword(arg='text', value=Constant(value=True))])",
+      "engine_metadata": {
+        "resolution": "exact",
+        "engine": "project-python",
+        "rule_engine": "agentguard"
+      },
+      "finding_id": "AGF-F59FBBDAF0424258CEAF870A",
+      "title": "LLM or user input reaches shell command execution",
+      "description": "LLM or user input reaches shell command execution. Source-to-sink taint rule; treat string formatting into shell commands as exploitable",
+      "category": "Code Execution",
+      "remediation": [
+        "Argument arrays",
+        "allowlisted commands",
+        "no shell interpolation"
+      ],
+      "source_description": "User input, model output, tool args, retrieved content",
+      "sink_description": "os.system, subprocess.* with shell=True, child_process.exec, execSync, spawn with shell",
+      "detection_logic": "Source-to-sink taint rule; treat string formatting into shell commands as exploitable.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/builtin/code_execution.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)",
+          "MON_04 (Tool Invocation Monitoring + Auto-Response)",
+          "SEC_06 (Structured Output Schema + Tool Name Auth)",
+          "SEC_18 (Human-in-the-Loop for High-Risk Actions)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 13
+      }
+    },
+    {
+      "rule_id": "NVS-TM2",
+      "name": "Tool Chaining Abuse",
+      "severity": "High",
+      "file": "app.py",
+      "line": 1,
+      "message": "Tool Chaining Abuse",
+      "evidence": [
+        {
+          "kind": "skill-static",
+          "label": "tool chaining without visible policy boundary",
+          "file": "app.py",
+          "line": 1,
+          "symbol": "",
+          "detail": "from langchain_core.tools import tool"
+        }
+      ],
+      "code": "from langchain_core.tools import tool",
+      "analysis_type": "skill_static",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "0bc167135168b759e2812497",
+      "semantic_anchor": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo/app.py|NVS-TM2|1|tool chaining without visible policy boundary",
+      "engine_metadata": {
+        "resolution": "deterministic",
+        "engine": "agentguard-skill",
+        "origin": "SkillSpector-compatible static analysis",
+        "rule_engine": "agentguard-skill"
+      },
+      "finding_id": "AGF-0BC167135168B759E2812497",
+      "title": "Tool Chaining Abuse",
+      "description": "Tool Chaining Abuse. Executed by NVIDIA SkillSpector rule TM2",
+      "category": "NVIDIA SkillSpector",
+      "remediation": [
+        "Use typed tool parameters and safe defaults.",
+        "Validate tool inputs, disallow unsafe flags, and enforce authorization per call."
+      ],
+      "source_description": "",
+      "sink_description": "",
+      "detection_logic": "Executed by NVIDIA SkillSpector rule TM2.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "SEC_17 (Toxic Tool Combination Detection)",
+          "MON_04 (Tool Invocation Monitoring + Auto-Response)",
+          "SEC_18 (Human-in-the-Loop for High-Risk Actions)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 1
+      }
+    },
+    {
+      "rule_id": "NVS-TM1",
+      "name": "Tool Parameter Abuse",
+      "severity": "High",
+      "file": "app.py",
+      "line": 13,
+      "message": "Tool Parameter Abuse",
+      "evidence": [
+        {
+          "kind": "skill-static",
+          "label": "static skill pattern",
+          "file": "app.py",
+          "line": 13,
+          "symbol": "",
+          "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout"
+        }
+      ],
+      "code": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+      "analysis_type": "skill_static",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "d16f4e44456648436c0fa86e",
+      "semantic_anchor": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo/app.py|NVS-TM1|13|static skill pattern",
+      "engine_metadata": {
+        "resolution": "deterministic",
+        "engine": "agentguard-skill",
+        "origin": "SkillSpector-compatible static analysis",
+        "rule_engine": "agentguard-skill"
+      },
+      "finding_id": "AGF-D16F4E44456648436C0FA86E",
+      "title": "Tool Parameter Abuse",
+      "description": "Tool Parameter Abuse. Executed by NVIDIA SkillSpector rule TM1",
+      "category": "NVIDIA SkillSpector",
+      "remediation": [
+        "Use typed tool parameters and safe defaults.",
+        "Validate tool inputs, disallow unsafe flags, and enforce authorization per call."
+      ],
+      "source_description": "",
+      "sink_description": "",
+      "detection_logic": "Executed by NVIDIA SkillSpector rule TM1.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "SEC_06 (Structured Output Schema + Tool Name Auth)",
+          "MCP_03 (MCP Schema and Argument Validation)",
+          "MON_04 (Tool Invocation Monitoring + Auto-Response)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 13
+      }
+    },
+    {
+      "rule_id": "NVS-AST4",
+      "name": "subprocess Call",
+      "severity": "High",
+      "file": "app.py",
+      "line": 13,
+      "message": "subprocess Call",
+      "evidence": [
+        {
+          "kind": "ast",
+          "label": "subprocess.run",
+          "file": "app.py",
+          "line": 13,
+          "symbol": "",
+          "detail": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout"
+        }
+      ],
+      "code": "return subprocess.run(command, shell=True, capture_output=True, text=True).stdout",
+      "analysis_type": "skill_static",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "745eff8b50f44e56730f20f7",
+      "semantic_anchor": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo/app.py|NVS-AST4|13|subprocess.run",
+      "engine_metadata": {
+        "resolution": "deterministic",
+        "engine": "agentguard-skill",
+        "origin": "SkillSpector-compatible static analysis",
+        "rule_engine": "agentguard-skill"
+      },
+      "finding_id": "AGF-745EFF8B50F44E56730F20F7",
+      "title": "subprocess Call",
+      "description": "subprocess Call. Executed by NVIDIA SkillSpector rule AST4",
+      "category": "NVIDIA SkillSpector",
+      "remediation": [
+        "Replace dynamic or reflective execution with explicit, allowlisted operations.",
+        "Never execute attacker-controlled strings; prefer structured parsers and fixed call targets."
+      ],
+      "source_description": "",
+      "sink_description": "",
+      "detection_logic": "Executed by NVIDIA SkillSpector rule AST4.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "SEC_11 (CI/CD Gates - Secret Scan, SAST, Signed Skills, Pinned Models)",
+          "SEC_06 (Structured Output Schema + Tool Name Auth)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 13
+      }
+    },
+    {
+      "rule_id": "NVS-OH2",
+      "name": "Cross-Context Output",
+      "severity": "Medium",
+      "file": "app.py",
+      "line": 1,
+      "message": "Cross-Context Output",
+      "evidence": [
+        {
+          "kind": "skill-static",
+          "label": "cross-context output flow",
+          "file": "app.py",
+          "line": 1,
+          "symbol": "",
+          "detail": "from langchain_core.tools import tool"
+        }
+      ],
+      "code": "from langchain_core.tools import tool",
+      "analysis_type": "skill_static",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "b55217a8eb201b74309bde85",
+      "semantic_anchor": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo/app.py|NVS-OH2|1|cross-context output flow",
+      "engine_metadata": {
+        "resolution": "deterministic",
+        "engine": "agentguard-skill",
+        "origin": "SkillSpector-compatible static analysis",
+        "rule_engine": "agentguard-skill"
+      },
+      "finding_id": "AGF-B55217A8EB201B74309BDE85",
+      "title": "Cross-Context Output",
+      "description": "Cross-Context Output. Executed by NVIDIA SkillSpector rule OH2",
+      "category": "NVIDIA SkillSpector",
+      "remediation": [
+        "Validate and constrain model/tool output before crossing a trust boundary.",
+        "Use typed schemas, encoding, size limits, and allowlists before execution or rendering."
+      ],
+      "source_description": "",
+      "sink_description": "",
+      "detection_logic": "Executed by NVIDIA SkillSpector rule OH2.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "SEC_05 (Output Content Scanning)",
+          "DATA_01 (Runtime Data Classification Enforcement)",
+          "SEC_03 (Indirect Injection Defense - Tool Output Sanitisation)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "app.py",
+        "line": 1
+      }
+    },
+    {
+      "rule_id": "NVS-LP4",
+      "name": "Overdeclared Permission",
+      "severity": "Low",
+      "file": "skills/customer_lookup/SKILL.md",
+      "line": 1,
+      "message": "Overdeclared Permission",
+      "evidence": [
+        {
+          "kind": "permission",
+          "label": "declared capability not observed",
+          "file": "skills/customer_lookup/SKILL.md",
+          "line": 1,
+          "symbol": "",
+          "detail": "---"
+        }
+      ],
+      "code": "---",
+      "analysis_type": "skill_static",
+      "llm_verdict": null,
+      "llm_reason": null,
+      "fingerprint": "cb7a85ca5a530c9a8fd3981b",
+      "semantic_anchor": "/mnt/data/AgentGuard-Core-CLI-CICD-v0.4.0-src/AgentGuard-Core-CLI-CICD-v0.4.0/examples/multi_agent_demo/skills/customer_lookup/SKILL.md|NVS-LP4|1|declared capability not observed",
+      "engine_metadata": {
+        "resolution": "deterministic",
+        "engine": "agentguard-skill",
+        "origin": "SkillSpector-compatible static analysis",
+        "rule_engine": "agentguard-skill"
+      },
+      "finding_id": "AGF-CB7A85CA5A530C9A8FD3981B",
+      "title": "Overdeclared Permission",
+      "description": "Overdeclared Permission. Executed by NVIDIA SkillSpector rule LP4",
+      "category": "NVIDIA SkillSpector",
+      "remediation": [
+        "Declare the minimum required capabilities explicitly.",
+        "Reject wildcard permissions and reconcile declared permissions with observed behavior."
+      ],
+      "source_description": "",
+      "sink_description": "",
+      "detection_logic": "Executed by NVIDIA SkillSpector rule LP4.",
+      "references": [
+        "https://github.com/akarshkn17/AgentGuard/blob/main/rules/integrations/skillspector.yaml"
+      ],
+      "mappings": {
+        "security_controls": [
+          "REG_02 (Agent Manifest Schema Validation)",
+          "SEC_15 (Agent Registry Compliance Gate)",
+          "SEC_21 (Policy-as-Code for AI Controls)",
+          "IAM_03 (Least-Privilege Resource-Scoped IAM)"
+        ]
+      },
+      "cwe": [],
+      "rule_version": "1",
+      "confidence": "deterministic",
+      "schema_version": "1.1",
+      "location": {
+        "file": "skills/customer_lookup/SKILL.md",
+        "line": 1
+      }
+    }
+  ],
+  "inventory": [
+    {
+      "entity_id": "TOOL-36600f572e380b11",
+      "entity_type": "tool",
+      "name": "lookup_customer",
+      "file": "app.py",
+      "line": 8,
+      "framework": "langchain",
+      "framework_version": "==0.3.27",
+      "content_hash": "241108f45b0164046bb141c07213eb31f1a6bbf26e4fff31b169b526f0f86736",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "decorator": "langchain_core.tools.tool"
+      },
+      "qualified_name": "app.lookup_customer",
+      "category": "tooling",
+      "version": "1.4.2",
+      "version_source": "project_manifest",
+      "package_name": "langchain",
+      "package_version": "==0.3.27",
+      "detection_source": "code_analysis",
+      "bom_ref": "TOOL-36600f572e380b11",
+      "version_id": "AGV-1B728572CEEECFB7E5E2",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "project_version": "1.4.2"
+      }
+    },
+    {
+      "entity_id": "TOOL-9972f365ee161300",
+      "entity_type": "tool",
+      "name": "run_shell",
+      "file": "app.py",
+      "line": 12,
+      "framework": "langchain",
+      "framework_version": "==0.3.27",
+      "content_hash": "ba4f04b7cb036f91135828acaf2192b14ad91837cb5e4cca9ab5d1b6cb061657",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "decorator": "langchain_core.tools.tool",
+        "capabilities": [
+          "process.execute"
+        ]
+      },
+      "qualified_name": "app.run_shell",
+      "category": "tooling",
+      "version": "1.4.2",
+      "version_source": "project_manifest",
+      "package_name": "langchain",
+      "package_version": "==0.3.27",
+      "detection_source": "code_analysis",
+      "bom_ref": "TOOL-9972f365ee161300",
+      "version_id": "AGV-2E31D150C6897ED6DCA2",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "project_version": "1.4.2"
+      }
+    },
+    {
+      "entity_id": "MODEL-d83bb665e203f289",
+      "entity_type": "model",
+      "name": "gpt-4o-2024-11-20",
+      "file": "app.py",
+      "line": 15,
+      "framework": "langchain",
+      "framework_version": "==0.3.27",
+      "content_hash": "81c5f09fae7435f9b860a9a3bf30e3c14280a237a61516a6c154886060ddeb8c",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "constructor": "langchain_openai.ChatOpenAI",
+        "model": "gpt-4o-2024-11-20"
+      },
+      "qualified_name": "app.llm",
+      "category": "model_runtime",
+      "version": "gpt-4o-2024-11-20",
+      "version_source": "model_identifier",
+      "package_name": "langchain",
+      "package_version": "==0.3.27",
+      "detection_source": "code_analysis",
+      "bom_ref": "MODEL-d83bb665e203f289",
+      "version_id": "AGV-B03795478936714F60D6",
+      "version_scheme": "model-id",
+      "version_evidence": {
+        "model_id": "gpt-4o-2024-11-20"
+      }
+    },
+    {
+      "entity_id": "AGENT-402ceaa3621c3c2b",
+      "entity_type": "agent",
+      "name": "support-agent",
+      "file": "app.py",
+      "line": 16,
+      "framework": "langgraph",
+      "framework_version": "==0.6.4",
+      "content_hash": "cb69f90325bdba8cb73f8576decbd78e2bbad94976a96692c68d03be8aded5a7",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "constructor": "langgraph.prebuilt.create_react_agent",
+        "description": "Customer support agent",
+        "url": "https://agents.example.test/support",
+        "capabilities": {
+          "streaming": true
+        },
+        "skills": [
+          {
+            "id": "customer_lookup",
+            "name": "customer_lookup",
+            "version": "1.2.0"
+          }
+        ]
+      },
+      "qualified_name": "app.agent",
+      "category": "agentic",
+      "version": "2.1.0",
+      "version_source": "agent_manifest",
+      "package_name": "langgraph",
+      "package_version": "==0.6.4",
+      "detection_source": "code_analysis",
+      "bom_ref": "AGENT-402ceaa3621c3c2b",
+      "version_id": "AGV-0B28632D025A3B8A3582",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "manifest": ".well-known/agent-card.json",
+        "declared_version": "2.1.0"
+      }
+    },
+    {
+      "entity_id": "MCP_SERVER-6f5be171a25f8770",
+      "entity_type": "mcp_server",
+      "name": "support-mcp",
+      "file": "app.py",
+      "line": 17,
+      "framework": "mcp",
+      "framework_version": "==1.13.1",
+      "content_hash": "79c9623d5c3b2ecd3faac589fdb99a0ad8bc8df7419cc7df7612f9a3f0b62521",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "constructor": "mcp.server.fastmcp.FastMCP",
+        "version": "3.0.0"
+      },
+      "qualified_name": "app.mcp",
+      "category": "mcp",
+      "version": "3.0.0",
+      "version_source": "constructor",
+      "package_name": "mcp",
+      "package_version": "==1.13.1",
+      "detection_source": "code_analysis",
+      "bom_ref": "MCP_SERVER-6f5be171a25f8770",
+      "version_id": "AGV-BC4985A0C03769ED82E0",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "declared_version": "3.0.0"
+      }
+    },
+    {
+      "entity_id": "CAPABILITY-2f3deb384fe85932",
+      "entity_type": "capability",
+      "name": "process.execute",
+      "file": "app.py",
+      "line": 13,
+      "framework": "",
+      "framework_version": "",
+      "content_hash": "890e1c78f2363dfd9e6c693aaba7085e891febb2a844a58de1e1a3cd306f6097",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "virtual": true
+      },
+      "qualified_name": "capability.process.execute",
+      "category": "capability",
+      "version": "rev-890e1c78f236",
+      "version_source": "content_hash",
+      "package_name": "",
+      "package_version": "",
+      "detection_source": "derived",
+      "bom_ref": "CAPABILITY-2f3deb384fe85932",
+      "version_id": "AGV-EF1B9FDDEC807FEFF80F",
+      "version_scheme": "content-digest",
+      "version_evidence": {
+        "sha256": "890e1c78f2363dfd9e6c693aaba7085e891febb2a844a58de1e1a3cd306f6097"
+      }
+    },
+    {
+      "entity_id": "SKILL-1c905af191a08e5e",
+      "entity_type": "skill",
+      "name": "customer_lookup",
+      "file": "skills/customer_lookup/SKILL.md",
+      "line": 1,
+      "framework": "",
+      "framework_version": "",
+      "content_hash": "461b158068c5b74b1fe745594441108e961fa3e3f7e9e8e145a48f96c504be87",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "format": ".md"
+      },
+      "qualified_name": "skill.skills/customer_lookup/SKILL.md",
+      "category": "tooling",
+      "version": "1.2.0",
+      "version_source": "constructor",
+      "package_name": "",
+      "package_version": "",
+      "detection_source": "config_file",
+      "bom_ref": "SKILL-1c905af191a08e5e",
+      "version_id": "AGV-2A8741CF185DEA3FA560",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "declared_version": "1.2.0"
+      }
+    },
+    {
+      "entity_id": "DEPENDENCY-80fbff84acdebdde",
+      "entity_type": "dependency",
+      "name": "langgraph",
+      "file": "pyproject.toml",
+      "line": 1,
+      "framework": "",
+      "framework_version": "",
+      "content_hash": "7a05217c790ca5fae3152917ef21af7dde32a1c84719c6f0af75ea52628084ba",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "package": "langgraph",
+        "declared_version": "==0.6.4"
+      },
+      "qualified_name": "dependency.langgraph",
+      "category": "dependency",
+      "version": "==0.6.4",
+      "version_source": "constructor",
+      "package_name": "langgraph",
+      "package_version": "==0.6.4",
+      "detection_source": "dependency_manifest",
+      "bom_ref": "DEPENDENCY-80fbff84acdebdde",
+      "version_id": "AGV-9BDD76C2513AC17D5233",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "declared_version": "==0.6.4"
+      }
+    },
+    {
+      "entity_id": "DEPENDENCY-797d6f745ef4333e",
+      "entity_type": "dependency",
+      "name": "langchain",
+      "file": "pyproject.toml",
+      "line": 1,
+      "framework": "",
+      "framework_version": "",
+      "content_hash": "534e7653da27c8ce66bb163ae6c1798bd1542dfceddf2d733b297ca9df8b251c",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "package": "langchain",
+        "declared_version": "==0.3.27"
+      },
+      "qualified_name": "dependency.langchain",
+      "category": "dependency",
+      "version": "==0.3.27",
+      "version_source": "constructor",
+      "package_name": "langchain",
+      "package_version": "==0.3.27",
+      "detection_source": "dependency_manifest",
+      "bom_ref": "DEPENDENCY-797d6f745ef4333e",
+      "version_id": "AGV-03D444494F07FE7251A8",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "declared_version": "==0.3.27"
+      }
+    },
+    {
+      "entity_id": "DEPENDENCY-67ff10e468a19957",
+      "entity_type": "dependency",
+      "name": "langchain-openai",
+      "file": "pyproject.toml",
+      "line": 1,
+      "framework": "",
+      "framework_version": "",
+      "content_hash": "4601b8784196b84243e1a2391326dccce183555c42f2cdbe9dccd0b55bd76cf4",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "package": "langchain-openai",
+        "declared_version": "==0.3.33"
+      },
+      "qualified_name": "dependency.langchain-openai",
+      "category": "dependency",
+      "version": "==0.3.33",
+      "version_source": "constructor",
+      "package_name": "langchain-openai",
+      "package_version": "==0.3.33",
+      "detection_source": "dependency_manifest",
+      "bom_ref": "DEPENDENCY-67ff10e468a19957",
+      "version_id": "AGV-7BAFD378FB65885AB328",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "declared_version": "==0.3.33"
+      }
+    },
+    {
+      "entity_id": "DEPENDENCY-aa4f22fb155e5f81",
+      "entity_type": "dependency",
+      "name": "mcp",
+      "file": "pyproject.toml",
+      "line": 1,
+      "framework": "",
+      "framework_version": "",
+      "content_hash": "a81c470ad1a32d32f71ca94044e40ebacc7f0e9151596988a8a3dcfc5e157482",
+      "attributes": {
+        "detection_method": "resolved_ast",
+        "package": "mcp",
+        "declared_version": "==1.13.1"
+      },
+      "qualified_name": "dependency.mcp",
+      "category": "dependency",
+      "version": "==1.13.1",
+      "version_source": "constructor",
+      "package_name": "mcp",
+      "package_version": "==1.13.1",
+      "detection_source": "dependency_manifest",
+      "bom_ref": "DEPENDENCY-aa4f22fb155e5f81",
+      "version_id": "AGV-419CF57AE7DDC9911030",
+      "version_scheme": "declared",
+      "version_evidence": {
+        "declared_version": "==1.13.1"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "AGENT-402ceaa3621c3c2b",
+      "relation": "USES_TOOL",
+      "target_id": "TOOL-36600f572e380b11",
+      "evidence_file": "app.py",
+      "evidence_line": 16,
+      "attributes": {
+        "resolution": "exact",
+        "keyword": "tools"
+      }
+    },
+    {
+      "source_id": "AGENT-402ceaa3621c3c2b",
+      "relation": "USES_TOOL",
+      "target_id": "TOOL-9972f365ee161300",
+      "evidence_file": "app.py",
+      "evidence_line": 16,
+      "attributes": {
+        "resolution": "exact",
+        "keyword": "tools"
+      }
+    },
+    {
+      "source_id": "AGENT-402ceaa3621c3c2b",
+      "relation": "USES_MODEL",
+      "target_id": "MODEL-d83bb665e203f289",
+      "evidence_file": "app.py",
+      "evidence_line": 16,
+      "attributes": {
+        "resolution": "exact",
+        "keyword": "model"
+      }
+    },
+    {
+      "source_id": "TOOL-9972f365ee161300",
+      "relation": "HAS_CAPABILITY",
+      "target_id": "CAPABILITY-2f3deb384fe85932",
+      "evidence_file": "app.py",
+      "evidence_line": 13,
+      "attributes": {
+        "resolution": "exact",
+        "call": "subprocess.run"
+      }
+    },
+    {
+      "source_id": "AGENT-402ceaa3621c3c2b",
+      "relation": "USES_SKILL",
+      "target_id": "SKILL-1c905af191a08e5e",
+      "evidence_file": ".well-known/agent-card.json",
+      "evidence_line": 1,
+      "attributes": {
+        "resolution": "exact"
+      }
+    }
+  ],
+  "artifacts": [],
+  "metrics": {
+    "files_scanned": 4,
+    "findings": 10,
+    "inventory_entities": 11,
+    "relationships": 5,
+    "duration_ms": 31
+  },
+  "errors": []
+}
