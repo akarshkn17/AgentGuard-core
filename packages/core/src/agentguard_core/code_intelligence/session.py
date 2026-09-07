@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import ast
 import hashlib
 from pathlib import Path
 
@@ -22,11 +21,12 @@ class CodeIntelligenceSession:
         self.call_sites: list[CallSite] = []
         self.call_edges: list[CallEdge] = []
         self.data_flow_edges: list[DataFlowEdge] = []
+        self._data_flow_edge_set: set[DataFlowEdge] = set()
         self._contexts: dict[str, set[tuple[str, ...]]] = {}
         self._build_call_graph()
 
     @classmethod
-    def from_files(cls, root: Path, paths: list[Path], limits: AnalysisLimits | None = None) -> "CodeIntelligenceSession":
+    def from_files(cls, root: Path, paths: list[Path], limits: AnalysisLimits | None = None) -> CodeIntelligenceSession:
         sources = {path.resolve(): path.read_text(encoding="utf-8", errors="ignore") for path in paths}
         return cls(root, sources, limits)
 
@@ -71,5 +71,7 @@ class CodeIntelligenceSession:
         return True
 
     def record_data_flow(self, edge: DataFlowEdge) -> None:
-        if edge not in self.data_flow_edges:
-            self.data_flow_edges.append(edge)
+        if edge in self._data_flow_edge_set:
+            return
+        self._data_flow_edge_set.add(edge)
+        self.data_flow_edges.append(edge)

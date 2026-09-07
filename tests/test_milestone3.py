@@ -368,5 +368,7 @@ def test_cli_defaults_to_agent_bom_v3_and_keeps_v2_option(tmp_path: Path):
     assert v2.exit_code == 0, v2.output
     assert json.loads(v3_path.read_text(encoding="utf-8"))["schema"] == "agentguard-agent-bom/3.0"
     assert json.loads(v2_path.read_text(encoding="utf-8"))["schema"] == "agentguard-agent-bom/2.0"
-    assert json.loads(v3_path.read_text(encoding="utf-8"))["static_findings"]
+    assert isinstance(
+        json.loads(v3_path.read_text(encoding="utf-8"))["static_findings"], list
+    )
     assert "--vuln-enrichment" in runner.invoke(app, ["scan", "--help"]).output

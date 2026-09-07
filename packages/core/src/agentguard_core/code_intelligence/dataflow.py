@@ -20,7 +20,7 @@ class TaintValue:
     sanitizers: list[SanitizerResult] = field(default_factory=list)
     abstract: AbstractValue = field(default_factory=AbstractValue)
 
-    def merge(self, other: "TaintValue") -> "TaintValue":
+    def merge(self, other: TaintValue) -> TaintValue:
         if not self.labels and not self.abstract.aliases and not self.abstract.known_literals:
             return other.copy()
         if not other.labels and not other.abstract.aliases and not other.abstract.known_literals:
@@ -38,7 +38,7 @@ class TaintValue:
             ),
         )
 
-    def copy(self) -> "TaintValue":
+    def copy(self) -> TaintValue:
         return TaintValue(
             set(self.labels),
             list(self.path),
@@ -50,13 +50,13 @@ class TaintValue:
             ),
         )
 
-    def through(self, node: EvidenceNode, *, max_nodes: int = 64) -> "TaintValue":
+    def through(self, node: EvidenceNode, *, max_nodes: int = 64) -> TaintValue:
         value = self.copy()
         if value.labels:
             value.path = [*value.path, node][-max_nodes:]
         return value
 
-    def sanitized(self, result: SanitizerResult, node: EvidenceNode | None = None) -> "TaintValue":
+    def sanitized(self, result: SanitizerResult, node: EvidenceNode | None = None) -> TaintValue:
         value = self.copy()
         value.sanitizers.append(result)
         if node is not None and value.labels:
@@ -81,29 +81,64 @@ class AbstractStore:
         self.values: dict[AbstractLocation, TaintValue] = {}
         self.aliases: dict[AbstractLocation, AbstractLocation] = {}
         self.edges: list[DataFlowEdge] = []
+        self._edge_set: set[DataFlowEdge] = set()
         self.max_alias_depth = max_alias_depth
         self.max_container_depth = max_container_depth
 
-    def fork(self) -> "AbstractStore":
+    def fork(self) -> AbstractStore:
         child = AbstractStore(
             max_alias_depth=self.max_alias_depth,
             max_container_depth=self.max_container_depth,
         )
         child.values = {key: value.copy() for key, value in self.values.items()}
         child.aliases = dict(self.aliases)
-        child.edges = list(self.edges)
         return child
 
+    def record_edge(self, edge: DataFlowEdge) -> None:
+        if edge in self._edge_set:
+            return
+        self._edge_set.add(edge)
+        self.edges.append(edge)
+
+    def _bounded_path(self, *parts: tuple[str, ...]) -> tuple[str, ...]:
+        """Join abstract container paths without creating an unbounded tuple.
+
+        Alias chains may prepend a path at every hop.  Bound each join while it
+        is being constructed so a cyclic or long alias chain cannot allocate an
+        exponentially growing intermediate tuple before ``write`` gets a chance
+        to apply the container-depth limit.
+        """
+        combined: list[str] = []
+        for part in parts:
+            for segment in part:
+                if segment == "*":
+                    if len(combined) >= self.max_container_depth:
+                        combined = combined[: self.max_container_depth - 1]
+                    combined.append("*")
+                    return tuple(combined)
+                if len(combined) >= self.max_container_depth:
+                    return (*combined[: self.max_container_depth - 1], "*")
+                combined.append(segment)
+        return tuple(combined)
+
     def resolve(self, location: AbstractLocation) -> AbstractLocation:
-        current = location
-        suffix: tuple[str, ...] = ()
+        current = AbstractLocation(
+            location.kind,
+            location.owner_symbol_id,
+            location.root,
+            self._bounded_path(location.path),
+        )
+        visited: set[AbstractLocation] = set()
         for _ in range(self.max_alias_depth):
             base = AbstractLocation(current.kind, current.owner_symbol_id, current.root)
+            if base in visited:
+                break
+            visited.add(base)
             target = self.aliases.get(base)
             if target is None:
                 break
-            suffix = (*target.path, *current.path, *suffix)
-            current = AbstractLocation(target.kind, target.owner_symbol_id, target.root, suffix)
+            path = self._bounded_path(target.path, current.path)
+            current = AbstractLocation(target.kind, target.owner_symbol_id, target.root, path)
         return current
 
     def bind_alias(self, source: AbstractLocation, target: AbstractLocation) -> None:
@@ -132,21 +167,19 @@ class AbstractStore:
 
     def write(self, location: AbstractLocation, value: TaintValue) -> AbstractLocation:
         resolved = self.resolve(location)
-        if len(resolved.path) > self.max_container_depth:
-            resolved = AbstractLocation(resolved.kind, resolved.owner_symbol_id, resolved.root, (*resolved.path[: self.max_container_depth - 1], "*"))
         stored = value.copy()
         stored.abstract.aliases.add(resolved)
         self.values[resolved] = stored
         return resolved
 
-    def merge_from(self, other: "AbstractStore") -> None:
+    def merge_from(self, other: AbstractStore) -> None:
         for location, value in other.values.items():
             self.values[location] = self.values.get(location, TaintValue()).merge(value)
         for source, target in other.aliases.items():
             if source not in self.aliases or self.aliases[source] == target:
                 self.aliases[source] = target
-        known = set(self.edges)
-        self.edges.extend(edge for edge in other.edges if edge not in known)
+        for edge in other.edges:
+            self.record_edge(edge)
 
     @staticmethod
     def local(owner: str, name: str, *, parameter: bool = False) -> AbstractLocation:

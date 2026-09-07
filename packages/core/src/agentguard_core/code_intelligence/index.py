@@ -22,10 +22,30 @@ class ProjectModule:
     imports: dict[str, str]
     is_package: bool = False
     symbol: CodeSymbol | None = None
+    line_starts: tuple[int, ...] = ()
+
+    def __post_init__(self) -> None:
+        starts = [0]
+        for index, character in enumerate(self.source):
+            if character == "\n" or (
+                character == "\r"
+                and (index + 1 == len(self.source) or self.source[index + 1] != "\n")
+            ):
+                starts.append(index + 1)
+        if self.source.endswith(("\n", "\r")):
+            starts.pop()
+        self.line_starts = tuple(starts) if self.source else ()
 
     @property
-    def lines(self) -> list[str]:
-        return self.source.splitlines()
+    def line_count(self) -> int:
+        return len(self.line_starts)
+
+    def line_text(self, line: int) -> str:
+        if line < 1 or line > self.line_count:
+            return ""
+        start = self.line_starts[line - 1]
+        end = self.line_starts[line] if line < self.line_count else len(self.source)
+        return self.source[start:end].rstrip("\r\n")
 
 
 @dataclass(slots=True)
@@ -57,6 +77,7 @@ class ProjectIndex:
         self.classes: dict[str, CodeSymbol] = {}
         self.parse_errors: list[tuple[Path, SyntaxError]] = []
         self.variable_types: dict[tuple[str, str], str] = {}
+        self._calls_by_function: dict[str, tuple[ast.Call, ...]] = {}
         self._resolver: CallResolver | None = None
         for path, source in sorted(sources.items(), key=lambda item: str(item[0])):
             self._add_module(path.resolve(), source)
@@ -64,7 +85,7 @@ class ProjectIndex:
             self._index_module(module)
         self._index_variable_types()
 
-    def set_resolver(self, resolver: "CallResolver") -> None:
+    def set_resolver(self, resolver: CallResolver) -> None:
         self._resolver = resolver
 
     def _module_name(self, path: Path) -> tuple[str, bool]:
@@ -255,7 +276,7 @@ class ProjectIndex:
             return f"{base}.{node.attr}" if base else node.attr
         return ""
 
-    def resolution_for(self, call: ast.Call, caller: ProjectFunction) -> "CallResolution":
+    def resolution_for(self, call: ast.Call, caller: ProjectFunction) -> CallResolution:
         if self._resolver is None:
             from .resolver import CallResolver
 
@@ -277,6 +298,10 @@ class ProjectIndex:
         return min(candidates, key=lambda item: (item.source_range.end.line - item.source_range.start.line, -len(item.qualified_name)), default=None)
 
     def iter_function_calls(self, function: ProjectFunction) -> Iterable[ast.Call]:
+        cached = self._calls_by_function.get(function.qualname)
+        if cached is not None:
+            return cached
+
         class Visitor(ast.NodeVisitor):
             def __init__(self, root: ast.AST):
                 self.root = root
@@ -304,4 +329,6 @@ class ProjectIndex:
                 visitor.visit(statement)
         else:
             visitor.visit(function.node)
-        return visitor.calls
+        calls = tuple(visitor.calls)
+        self._calls_by_function[function.qualname] = calls
+        return calls

@@ -2,22 +2,20 @@ from __future__ import annotations
 
 import ast
 import json
-import math
 import re
 import unicodedata
-import urllib.request
 import urllib.error
-from datetime import datetime, timezone
+import urllib.request
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable
 
+from .code_intelligence import CodeIntelligenceSession
+from .file_inventory import discover_repository_files
 from .models import EvidenceNode, Finding
 from .rules import Rule
 
 TEXT_SUFFIXES = {".md", ".txt", ".yaml", ".yml", ".json", ".toml", ".py", ".js", ".jsx", ".ts", ".tsx", ".sh", ".bash", ".ps1", ".php", ".rb"}
-SKIP_DIRS = {".git", ".venv", "venv", "node_modules", "dist", "build", "__pycache__", ".agentguard"}
-
 # These are intentionally deterministic and local. They reproduce the useful static
 # behavior of SkillSpector-class rules without invoking SkillSpector as a subprocess.
 TEXT_PATTERNS: dict[str, tuple[str, ...]] = {
@@ -58,12 +56,44 @@ TEXT_PATTERNS: dict[str, tuple[str, ...]] = {
     "NVS-YR3": (r"\b(?:stratum\+tcp|xmrig|cryptonight|minergate|nanopool)\b",),
     "NVS-YR4": (r"\b(?:sqlmap|metasploit|nmap\s+-s|hydra\s+-l|exploit-db|shellcode)\b",),
 }
+COMPILED_TEXT_PATTERNS = {
+    rule_id: tuple(re.compile(pattern, re.IGNORECASE | re.DOTALL) for pattern in patterns)
+    for rule_id, patterns in TEXT_PATTERNS.items()
+}
 
 POPULAR_PACKAGES = {"requests", "numpy", "pandas", "pydantic", "fastapi", "langchain", "langgraph", "openai", "anthropic", "mcp", "typer", "httpx"}
 
 
 def _line_for(text: str, offset: int) -> int:
     return text.count("\n", 0, offset) + 1
+
+
+def _html_comment_match(text: str, terms: tuple[str, ...]) -> int | None:
+    low = text.lower()
+    cursor = 0
+    while (start := low.find("<!--", cursor)) >= 0:
+        end = low.find("-->", start + 4)
+        if end < 0:
+            return None
+        if any(term in low[start + 4 : end] for term in terms):
+            return start
+        cursor = end + 3
+    return None
+
+
+def _ordered_token_match(text: str, groups: tuple[tuple[str, ...], ...]) -> int | None:
+    low = text.lower()
+    cursor = 0
+    start = -1
+    for alternatives in groups:
+        positions = [position for token in alternatives if (position := low.find(token, cursor)) >= 0]
+        if not positions:
+            return None
+        position = min(positions)
+        if start < 0:
+            start = position
+        cursor = position + 1
+    return start
 
 
 def _first_line(text: str, line: int) -> str:
@@ -88,26 +118,75 @@ class SkillSecurityAnalyzer:
     root: Path
     rules: list[Rule]
     allow_network: bool = False
+    repository_paths: list[Path] | None = None
+    session: CodeIntelligenceSession | None = None
     by_id: dict[str, Rule] = field(init=False, default_factory=dict)
+    trees_by_path: dict[Path, ast.Module] = field(init=False, default_factory=dict)
 
     def __post_init__(self) -> None:
         self.root = self.root.resolve()
         self.by_id = {r.id: r for r in self.rules if r.engine == "agentguard-skill"}
+        if self.session is not None:
+            self.trees_by_path = {
+                module.path.resolve(): module.tree for module in self.session.index.modules.values()
+            }
+
+    def _read_text(self, path: Path) -> str:
+        if self.session is not None:
+            source = self.session.sources.get(path.resolve())
+            if source is not None:
+                return source
+        return path.read_text(encoding="utf-8", errors="ignore")
+
+    def _tree(self, path: Path, text: str) -> ast.Module | None:
+        existing = self.trees_by_path.get(path.resolve())
+        if existing is not None:
+            return existing
+        try:
+            return ast.parse(text, filename=str(path))
+        except SyntaxError:
+            return None
 
     def scan(self) -> list[Finding]:
         if not self.by_id:
             return []
         findings: list[Finding] = []
-        files = [p for p in self.root.rglob("*") if p.is_file() and not any(x in SKIP_DIRS for x in p.parts)]
+        repository_files = list(
+            self.repository_paths
+            if self.repository_paths is not None
+            else discover_repository_files(self.root)
+        )
+        manifests = [
+            path
+            for path in repository_files
+            if path.name.upper() == "SKILL.MD"
+            or path.name.lower() in {"skill.yaml", "skill.yml", "skill.json"}
+            or (
+                path.name.lower() in {"manifest.yaml", "manifest.yml", "manifest.json"}
+                and any(
+                    "skill" in part.lower() or "plugin" in part.lower()
+                    for part in path.parent.parts
+                )
+            )
+        ]
+        if not manifests:
+            return []
+        skill_roots = {path.parent for path in manifests}
+        files = [
+            path
+            for path in repository_files
+            if any(path == manifest for manifest in manifests)
+            or any(path == skill_root or skill_root in path.parents for skill_root in skill_roots)
+        ]
         for path in files:
             if path.suffix.lower() in TEXT_SUFFIXES or path.name.upper() == "SKILL.MD" or path.name in {"requirements.txt", "package.json"}:
                 try:
-                    text = path.read_text(encoding="utf-8", errors="ignore")
+                    text = self._read_text(path)
                 except OSError:
                     continue
                 findings.extend(self._text_rules(path, text))
                 if path.suffix.lower() == ".py":
-                    findings.extend(self._python_ast(path, text))
+                    findings.extend(self._python_ast(path, text, self._tree(path, text)))
                 if path.name in {"requirements.txt", "package.json", "pyproject.toml"}:
                     findings.extend(self._dependency_rules(path, text))
         findings.extend(self._permission_rules(files))
@@ -129,19 +208,33 @@ class SkillSecurityAnalyzer:
 
     def _text_rules(self, path: Path, text: str) -> list[Finding]:
         out: list[Finding] = []
-        low = text.lower()
-        for rid, patterns in TEXT_PATTERNS.items():
+        for rid, patterns in COMPILED_TEXT_PATTERNS.items():
             if rid not in self.by_id:
                 continue
-            for pattern in patterns:
-                try:
-                    match = re.search(pattern, text, flags=re.I | re.S)
-                except re.error:
+            if rid == "NVS-TP1":
+                comment_offset = _html_comment_match(
+                    text, ("ignore", "override", "system", "secret")
+                )
+                if comment_offset is not None:
+                    line = _line_for(text, comment_offset)
+                    item = self._emit(
+                        rid, path, line, "static skill pattern", _first_line(text, line)
+                    )
+                    if item:
+                        out.append(item)
                     continue
+                patterns = patterns[1:]
+            for pattern in patterns:
+                match = pattern.search(text)
                 if match:
                     # Suppress obvious negated warnings for anti-refusal rules.
                     window = text[max(0, match.start()-40):match.end()+40].lower()
                     if rid in {"NVS-AR1", "NVS-AR2", "NVS-AR3"} and re.search(r"\b(?:never|do not|don't)\b.{0,30}\b(?:suppress|omit|ignore)\b", window):
+                        continue
+                    if rid in {"NVS-P6", "NVS-E3"} and re.search(
+                        r"\b(?:never|do not|don't|avoid|prevent|protect|must not|should not)\b.{0,60}",
+                        window,
+                    ):
                         continue
                     line = _line_for(text, match.start())
                     item = self._emit(rid, path, line, "static skill pattern", _first_line(text, line))
@@ -152,7 +245,7 @@ class SkillSecurityAnalyzer:
         # Hidden instructions / Unicode deception.
         if "NVS-P2" in self.by_id:
             for i, line_text in enumerate(text.splitlines(), 1):
-                if re.search(r"[\u200b\u200c\u200d\u202a-\u202e\u2066-\u2069\ufeff]", line_text) or re.search(r"<!--.*?(?:ignore|system|instruction).*?-->", line_text, re.I):
+                if re.search(r"[\u200b\u200c\u200d\u202a-\u202e\u2066-\u2069\ufeff]", line_text) or re.search(r"<!--.*?(?:ignore|system|instruction).*?-->", line_text, re.IGNORECASE):
                     item = self._emit("NVS-P2", path, i, "hidden/invisible instruction surface", line_text)
                     if item: out.append(item)
                     break
@@ -182,12 +275,20 @@ class SkillSecurityAnalyzer:
                 break
 
         # Cross-context / generic chain abuse evidence.
-        if "NVS-TM2" in self.by_id and re.search(r"(?is)(?:tool|agent).*?(?:result|output).*?(?:tool|agent).*?(?:invoke|run|call)", text):
-            line = _line_for(text, re.search(r"(?is)(?:tool|agent).*?(?:result|output).*?(?:tool|agent).*?(?:invoke|run|call)", text).start())
+        tm2_offset = _ordered_token_match(
+            text,
+            (("tool", "agent"), ("result", "output"), ("tool", "agent"), ("invoke", "run", "call")),
+        )
+        if "NVS-TM2" in self.by_id and tm2_offset is not None:
+            line = _line_for(text, tm2_offset)
             item = self._emit("NVS-TM2", path, line, "tool chaining without visible policy boundary", _first_line(text, line))
             if item: out.append(item)
-        if "NVS-OH2" in self.by_id and re.search(r"(?is)(?:model|tool).*?(?:output|result).*?(?:html|sql|shell|prompt|tool)", text):
-            line = _line_for(text, re.search(r"(?is)(?:model|tool).*?(?:output|result).*?(?:html|sql|shell|prompt|tool)", text).start())
+        oh2_offset = _ordered_token_match(
+            text,
+            (("model", "tool"), ("output", "result"), ("html", "sql", "shell", "prompt", "tool")),
+        )
+        if "NVS-OH2" in self.by_id and oh2_offset is not None:
+            line = _line_for(text, oh2_offset)
             item = self._emit("NVS-OH2", path, line, "cross-context output flow", _first_line(text, line))
             if item: out.append(item)
         return out
@@ -206,10 +307,9 @@ class SkillSecurityAnalyzer:
                     scripts.add(script)
         return len(scripts) > 1
 
-    def _python_ast(self, path: Path, text: str) -> list[Finding]:
-        try:
-            tree = ast.parse(text, filename=str(path))
-        except SyntaxError:
+    def _python_ast(self, path: Path, text: str, tree: ast.Module | None = None) -> list[Finding]:
+        tree = tree or self._tree(path, text)
+        if tree is None:
             return []
         out: list[Finding] = []
         aliases: dict[str, str] = {}
@@ -309,7 +409,7 @@ class SkillSecurityAnalyzer:
         if path.name == "requirements.txt":
             for i, line in enumerate(text.splitlines(), 1):
                 s=line.strip()
-                if not s or s.startswith('#') or s.startswith('-'): continue
+                if not s or s.startswith(("#", "-")): continue
                 m=re.match(r"([A-Za-z0-9_.-]+)\s*([<>=!~].*)?$",s)
                 if m: deps.append((m.group(1), m.group(2) or "", i))
         elif path.name == "package.json":
@@ -350,15 +450,35 @@ class SkillSecurityAnalyzer:
     def _permission_rules(self, files: list[Path]) -> list[Finding]:
         out: list[Finding] = []
         manifests=[p for p in files if p.name.upper()=="SKILL.MD" or p.name.lower() in {"skill.yaml","skill.yml","skill.json","manifest.yaml","manifest.yml","manifest.json"}]
+        source_files: list[Path] = []
+        source_text: dict[Path, str] = {}
+        for source_path in files:
+            if source_path.suffix.lower() not in {".py", ".js", ".ts", ".sh"}:
+                continue
+            try:
+                if source_path.stat().st_size >= 1_000_000:
+                    continue
+                source_text[source_path] = self._read_text(source_path).lower()
+                source_files.append(source_path)
+            except OSError:
+                continue
+        root_blob = "\n".join(source_text[path] for path in source_files)
+        scoped_blobs: dict[Path, str] = {self.root: root_blob}
         for path in manifests:
-            try: text=path.read_text(encoding="utf-8",errors="ignore")
+            try: text=self._read_text(path)
             except OSError: continue
             declared=set(re.findall(r"(?i)\b(?:permissions?|allowed[-_ ]tools?|capabilities?)\b\s*[:=]\s*([^\n]+)",text))
             declared_blob=" ".join(declared).lower()
             used=set()
             scope_root=path.parent if path.name.upper()=="SKILL.MD" else self.root
-            scoped=[p for p in files if (scope_root==self.root or scope_root in p.parents) and p.suffix.lower() in {".py",".js",".ts",".sh"} and p.stat().st_size<1_000_000]
-            repo_blob="\n".join(p.read_text(encoding="utf-8",errors="ignore") for p in scoped).lower()
+            repo_blob = scoped_blobs.get(scope_root)
+            if repo_blob is None:
+                repo_blob = "\n".join(
+                    source_text[source_path]
+                    for source_path in source_files
+                    if scope_root in source_path.parents
+                )
+                scoped_blobs[scope_root] = repo_blob
             if re.search(r"subprocess|os\.system|child_process|exec\(",repo_blob): used.add("shell")
             if re.search(r"requests\.|httpx\.|fetch\(|axios\.",repo_blob): used.add("network")
             if re.search(r"write_text|write_bytes|open\([^\n]+['\"]w|fs\.write",repo_blob): used.add("file_write")
@@ -393,8 +513,10 @@ class SkillSecurityAnalyzer:
     def _taint_rules(self, paths: list[Path]) -> list[Finding]:
         out: list[Finding] = []
         for path in paths:
-            try: text=path.read_text(encoding="utf-8",errors="ignore"); tree=ast.parse(text)
-            except (OSError,SyntaxError): continue
+            try: text=self._read_text(path)
+            except OSError: continue
+            tree=self._tree(path,text)
+            if tree is None: continue
             tainted: dict[str, tuple[str,int]] = {}
             secret_vars: set[str] = set()
             file_vars: set[str] = set()

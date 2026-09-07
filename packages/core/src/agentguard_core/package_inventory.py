@@ -12,9 +12,8 @@ import tomllib
 import yaml
 
 from .bom_models import PackageEntity
+from .file_inventory import discover_repository_files
 from .models import Relationship
-
-IGNORED_DIRECTORIES = {".git", ".venv", "venv", "node_modules", "dist", "build", "__pycache__", ".agentguard"}
 
 
 def normalize_package_name(name: str, ecosystem: str) -> str:
@@ -40,8 +39,12 @@ def _exact_version(value: str) -> str:
 class PackageInventory:
     """Offline Python and JavaScript package/lockfile inventory."""
 
-    def __init__(self, root: Path):
+    def __init__(self, root: Path, repository_paths: list[Path] | None = None):
         self.root = root.resolve()
+        self.repository_paths = tuple(repository_paths if repository_paths is not None else discover_repository_files(self.root))
+        self.paths_by_name: dict[str, list[Path]] = defaultdict(list)
+        for path in self.repository_paths:
+            self.paths_by_name[path.name].append(path)
         self.direct: set[tuple[str, str]] = set()
         self.requests: dict[tuple[str, str], str] = {}
         self.manifest_origins: dict[tuple[str, str], list[str]] = defaultdict(list)
@@ -52,13 +55,12 @@ class PackageInventory:
         return path.resolve().relative_to(self.root).as_posix()
 
     def _paths(self, names: set[str], patterns: tuple[str, ...] = ()) -> list[Path]:
-        return sorted(
-            path
-            for path in self.root.rglob("*")
-            if path.is_file()
-            and not any(part in IGNORED_DIRECTORIES for part in path.relative_to(self.root).parts)
-            and (path.name in names or any(path.match(pattern) for pattern in patterns))
-        )
+        matches = [path for name in names for path in self.paths_by_name.get(name, ())]
+        if patterns:
+            matches.extend(
+                path for path in self.repository_paths if any(path.match(pattern) for pattern in patterns)
+            )
+        return sorted(set(matches))
 
     @staticmethod
     def _line(path: Path, needle: str) -> int:

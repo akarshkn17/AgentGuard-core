@@ -127,7 +127,7 @@ All catalog rules are present; the tier field prevents catalog presence from bei
 ## Source tests
 
 ```text
-40 passed in 51.88s
+47 passed in 80.13s
 ```
 
 Coverage exercised:
@@ -145,6 +145,9 @@ Coverage exercised:
 - vulnerable attribute/container and cross-file/nested flows;
 - safe allowlist, numeric conversion and clean container-entry cases;
 - partial/fake sanitizer and bounded-recursion edge cases;
+- cycle-safe alias resolution with container paths bounded before allocation;
+- SCM-aware, ignore-pruned shared file inventory and ordered O(1) edge deduplication;
+- linear cross-context skill matching with positive and negative parity checks;
 - representative pre/post-refactor finding-ID parity.
 - evidence-backed direct/transitive finding attribution;
 - explicit, inferred and derived relationship provenance;
@@ -254,6 +257,25 @@ status: completed
 ```
 
 The performance result is an environment-specific regression baseline, not a universal customer throughput claim.
+
+## Post-Milestone 4 large-repository performance benchmark
+
+A complete offline/default scan of this repository after the performance correction produced:
+
+```text
+duration: 12.615325 seconds
+files: 156
+findings: 39
+inventory assets: 60
+analysis errors: 0
+status: completed
+```
+
+The same self-scan had not completed after 90 seconds before the correction was fully applied. The correction shares one Git-aware/pruned file inventory across scanner stages, indexes package paths/rules/calls/source lines/provenance ownership, avoids copying unrelated abstract state into call frames, deduplicates data-flow edges in constant time, reuses Python source/AST state, and replaces unbounded whole-file skill regex chains with equivalent linear ordered-token matching. Default analysis, the 181-rule catalog, taint evidence, BOM output, and provenance attribution remain enabled.
+
+A follow-up noise correction reduced the self-scan from 1,026 mostly irrelevant/repeated findings to 39. Skill rules now execute only inside discovered skill/plugin roots, config checks map directly to relevant rule IDs instead of fuzzy catalog-description keywords, rule catalog documents are not treated as vulnerable runtime configuration, and equivalent native/cross-engine flow hits are returned once with the secondary rule identities retained in `engine_metadata.related_rules`.
+
+The previously used `damn-vulnerable-ai-agent-main` repository completed in 1.54 seconds for 442 files with 11 findings, no repeated file/line groups, and zero analyzer errors. The remaining evidence was manually reviewed and points to six non-placeholder hardcoded credentials, unsafe pickle loading, an executable skill backdoor, prompt disclosure/override instructions, and credential-sharing instructions. Test placeholder keys, README explanations, ordinary JavaScript words such as `head`/`stages`/`references`, and a safe “never reveal” instruction were suppressed.
 
 ## Sample artifacts
 

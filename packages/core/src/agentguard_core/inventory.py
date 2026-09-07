@@ -12,6 +12,7 @@ import tomllib
 import yaml
 
 from .code_intelligence import CodeIntelligenceSession, ProjectIndex, ProjectModule
+from .file_inventory import discover_repository_files
 from .frameworks import (
     AGENT_CONSTRUCTORS,
     MCP_PROMPT_DECORATORS,
@@ -25,7 +26,6 @@ from .frameworks import (
 )
 from .models import InventoryEntity, Relationship
 
-IGNORED_DIRECTORIES={".git",".venv","venv","node_modules","dist","build","__pycache__",".agentguard"}
 CATEGORY_BY_TYPE={
     "agent":"agentic","sub_agent":"agentic","orchestrator":"agentic","agent_proxy":"agentic",
     "tool":"tooling","function_tool":"tooling","skill":"tooling","plugin":"tooling",
@@ -435,9 +435,14 @@ class InventoryDiscoverer:
             e=self._add("dependency",name,f"dependency.{name}",self.root/"pyproject.toml",1,f"{name}{ver}",attributes={"package":name,"declared_version":ver},detection_source="dependency_manifest",explicit_version=ver)
             e.package_name=name;e.package_version=ver
 
-    def discover(self)->tuple[list[InventoryEntity],list[Relationship]]:
-        paths=[p for p in self.root.rglob("*") if p.is_file() and not any(part in IGNORED_DIRECTORIES for part in p.parts) and (p.suffix.lower() in {".py",".js",".jsx",".ts",".tsx",".md",".yaml",".yml",".json",".toml"} or p.name.upper()=="SKILL.MD")]
-        py={p:p.read_text(encoding="utf-8",errors="ignore") for p in paths if p.suffix.lower()==".py"}; index=self.session.index if self.session is not None else ProjectIndex(self.root,py)
+    def discover(self, repository_paths:list[Path]|None=None)->tuple[list[InventoryEntity],list[Relationship]]:
+        candidates=repository_paths if repository_paths is not None else discover_repository_files(self.root)
+        paths=[p for p in candidates if p.suffix.lower() in {".py",".js",".jsx",".ts",".tsx",".md",".yaml",".yml",".json",".toml"} or p.name.upper()=="SKILL.MD"]
+        if self.session is not None:
+            index=self.session.index
+        else:
+            py={p:p.read_text(encoding="utf-8",errors="ignore") for p in paths if p.suffix.lower()==".py"}
+            index=ProjectIndex(self.root,py)
         for m in index.modules.values():self._discover_functions(index,m);self._discover_assignments(index,m);self._discover_model_calls(index,m)
         for m in index.modules.values():self._discover_relationships(index,m)
         for m in index.modules.values():self._discover_model_usage(index,m)

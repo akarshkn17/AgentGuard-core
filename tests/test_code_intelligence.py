@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from itertools import pairwise
 from pathlib import Path
 
 from agentguard_core import ScanRequest, scan
 from agentguard_core.code_intelligence import (
+    AbstractStore,
     CodeIntelligenceSession,
     ResolutionConfidence,
     SanitizerRegistry,
@@ -111,7 +113,7 @@ def test_attribute_and_container_taint_crosses_resolved_method_calls(tmp_path: P
 
     finding = next(item for item in findings if item.rule_id == "AIR-EXEC-001")
     assert finding.engine_metadata["containing_symbol"] == "app.Worker.execute"
-    assert [node.kind for node in finding.evidence][0] == "source"
+    assert finding.evidence[0].kind == "source"
     assert [node.kind for node in finding.evidence][-1] == "sink"
     assert any("stored at" in node.label for node in finding.evidence)
     assert any(edge.operation == "argument-to-parameter" for edge in session.data_flow_edges)
@@ -127,6 +129,22 @@ def test_recursive_flow_is_bounded_and_retains_evidence(tmp_path: Path):
     assert len(finding.evidence) <= 64
     assert finding.evidence[0].kind == "source"
     assert finding.evidence[-1].kind == "sink"
+
+
+def test_alias_resolution_bounds_paths_during_long_chains_and_cycles():
+    store = AbstractStore(max_alias_depth=32, max_container_depth=4)
+    locations = [AbstractStore.local("function", f"value_{index}") for index in range(16)]
+    for source, target in pairwise(locations):
+        store.aliases[source] = target.child("payload")
+
+    resolved = store.resolve(locations[0].child("command"))
+    assert len(resolved.path) == 4
+    assert resolved.path[-1] == "*"
+
+    store.aliases[locations[-1]] = locations[0].child("cycle")
+    cyclic = store.resolve(locations[0].child("command"))
+    assert len(cyclic.path) <= store.max_container_depth
+    assert cyclic.path[-1] == "*"
 
 
 def test_cross_file_alias_and_nested_return_preserve_ordered_flow():

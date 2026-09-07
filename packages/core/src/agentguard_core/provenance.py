@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 from collections import Counter, defaultdict, deque
 from collections.abc import Iterable
 from pathlib import Path
@@ -41,25 +42,53 @@ class ProvenanceGraphBuilder:
         self.root = self.session.root if self.session is not None else Path(result.scan.root).resolve()
         repository_identity = result.scan.git_remote or Path(result.scan.root).name
         self.repo_id = _id("REPO", repository_identity)
+        self._relative_cache: dict[str, str] = {}
+        self._absolute_cache: dict[str, Path] = {}
+        self._containing_symbol_cache: dict[tuple[str, int], CodeSymbol | None] = {}
         self.nodes: dict[str, KnowledgeGraphNode] = {}
         self.edges: dict[str, KnowledgeGraphEdge] = {}
         self.entities = {entity.entity_id: entity for entity in result.inventory}
         self.owners_by_symbol: dict[str, dict[str, tuple[str, str, str]]] = defaultdict(dict)
         self.incoming_calls: dict[str, list[tuple[str, str, str]]] = defaultdict(list)
         self.call_nodes_by_location: dict[tuple[str, int], list[str]] = defaultdict(list)
+        self.symbols_by_file: dict[str, list[CodeSymbol]] = defaultdict(list)
+        if self.session is not None:
+            for symbol in self.session.index.symbols_by_id.values():
+                if symbol.kind in CODE_SYMBOL_KINDS:
+                    self.symbols_by_file[self._relative(symbol.source_range.start.file)].append(symbol)
+        self.config_assets_by_file: dict[str, list[str]] = defaultdict(list)
+        for entity in result.inventory:
+            if entity.entity_type in CONFIG_OWNED_TYPES:
+                self.config_assets_by_file[self._relative(entity.file)].append(entity.entity_id)
+        self.relationships_by_target: dict[str, list[Any]] = defaultdict(list)
+        for relationship in result.relationships:
+            self.relationships_by_target[relationship.target_id].append(relationship)
         self._base_built = False
 
     def _relative(self, value: str | Path) -> str:
+        raw = os.fspath(value)
+        cached = self._relative_cache.get(raw)
+        if cached is not None:
+            return cached
         path = Path(value)
-        candidate = path if path.is_absolute() else self.root / path
+        candidate = self._absolute(path)
         try:
-            return candidate.resolve().relative_to(self.root).as_posix()
-        except (OSError, ValueError):
-            return path.as_posix()
+            result = candidate.relative_to(self.root).as_posix()
+        except ValueError:
+            result = path.as_posix()
+        self._relative_cache[raw] = result
+        return result
 
     def _absolute(self, value: str | Path) -> Path:
+        raw = os.fspath(value)
+        cached = self._absolute_cache.get(raw)
+        if cached is not None:
+            return cached
         path = Path(value)
-        return path.resolve() if path.is_absolute() else (self.root / path).resolve()
+        candidate = path if path.is_absolute() else self.root / path
+        result = Path(os.path.abspath(candidate))
+        self._absolute_cache[raw] = result
+        return result
 
     def _location_evidence(
         self,
@@ -248,7 +277,7 @@ class ProvenanceGraphBuilder:
         if symbol.kind is SymbolKind.MODULE and self.session is not None:
             module = self.session.index.modules.get(symbol.module)
             if module is not None:
-                end_line = max(1, len(module.lines))
+                end_line = max(1, module.line_count)
         return {
             "file": self._relative(start.file),
             "line": start.line,
@@ -447,22 +476,30 @@ class ProvenanceGraphBuilder:
     def _containing_symbol(self, file: str, line: int) -> CodeSymbol | None:
         if self.session is None:
             return None
-        resolved = self._absolute(file)
+        relative = self._relative(file)
+        cache_key = (relative, line)
+        if cache_key in self._containing_symbol_cache:
+            return self._containing_symbol_cache[cache_key]
         candidates: list[CodeSymbol] = []
         modules: list[CodeSymbol] = []
-        for symbol in self.session.index.symbols_by_id.values():
-            if self._absolute(symbol.source_range.start.file) != resolved:
-                continue
-            if symbol.kind not in CODE_SYMBOL_KINDS:
-                continue
+        for symbol in self.symbols_by_file.get(relative, ()):
             if symbol.kind is SymbolKind.MODULE:
                 modules.append(symbol)
                 continue
             if symbol.source_range.start.line <= line <= symbol.source_range.end.line:
                 candidates.append(symbol)
         if candidates:
-            return min(candidates, key=lambda item: (item.source_range.end.line - item.source_range.start.line, -len(item.qualified_name)))
-        return modules[0] if modules else None
+            result = min(
+                candidates,
+                key=lambda item: (
+                    item.source_range.end.line - item.source_range.start.line,
+                    -len(item.qualified_name),
+                ),
+            )
+        else:
+            result = modules[0] if modules else None
+        self._containing_symbol_cache[cache_key] = result
+        return result
 
     def _reverse_call_owners(self, starts: list[str]) -> tuple[dict[str, list[str]], dict[str, str]]:
         paths: dict[str, list[str]] = {}
@@ -493,16 +530,13 @@ class ProvenanceGraphBuilder:
         return paths, confidences
 
     def _transitive_assets(self, direct_assets: list[str]) -> tuple[list[str], dict[str, list[str]]]:
-        incoming: dict[str, list[Any]] = defaultdict(list)
-        for relationship in self.result.relationships:
-            incoming[relationship.target_id].append(relationship)
         direct = set(direct_assets)
         paths: dict[str, list[str]] = {}
         queue = deque((asset_id, []) for asset_id in direct_assets if asset_id in self.entities)
         visited = set(direct_assets)
         while queue:
             asset_id, path_to_direct = queue.popleft()
-            for relationship in incoming.get(asset_id, []):
+            for relationship in self.relationships_by_target.get(asset_id, []):
                 upstream = relationship.source_id
                 if upstream in visited:
                     continue
@@ -566,12 +600,7 @@ class ProvenanceGraphBuilder:
                 method = "evidence-symbol-ownership"
 
         if not direct:
-            file_assets = [
-                entity.entity_id
-                for entity in self.result.inventory
-                if entity.entity_type in CONFIG_OWNED_TYPES
-                and self._relative(entity.file) == self._relative(finding.file)
-            ]
+            file_assets = self.config_assets_by_file.get(self._relative(finding.file), [])
             for asset_id in file_assets:
                 direct[asset_id] = ("high", "declared-source-file-ownership")
             if direct:

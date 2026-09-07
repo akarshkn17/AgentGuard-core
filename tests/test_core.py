@@ -1,5 +1,5 @@
-from pathlib import Path
 import json
+from pathlib import Path
 
 from agentguard_core import (
     ScanRequest,
@@ -44,6 +44,11 @@ def test_vulnerable_fixture_has_enriched_findings():
 def test_native_skill_engine_runs_without_external_skillspector():
     result = scan(ROOT / "examples" / "vulnerable_skill")
     ids = {finding.rule_id for finding in result.findings}
+    ids.update(
+        related["rule_id"]
+        for finding in result.findings
+        for related in finding.engine_metadata.get("related_rules", [])
+    )
     assert {"NVS-AR1", "NVS-AR3", "NVS-P1", "NVS-PE3", "NVS-AST1", "NVS-AST4", "NVS-LP2"}.issubset(ids)
     assert all(f.engine_metadata.get("engine") != "skillspector-subprocess" for f in result.findings if f.rule_id.startswith("NVS-"))
 

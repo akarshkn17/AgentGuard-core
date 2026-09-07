@@ -112,6 +112,24 @@ Every `RULE_COVERAGE.json` rule now records implementation status, actual analys
 
 The validated baseline is deliberately conservative: 8 rules meet the strict positive+negative fixture bar, 1 is partially validated, 135 have executable routes without dedicated two-sided tests, 35 require dedicated semantic/control-flow detectors, and 2 are network-conditional. These quality statuses do not alter the protected rule catalog or implementation-tier counts. See `docs/MILESTONE_4_SCANNER_QUALITY.md`.
 
+## Post-Milestone 4 large-project memory correction (September 7, 2026)
+
+A real-world nested Python scan exposed exponential abstract-location path growth in `AbstractStore.resolve()`. Each alias hop appended both the already-expanded current path and a second accumulated suffix; the container-depth bound was applied only later in `write()`. Deep call/control-flow combinations could therefore raise `MemoryError` before the bound ran.
+
+Alias resolution now bounds paths during construction, terminates cycles by abstract-location base, and preserves the configured wildcard abstraction for paths deeper than `max_container_depth`. Inventory discovery also reuses the existing `CodeIntelligenceSession` index without rereading every Python source file into a redundant dictionary. The regression covers both a long alias chain and a cycle while the existing cross-file, attribute/container, sanitizer, and finding-identity tests protect taint semantics.
+
+## Post-Milestone 4 large-project performance correction (September 7, 2026)
+
+The scanner now constructs one deterministic repository file inventory per scan. Git worktrees use tracked plus non-ignored untracked files; non-Git inputs use a pruned `os.scandir` walk that never descends into ignored dependency/build/cache directories. Scanner, inventory, package, and skill stages share this inventory. Package manifests are indexed by filename, and Python source/AST state is reused by inventory and skill analysis.
+
+The semantic engine caches function call enumeration, source-line offsets, target applicability, and source/sink rule lookup. A statement-local call evaluation cache prevents the finding pass and value pass from executing the same resolved callee twice. Callee frames copy only argument/receiver-reachable abstract state instead of the caller's entire accumulated store, while session-level data-flow edges remain complete and ordered with constant-time deduplication. Calls that have no tainted inputs, tainted receiver state, or transitive intrinsic source avoid an unnecessary return-flow traversal; every function still receives its normal root structural/semantic scan, and tainted/interprocedural flows continue through resolved calls.
+
+Skill cross-context patterns with formerly unbounded whole-file wildcard chains now use equivalent linear ordered-token/comment matching. Provenance attribution indexes symbols, owned assets, and incoming relationships by normalized file/target and caches containing-symbol lookups instead of resolving every path against every symbol for every finding. A complete offline/default self-scan completed in 12.615325 seconds for 156 files and 39 findings with zero analysis errors; the pre-correction run had not completed after 90 seconds. This is an environment-specific regression measurement, not a universal throughput claim.
+
+The self-scan initially exposed 1,026 findings, which was detector noise rather than a successful result. The native skill engine had been applying all 68 compatibility rules to ordinary source, documentation, sample reports, and rule-catalog content; the config analyzer also mapped a single lexical match to every rule whose descriptive metadata shared a hint word. Skill analysis is now scoped to discovered `SKILL.md`, `skill.*`, or skill/plugin manifest roots. Config detections use explicit rule mappings and ignore AgentGuard rule-catalog documents. Native rules that match the exact same resolved semantic flow are consolidated into one primary finding, and equivalent compatibility/static hits are retained under `engine_metadata.related_rules` rather than emitted as repeated top-level findings. Distinct conditions on the same line remain separate.
+
+On the user's earlier 442-file `damn-vulnerable-ai-agent-main` target, the corrected default scan completed in 1.54 seconds with 11 findings, no repeated file/line groups, and zero analyzer errors. Manual evidence review confirmed that the remaining results describe the intentionally vulnerable credential, unsafe deserialization, skill-backdoor, prompt-override/disclosure, and credential-sharing examples. The correction rejects test/fake/example credential placeholders, README prose about unsafe commands, incidental substrings such as `head`, `stages`, or `references`, and safe negated skill guidance such as “never reveal.”
+
 ## Finding enrichment
 
 Detection and metadata enrichment are separated. An analyzer can emit a rule ID/evidence, after which the rule catalog enriches it with description, remediation, category, source/sink descriptions, detection logic, references, mappings and CWE metadata.
@@ -182,7 +200,7 @@ External projects are design/reference inputs unless explicitly integrated. Avoi
 
 ## Current validation snapshot
 
-At the Milestone 4 validation gate the source suite reports 40 passing tests. Catalog validation still reports 181 valid rules, and the quality manifest validates with zero issues. In addition to the Milestone 1–3 gates, the suite now checks all per-rule quality records, false-positive behavior, stable fingerprints/entity/version IDs, Agent BOM and CycloneDX semantic snapshots, connected attack paths, visible analysis errors, and measured complete-offline performance. See `BUILD_VALIDATION.md` for the exact recorded run.
+After the large-project memory, performance, and detector-noise corrections, the source suite reports 47 passing tests. Catalog validation still reports 181 valid rules, and the quality manifest validates with zero issues. In addition to the Milestone 1–4 gates, the suite checks bounded/cycle-safe alias resolution, file-inventory pruning, edge deduplication, linear matcher parity, non-skill scope rejection, explicit config-to-rule mapping, equivalent-flow consolidation, all per-rule quality records, false-positive behavior, stable fingerprints/entity/version IDs, Agent BOM and CycloneDX semantic snapshots, connected attack paths, visible analysis errors, and measured complete-offline performance. See `BUILD_VALIDATION.md` for the exact recorded run.
 
 ## User workflow constraints
 
